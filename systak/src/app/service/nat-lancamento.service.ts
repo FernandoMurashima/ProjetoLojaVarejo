@@ -6,13 +6,14 @@ import { environment } from '../../environments/environment';
 export interface NatLancamento {
   id: number;
   descricao: string;
+  codigo: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class NatLancamentoService {
-  private apiUrl = `${environment.apiURL}/nat_lancamento/`;
+  private apiUrl = `${environment.apiURL}/natureza_lancamentos/`;
 
   constructor(private http: HttpClient) {}
 

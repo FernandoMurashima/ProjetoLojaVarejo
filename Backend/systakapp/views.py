@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, generics
 
 from .serializers import (
     UserSerializer, ClienteSerializer, FornecedorSerializer, VendedorSerializer,
@@ -8,7 +8,7 @@ from .serializers import (
     EstoqueSerializer, VendaSerializer, VendaItemSerializer, MovimentacaoFinanceiraSerializer,
     MovimentacaoProdutosSerializer, InventarioSerializer, InventarioItemSerializer,
     ReceberSerializer, ReceberItensSerializer, PagarSerializer, PagarItemSerializer,
-    CompraSerializer, CompraItemSerializer, PedidoCompraSerializer, PedidoCompraItemSerializer, LojaSerializer
+    CompraSerializer, CompraItemSerializer, PedidoCompraSerializer, PedidoCompraItemSerializer, LojaSerializer,
 )
 
 from .models import (
@@ -90,6 +90,10 @@ class NaturezaLancamentoViewSet(viewsets.ModelViewSet):
     queryset = Nat_Lancamento.objects.all()
     serializer_class = NaturezaLancamentoSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+class NatLancamentoList(generics.ListCreateAPIView):
+    queryset = Nat_Lancamento.objects.all()
+    serializer_class = NaturezaLancamentoSerializer
 
 class ContaBancariaViewSet(viewsets.ModelViewSet):
     queryset = ContaBancaria.objects.all()
@@ -185,6 +189,8 @@ class PedidoCompraItemViewSet(viewsets.ModelViewSet):
     queryset = PedidoCompraItem.objects.all()
     serializer_class = PedidoCompraItemSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
 
 class CustomAuthToken(APIView):
     """

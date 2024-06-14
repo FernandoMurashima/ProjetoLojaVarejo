@@ -1,15 +1,13 @@
-from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 from rest_framework import routers
 from rest_framework.authtoken import views as auth_views
 from rest_framework.authtoken.views import obtain_auth_token
 from django.contrib import admin
 from systakapp import views 
+from systakapp.views import NatLancamentoList  # Certifique-se de importar a classe NatLancamentoList
 
 router = routers.DefaultRouter()
 
-
-router = DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'lojas', views.LojaViewSet)
 router.register(r'clientes', views.ClienteViewSet)
@@ -18,7 +16,7 @@ router.register(r'vendedores', views.VendedorViewSet)
 router.register(r'funcionarios', views.FuncionariosViewSet)
 router.register(r'tamanhos', views.TamanhoViewSet)
 router.register(r'cores', views.CorViewSet)
-router.register(r'natureza-lancamentos', views.NaturezaLancamentoViewSet)
+router.register(r'natureza-lancamentos', views.NaturezaLancamentoViewSet)  # Aqui está a ViewSet que você já registrou
 router.register(r'contas-bancarias', views.ContaBancariaViewSet)
 router.register(r'produtos', views.ProdutoViewSet)
 router.register(r'produto-detalhes', views.ProdutoDetalheViewSet)
@@ -45,4 +43,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', auth_views.obtain_auth_token),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('natureza_lancamentos/', NatLancamentoList.as_view(), name='natureza_lancamentos'),
 ]

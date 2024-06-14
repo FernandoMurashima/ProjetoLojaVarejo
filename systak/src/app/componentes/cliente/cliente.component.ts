@@ -85,16 +85,28 @@ export class ClienteComponent implements OnInit {
     });
   }
 
-  loadNatLancamentos() {
+/*   loadNatLancamentos() {
     this.natLancamentoService.getNatLancamentos().subscribe({
       next: (data: NatLancamento[]) => {
+        console.log(data); // Verifique os dados recebidos
         this.natLancamentos = data;
       },
       error: (error: any) => {
         console.error('Erro ao carregar naturezas de lançamento', error);
       }
     });
-  }
+  } */
+
+    loadNatLancamentos() {
+      this.natLancamentoService.getNatLancamentos().subscribe({
+        next: (data: NatLancamento[]) => {
+          this.natLancamentos = data.filter(nat => nat.codigo.startsWith('1.')); // Filtra os registros
+        },
+        error: (error: any) => {
+          console.error('Erro ao carregar naturezas de lançamento', error);
+        }
+      });
+    }
 
   addCliente() {
     if (window.confirm('Confirma a inclusão do novo cliente?')) {

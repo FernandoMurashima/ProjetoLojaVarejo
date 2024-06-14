@@ -82,7 +82,7 @@
           </div>
 
         <div class="field-group3">
-          <div class="input-item" id="telefone1-box">
+<!--           <div class="input-item" id="telefone1-box">
             <label for="telefone1">Telefone 1:</label>
             <input type="text" id="telefone1" name="telefone1" [(ngModel)]="fornecedor.Telefone1" #telefone1="ngModel" maxlength="15">
           </div>
@@ -90,13 +90,33 @@
           <div class="input-item" id="telefone2-box">
             <label for="telefone2">Telefone 2:</label>
             <input type="text" id="telefone2" name="telefone2" [(ngModel)]="fornecedor.Telefone2" #telefone2="ngModel" maxlength="15">
+          </div> -->
+
+          <div class="input-item" id="telefone1-box">
+            <label for="telefone1">Telefone 1:</label>
+            <input type="text" id="telefone1" name="telefone1" [(ngModel)]="fornecedor.Telefone1" #telefone1="ngModel" appPhoneMask maxlength="15">
           </div>
+          <div class="input-item" id="telefone2-box">
+            <label for="telefone2">Telefone 2:</label>
+            <input type="text" id="telefone2" name="telefone2" [(ngModel)]="fornecedor.Telefone2" #telefone2="ngModel" appPhoneMask maxlength="15">
+          </div>
+
           
           <div class="input-item" id="email-box">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" [(ngModel)]="fornecedor.email" #email="ngModel" required email maxlength="50">
           </div>
         </div>
+
+        <div class="input-item" id="conta-contabil-box">
+          <label for="conta-contabil">Conta Contábil:</label>
+          <select id="conta-contabil" name="conta-contabil" [(ngModel)]="fornecedor.ContaContabil" #contaContabil="ngModel">
+            <option *ngFor="let nat of natLancamentos" [value]="nat.id">{{ nat.descricao }}</option>
+          </select>
+        </div>
+
+
+
         
         <div class="field-group333">
 
@@ -215,7 +235,15 @@
               <label for="email">Email:</label>
               <input type="email" id="email" name="email" [(ngModel)]="fornecedorSelecionado.email" #email="ngModel" disabled>
             </div>
+
+     
           
+          </div>
+          <div class="input-item" id="conta-contabil-box">
+            <label for="conta-contabil">Conta Contábil:</label>
+            <select id="conta-contabil" name="conta-contabil" [(ngModel)]="fornecedorSelecionado.ContaContabil" #contaContabil="ngModel" disabled>
+              <option *ngFor="let nat of natLancamentos" [value]="nat.id">{{ nat.descricao }}</option>
+            </select>
           </div>
 
           <div class="field-group333">
@@ -327,7 +355,8 @@
             </div>
   
           <div class="field-group3">
-            <div class="input-item" id="telefone1-box">
+
+            <!-- <div class="input-item" id="telefone1-box">
               <label for="telefone1">Telefone 1:</label>
               <input type="text" id="telefone1" name="telefone1" [(ngModel)]="fornecedor.Telefone1" #telefone1="ngModel" maxlength="15">
             </div>
@@ -335,12 +364,36 @@
             <div class="input-item" id="telefone2-box">
               <label for="telefone2">Telefone 2:</label>
               <input type="text" id="telefone2" name="telefone2" [(ngModel)]="fornecedor.Telefone2" #telefone2="ngModel" maxlength="15">
+            </div> -->
+
+            <div class="input-item" id="telefone1-box">
+              <label for="telefone1">Telefone 1:</label>
+              <input type="text" id="telefone1" name="telefone1" [(ngModel)]="fornecedor.Telefone1" #telefone1="ngModel" appPhoneMask maxlength="15">
             </div>
+            <div class="input-item" id="telefone2-box">
+              <label for="telefone2">Telefone 2:</label>
+              <input type="text" id="telefone2" name="telefone2" [(ngModel)]="fornecedor.Telefone2" #telefone2="ngModel" appPhoneMask maxlength="15">
+            </div>
+
+
             
             <div class="input-item" id="email-box">
               <label for="email">Email:</label>
               <input type="email" id="email" name="email" [(ngModel)]="fornecedor.email" #email="ngModel" required email maxlength="50">
             </div>
+
+
+
+
+
+
+
+          </div>
+          <div class="input-item" id="conta-contabil-box">
+            <label for="conta-contabil">Conta Contábil:</label>
+            <select id="conta-contabil" name="conta-contabil" [(ngModel)]="fornecedor.ContaContabil" #contaContabil="ngModel">
+              <option *ngFor="let nat of natLancamentos" [value]="nat.id">{{ nat.descricao }}</option>
+            </select>
           </div>
           
           <div class="field-group333">

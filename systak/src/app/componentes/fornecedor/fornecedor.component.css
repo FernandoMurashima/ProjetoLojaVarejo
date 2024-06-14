@@ -146,6 +146,15 @@ form{
 
 }
 
+#conta-contabil-box{
+    grid-row: 5;
+    grid-column: 4; /* Posiciona estes itens na primeira coluna */
+    width: 100px;
+
+}
+
+
+
 #cidade-box{
     grid-row: 6;
     grid-column: 1; /* Posiciona estes itens na primeira coluna */

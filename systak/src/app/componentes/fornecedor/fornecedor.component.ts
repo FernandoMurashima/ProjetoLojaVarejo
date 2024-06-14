@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FornecedorService, Fornecedor } from '../../service/fornecedor.service';
 import { Router } from '@angular/router';
+import { NatLancamentoService, NatLancamento } from '../../service/nat-lancamento.service';
 
 @Component({
   selector: 'app-fornecedor',
@@ -16,11 +17,17 @@ export class FornecedorComponent implements OnInit {
   successMessage: string = '';
   errorMessage: string = '';
   cnpjValido: boolean = true;
+  natLancamentos: NatLancamento[] = [];
 
-  constructor(private fornecedorService: FornecedorService, private router: Router) {}
+  constructor(
+    private fornecedorService: FornecedorService,
+    private natLancamentoService: NatLancamentoService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadFornecedores();
+    this.loadNatLancamentos();
   }
 
   createEmptyFornecedor(): Fornecedor {
@@ -78,6 +85,28 @@ export class FornecedorComponent implements OnInit {
       }
     });
   }
+
+/*   loadNatLancamentos() {
+    this.natLancamentoService.getNatLancamentos().subscribe({
+      next: (data) => {
+        this.natLancamentos = data;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar naturezas de lançamento', error);
+      }
+    });
+  } */
+
+    loadNatLancamentos() {
+      this.natLancamentoService.getNatLancamentos().subscribe({
+        next: (data) => {
+          this.natLancamentos = data.filter(nat => nat.codigo.startsWith('2.')); // Filtra os registros
+        },
+        error: (error) => {
+          console.error('Erro ao carregar naturezas de lançamento', error);
+        }
+      });
+    }    
 
   addFornecedor() {
     if (window.confirm('Confirma a inclusão do novo fornecedor?')) {
