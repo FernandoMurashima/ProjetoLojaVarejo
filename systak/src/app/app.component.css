@@ -1,0 +1,17 @@
+.navbar-nav .nav-item {
+    margin-right: 20px;
+  }
+  
+  .dropdown-menu .dropdown-item {
+    font-size: 16px;
+  }
+  
+  .banner {
+    background-color: #343a40;  /* Dark background similar to navbar for consistency */
+    color: #ffffff;            /* White text color */
+    text-align: center;        /* Center the text */
+    padding: 10px 0;           /* Add some padding for spacing */
+    font-size: 24px;           /* Larger font size for visibility */
+    font-weight: bold;         /* Make the font bold */
+    border-bottom: 2px solid #666; /* Optional: adds a subtle border for a distinct look */
+  }

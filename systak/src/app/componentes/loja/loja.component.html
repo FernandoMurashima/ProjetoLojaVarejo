@@ -1,0 +1,403 @@
+<div class="container mt-3">
+  <div class="op01" *ngIf="!action">
+    <div class="banner1">Lojas</div>
+    <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Nova Loja</button>
+    <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar Lojas</button>
+    <button class="btn btn-dark action-button" (click)="setAction('editar')">Editar Loja</button>
+    <button class="btn btn-dark action-button" (click)="setAction('excluir')">Excluir Loja</button>
+    <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+  </div>
+
+<!-- Inicio do cadastro -->
+<div *ngIf="action === 'cadastrar'">
+  <div class="banner">CADASTRO DE LOJA</div>
+  <form #lojaForm="ngForm" (ngSubmit)="addLoja()">
+    <div class="principal">
+      <div class="field-group">
+        <div class="input-item" id="nome-box">
+          <label for="nome">Nome:</label>
+          <input class="input-caixa" type="text" id="nome" name="nome" [(ngModel)]="loja.nome_loja" #nome="ngModel" required maxlength="50">
+        </div>
+        <div class="input-item" id="apelido-box">
+          <label for="apelido">Apelido:</label>
+          <input type="text" id="apelido" name="apelido" [(ngModel)]="loja.Apelido_loja" #apelido="ngModel" maxlength="20">
+        </div>
+      </div>
+
+      <div class="field-group5">
+        <div class="input-item" id="cnpj-box">
+          <label for="cnpj">CNPJ:</label>
+          <input type="text" id="cnpj" name="cnpj" [(ngModel)]="loja.cnpj" appCnpjValidator required maxlength="18">
+          <div *ngIf="lojaForm.controls['cnpj'] && lojaForm.controls['cnpj'].errors && lojaForm.controls['cnpj'].errors['invalidCnpj']" class="text-danger">CNPJ inválido!</div>
+        </div>
+        <div class="input-item" id="data-abertura-box">
+          <label for="data_abertura">Data de Abertura:</label>
+          <input type="date" id="data_abertura" name="data_abertura" [(ngModel)]="loja.DataAbertura" #dataAbertura="ngModel">
+        </div>
+        <div class="input-item" id="estoque-negativo-box">
+          <label for="estoque_negativo">Estoque Negativo:</label>
+            <select id="estoque-negativo" name="estoque-negativo" [(ngModel)]="loja.EstoqueNegativo" #estoqueNegativo="ngModel">
+              <option value="Sim">Sim</option>
+              <option value="Nao">Não</option>
+            </select>
+        </div>
+        <div class="input-item" id="rede-box">
+          <label for="rede">Rede:</label>
+          <select id="rede" name="rede" [(ngModel)]="loja.Rede" #rede="ngModel">
+            <option value="Sim">Sim</option>
+            <option value="Nao">Não</option>
+          </select>
+        </div>
+        <div class="input-item" id="matriz-box">
+          <label for="matriz">Matriz:</label>
+          <select id="matriz" name="matriz" [(ngModel)]="loja.Matriz" #matriz="ngModel">
+            <option value="Sim">Sim</option>
+            <option value="Nao">Não</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group2">
+        <div class="input-item" id="tipo-box">
+          <label for="tipo_logradouro">Tipo:</label>
+          <select id="tipo_logradouro" name="tipo_logradouro" [(ngModel)]="loja.Logradouro" #tipoLogradouro="ngModel">
+            <option value="Rua">Rua</option>
+            <option value="Avenida">Avenida</option>
+            <option value="Praça">Praça</option>
+            <option value="Travessa">Travessa</option>
+            <option value="Beco">Beco</option>
+            <option value="Alameda">Alameda</option>
+          </select>
+        </div>
+        <div class="input-item" id="endereco-box">
+          <label for="endereco">Endereço:</label>
+          <input type="text" id="endereco" name="endereco" [(ngModel)]="loja.Endereco" #endereco="ngModel" maxlength="50">
+        </div>
+        <div class="input-item" id="numero-box">
+          <label for="numero">Número:</label>
+          <input type="text" id="numero" name="numero" [(ngModel)]="loja.numero" #numero="ngModel" maxlength="10">
+        </div>
+      </div>
+
+      <div class="input-item" id="complemento-box">
+        <label for="complemento">Complemento:</label>
+        <input type="text" id="complemento" name="complemento" [(ngModel)]="loja.Complemento" #complemento="ngModel" maxlength="100">
+      </div>
+
+      <div class="field-group3">
+        <div class="input-item" id="cidade-box">
+          <label for="cidade">Cidade:</label>
+          <input type="text" id="cidade" name="cidade" [(ngModel)]="loja.Cidade" #cidade="ngModel" maxlength="50">
+        </div>
+        <div class="input-item" id="bairro-box">
+          <label for="bairro">Bairro:</label>
+          <input type="text" id="bairro" name="bairro" [(ngModel)]="loja.Bairro" #bairro="ngModel" maxlength="30">
+        </div>
+        <div class="input-item" id="cep-box">
+          <label for="cep">CEP:</label>
+          <input type="text" id="cep" name="cep" [(ngModel)]="loja.Cep" #cep="ngModel" maxlength="10">
+        </div>
+      </div>
+
+      <div class="field-group4">
+        <div class="input-item" id="telefone1-box">
+          <label for="telefone1">Telefone 1:</label>
+          <input type="text" id="telefone1" name="telefone1" [(ngModel)]="loja.Telefone1" #telefone1="ngModel" maxlength="15">
+        </div>
+        <div class="input-item" id="telefone2-box">
+          <label for="telefone2">Telefone 2:</label>
+          <input type="text" id="telefone2" name="telefone2" [(ngModel)]="loja.Telefone2" #telefone2="ngModel" maxlength="15">
+        </div>
+        <div class="input-item" id="email-box">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" [(ngModel)]="loja.email" #email="ngModel" required email maxlength="50">
+        </div>
+        <div class="input-item" id="conta-contabil-box">
+          <label for="conta-contabil">Conta Contábil:</label>
+          <input type="text" id="conta-contabil" name="conta-contabil" [(ngModel)]="loja.ContaContabil" #contaContabil="ngModel" maxlength="50">
+        </div>
+      </div>
+
+      <div id="success-message" *ngIf="successMessage">Loja adicionada com sucesso!</div>
+    </div>
+
+    <div class="btn01">
+      <button type="submit" class="btn btn-primary" [disabled]="lojaForm.controls['cnpj'] && lojaForm.controls['cnpj'].errors && lojaForm.controls['cnpj'].errors['invalidCnpj']">Salvar</button>
+      <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+    </div>
+  </form>
+</div>
+<!-- Fim do cadastro -->
+
+<!-- Inicio do consultar -->
+  <div *ngIf="action === 'consultar'">
+    <div *ngIf="!lojaSelecionada">
+      <label for="loja">Selecione uma Loja</label>
+      <select id="loja" (change)="onLojaChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione uma loja</option>
+        <option *ngFor="let loja of lojas" [value]="loja.Idloja">{{ loja.nome_loja }} {{ loja.Apelido_loja }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="lojaSelecionada">
+      <div class="banner">CONSULTA DE LOJA</div>
+      <form>
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="nome-box">
+              <label for="nome">Nome:</label>
+              <input class="input-caixa" type="text" id="nome" name="nome" [(ngModel)]="lojaSelecionada.nome_loja" #nome="ngModel" disabled>
+            </div>
+            <div class="input-item" id="apelido-box">
+              <label for="apelido">Apelido:</label>
+              <input type="text" id="apelido" name="apelido" [(ngModel)]="lojaSelecionada.Apelido_loja" #apelido="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="field-group5">
+            <div class="input-item" id="cnpj-box">
+              <label for="cnpj">CNPJ:</label>
+              <input type="text" id="cnpj" name="cnpj" [(ngModel)]="lojaSelecionada.cnpj" #cnpj="ngModel" disabled>
+            </div>
+            <div class="input-item" id="data-abertura-box">
+              <label for="data_abertura">Data de Abertura:</label>
+              <input type="date" id="data_abertura" name="data_abertura" [(ngModel)]="lojaSelecionada.DataAbertura" #dataAbertura="ngModel" disabled>
+            </div>
+            <div class="input-item" id="estoque-negativo-box">
+              <label for="estoque_negativo">Estoque Negativo:</label>
+              <input type="text" id="estoque_negativo" name="estoque_negativo" [(ngModel)]="lojaSelecionada.EstoqueNegativo" #estoqueNegativo="ngModel" disabled>
+            </div>
+            <div class="input-item" id="rede-box">
+              <label for="rede">Rede:</label>
+              <input type="text" id="rede" name="rede" [(ngModel)]="lojaSelecionada.Rede" #rede="ngModel" disabled>
+            </div>
+            <div class="input-item" id="matriz-box">
+              <label for="matriz">Matriz:</label>
+              <input type="text" id="matriz" name="matriz" [(ngModel)]="lojaSelecionada.Matriz" #matriz="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="field-group2">
+            <div class="input-item" id="tipo-box">
+              <label for="tipo_logradouro">Tipo:</label>
+              <select id="tipo_logradouro" name="tipo_logradouro" [(ngModel)]="lojaSelecionada.Logradouro" #tipoLogradouro="ngModel" disabled>
+                <option value="Rua">Rua</option>
+                <option value="Avenida">Avenida</option>
+                <option value="Praça">Praça</option>
+                <option value="Travessa">Travessa</option>
+                <option value="Beco">Beco</option>
+                <option value="Alameda">Alameda</option>
+              </select>
+            </div>
+            <div class="input-item" id="endereco-box">
+              <label for="endereco">Endereço:</label>
+              <input type="text" id="endereco" name="endereco" [(ngModel)]="lojaSelecionada.Endereco" #endereco="ngModel" disabled>
+            </div>
+            <div class="input-item" id="numero-box">
+              <label for="numero">Número:</label>
+              <input type="text" id="numero" name="numero" [(ngModel)]="lojaSelecionada.numero" #numero="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="input-item" id="complemento-box">
+            <label for="complemento">Complemento:</label>
+            <input type="text" id="complemento" name="complemento" [(ngModel)]="lojaSelecionada.Complemento" #complemento="ngModel" disabled>
+          </div>
+
+          <div class="field-group3">
+            <div class="input-item" id="cidade-box">
+              <label for="cidade">Cidade:</label>
+              <input type="text" id="cidade" name="cidade" [(ngModel)]="lojaSelecionada.Cidade" #cidade="ngModel" disabled>
+            </div>
+            <div class="input-item" id="bairro-box">
+              <label for="bairro">Bairro:</label>
+              <input type="text" id="bairro" name="bairro" [(ngModel)]="lojaSelecionada.Bairro" #bairro="ngModel" disabled>
+            </div>
+            <div class="input-item" id="cep-box">
+              <label for="cep">CEP:</label>
+              <input type="text" id="cep" name="cep" [(ngModel)]="lojaSelecionada.Cep" #cep="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="field-group4">
+            <div class="input-item" id="telefone1-box">
+              <label for="telefone1">Telefone 1:</label>
+              <input type="text" id="telefone1" name="telefone1" [(ngModel)]="lojaSelecionada.Telefone1" #telefone1="ngModel" disabled>
+            </div>
+            <div class="input-item" id="telefone2-box">
+              <label for="telefone2">Telefone 2:</label>
+              <input type="text" id="telefone2" name="telefone2" [(ngModel)]="lojaSelecionada.Telefone2" #telefone2="ngModel" disabled>
+            </div>
+            <div class="input-item" id="email-box">
+              <label for="email">Email:</label>
+              <input type="email" id="email" name="email" [(ngModel)]="lojaSelecionada.email" #email="ngModel" disabled>
+            </div>
+            <div class="input-item" id="conta-contabil-box">
+              <label for="conta-contabil">Conta Contábil:</label>
+              <input type="text" id="conta-contabil" name="conta-contabil" [(ngModel)]="lojaSelecionada.ContaContabil" #contaContabil="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="btn01">
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Fim do consultar -->
+
+  <!-- Inicio do Editar -->
+  <div *ngIf="action === 'editar'">
+    <div *ngIf="!lojaSelecionada">
+      <label for="loja">Selecione uma Loja</label>
+      <select id="loja" (change)="onLojaChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione uma loja</option>
+        <option *ngFor="let loja of lojas" [value]="loja.Idloja">{{ loja.nome_loja }} {{ loja.Apelido_loja }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="lojaSelecionada">
+      <div class="banner">ALTERAÇÃO DE LOJA</div>
+      <form #lojaForm="ngForm" (ngSubmit)="updateLoja()">
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="nome-box">
+              <label for="nome">Nome:</label>
+              <input class="input-caixa" type="text" id="nome" name="nome" [(ngModel)]="loja.nome_loja" #nome="ngModel" required maxlength="50">
+            </div>
+            <div class="input-item" id="apelido-box">
+              <label for="apelido">Apelido:</label>
+              <input type="text" id="apelido" name="apelido" [(ngModel)]="loja.Apelido_loja" #apelido="ngModel" maxlength="20">
+            </div>
+          </div>
+
+          <div class="field-group5">
+            <div class="input-item" id="cnpj-box">
+              <label for="cnpj">CNPJ:</label>
+              <input type="text" id="cnpj" name="cnpj" [(ngModel)]="loja.cnpj" appCnpjValidator required maxlength="18">
+              <div *ngIf="lojaForm.controls['cnpj'] && lojaForm.controls['cnpj'].errors && lojaForm.controls['cnpj'].errors['invalidCnpj']" class="text-danger">CNPJ inválido!</div>
+            </div>
+            <div class="input-item" id="data-abertura-box">
+              <label for="data_abertura">Data de Abertura:</label>
+              <input type="date" id="data_abertura" name="data_abertura" [(ngModel)]="loja.DataAbertura" #dataAbertura="ngModel">
+            </div>
+            <div class="input-item" id="estoque-negativo-box">
+              <label for="estoque_negativo">Estoque Negativo:</label>
+              <select id="estoque-negativo" name="estoque-negativo" [(ngModel)]="loja.EstoqueNegativo" #estoqueNegativo="ngModel">
+                <option value="Sim">Sim</option>
+                <option value="Nao">Não</option>
+              </select>
+            </div>
+            <div class="input-item" id="rede-box">
+              <label for="rede">Rede:</label>
+              <select id="rede" name="rede" [(ngModel)]="loja.Rede" #rede="ngModel">
+                <option value="Sim">Sim</option>
+                <option value="Nao">Não</option>
+              </select>
+            </div>
+            <div class="input-item" id="matriz-box">
+              <label for="matriz">Matriz:</label>
+              <select id="matriz" name="matriz" [(ngModel)]="loja.Matriz" #matriz="ngModel">
+                <option value="Sim">Sim</option>
+                <option value="Nao">Não</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-group2">
+            <div class="input-item" id="tipo-box">
+              <label for="tipo_logradouro">Tipo:</label>
+              <select id="tipo_logradouro" name="tipo_logradouro" [(ngModel)]="loja.Logradouro" #tipoLogradouro="ngModel">
+                <option value="Rua">Rua</option>
+                <option value="Avenida">Avenida</option>
+                <option value="Praça">Praça</option>
+                <option value="Travessa">Travessa</option>
+                <option value="Beco">Beco</option>
+                <option value="Alameda">Alameda</option>
+              </select>
+            </div>
+            <div class="input-item" id="endereco-box">
+              <label for="endereco">Endereço:</label>
+              <input type="text" id="endereco" name="endereco" [(ngModel)]="loja.Endereco" #endereco="ngModel" maxlength="50">
+            </div>
+            <div class="input-item" id="numero-box">
+              <label for="numero">Número:</label>
+              <input type="text" id="numero" name="numero" [(ngModel)]="loja.numero" #numero="ngModel" maxlength="10">
+            </div>
+          </div>
+
+          <div class="input-item" id="complemento-box">
+            <label for="complemento">Complemento:</label>
+            <input type="text" id="complemento" name="complemento" [(ngModel)]="loja.Complemento" #complemento="ngModel" maxlength="100">
+          </div>
+
+          <div class="field-group3">
+            <div class="input-item" id="cidade-box">
+              <label for="cidade">Cidade:</label>
+              <input type="text" id="cidade" name="cidade" [(ngModel)]="loja.Cidade" #cidade="ngModel" maxlength="50">
+            </div>
+            <div class="input-item" id="bairro-box">
+              <label for="bairro">Bairro:</label>
+              <input type="text" id="bairro" name="bairro" [(ngModel)]="loja.Bairro" #bairro="ngModel" maxlength="30">
+            </div>
+            <div class="input-item" id="cep-box">
+              <label for="cep">CEP:</label>
+              <input type="text" id="cep" name="cep" [(ngModel)]="loja.Cep" #cep="ngModel" maxlength="10">
+            </div>
+          </div>
+
+          <div class="field-group4">
+            <div class="input-item" id="telefone1-box">
+              <label for="telefone1">Telefone 1:</label>
+              <input type="text" id="telefone1" name="telefone1" [(ngModel)]="loja.Telefone1" #telefone1="ngModel" maxlength="15">
+            </div>
+            <div class="input-item" id="telefone2-box">
+              <label for="telefone2">Telefone 2:</label>
+              <input type="text" id="telefone2" name="telefone2" [(ngModel)]="loja.Telefone2" #telefone2="ngModel" maxlength="15">
+            </div>
+            <div class="input-item" id="email-box">
+              <label for="email">Email:</label>
+              <input type="email" id="email" name="email" [(ngModel)]="loja.email" #email="ngModel" required email maxlength="50">
+            </div>
+            <div class="input-item" id="conta-contabil-box">
+              <label for="conta-contabil">Conta Contábil:</label>
+              <input type="text" id="conta-contabil" name="conta-contabil" [(ngModel)]="loja.ContaContabil" #contaContabil="ngModel" maxlength="50">
+            </div>
+          </div>
+
+          <div id="success-message" *ngIf="successMessage">Loja atualizada com sucesso!</div>
+
+          <div class="btn01">
+            <button type="submit" class="btn btn-primary" [disabled]="lojaForm.controls['cnpj'] && lojaForm.controls['cnpj'].errors && lojaForm.controls['cnpj'].errors['invalidCnpj']">Salvar</button>
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Fim do Editar -->
+  
+  <!-- Inicio do Excluir -->
+  <div *ngIf="action === 'excluir'">
+    <h2>Excluir Loja</h2>
+    <div *ngIf="lojaSelecionada">
+      <p>Tem certeza que deseja excluir a loja {{ lojaSelecionada.nome_loja }} {{ lojaSelecionada.Apelido_loja }}?</p>
+      <button type="button" class="btn btn-danger" (click)="deleteLoja()">Excluir</button>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+    </div>
+    <div *ngIf="!lojaSelecionada">
+      <label for="loja">Selecione uma Loja</label>
+      <select id="loja" (change)="onLojaChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione uma loja</option>
+        <option *ngFor="let loja of lojas" [value]="loja.Idloja">{{ loja.nome_loja }} {{ loja.Apelido_loja }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+  </div>
+  <!-- Fim do Excluir -->
+
+</div>

@@ -1,0 +1,66 @@
+.banner {
+ 
+    background-color: #343a40;  /* Dark background similar to navbar for consistency */
+    color: #ffffff;            /* White text color */
+    text-align: center;        /* Center the text */
+    padding: 10px 0;           /* Add some padding for spacing */
+    font-size: 24px;           /* Larger font size for visibility */
+    font-weight: bold;         /* Make the font bold */
+    border-bottom: 2px solid #666; /* Optional: adds a subtle border for a distinct look */
+    }
+
+    .nav-link-custom {
+        font-size: 18px; /* Increase the font size as needed */
+    }
+    
+    .dropdown-item {
+        font-size: 16px; /* Ensure this size is appropriate for your design */
+    }
+    
+    .navbar-nav .nav-item {
+        margin-right: 55px; /* Adiciona espaçamento entre as opções */
+    }
+    
+    .navbar-nav .nav-link {
+        font-size: 20px; /* Aumenta o tamanho da fonte */
+    }
+
+    /* src/styles.css ou src/app/index/index.component.css */
+  .dropdown-submenu {
+    position: relative;
+  }
+  
+  .dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+  }
+  
+  .dropdown-submenu:hover > .dropdown-menu {
+    display: block;
+  }
+  
+  .dropdown-submenu > a::after {
+    /* content: ">"; */
+    float: right;
+    margin-left: 5px;
+  } 
+  
+  /* src/styles.css ou src/app/index/index.component.css */
+.navbar-nav .nav-item .dropdown-submenu > a {
+  text-decoration: none; /* Remove a decoração de link */
+  color: #0c0c0c; /* Define a cor do texto para branco (ou ajuste conforme necessário) */
+  cursor: pointer; /* Muda o cursor para indicar que é clicável */
+}
+
+.navbar-nav .nav-item .dropdown-submenu > a:hover {
+  color: #ccc; /* Altera a cor do texto quando o mouse está sobre o item */
+}
+
+.dropdown-submenu .dropdown-menu a {
+  color: #000; /* Define a cor do texto dos subitens do menu */
+}
+
+.dropdown-submenu .dropdown-menu a:hover {
+  background-color: #f8f9fa; /* Define o fundo ao passar o mouse sobre o subitem */
+}

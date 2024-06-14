@@ -1,0 +1,393 @@
+<div class="container mt-3">
+  <div class="op01" *ngIf="!action">
+    <div class="banner1">Fornecedores</div>
+    <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Novo Fornecedor</button>
+    <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar Fornecedores</button>
+    <button class="btn btn-dark action-button" (click)="setAction('editar')">Editar Fornecedor</button>
+    <button class="btn btn-dark action-button" (click)="setAction('excluir')">Excluir Fornecedor</button>
+    <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+  </div>
+
+  <!-- Inicio do cadastro -->
+  <div *ngIf="action === 'cadastrar'">
+    <div class="banner">CADASTRO DE FORNECEDOR</div>
+    <form #fornecedorForm="ngForm" (ngSubmit)="addFornecedor()">
+      <div class="principal">
+        <div class="field-group">
+          <div class="input-item" id="nome-box">
+            <label for="nome">Nome:</label>
+            <input class="input-caixa" type="text" id="nome" name="nome" [(ngModel)]="fornecedor.Nome_fornecedor" #nome="ngModel" required maxlength="50">
+          </div>
+          <div class="input-item" id="apelido-box">
+            <label for="apelido">Apelido:</label>
+            <input type="text" id="apelido" name="apelido" [(ngModel)]="fornecedor.Apelido" #apelido="ngModel" maxlength="18">
+          </div>
+        </div>
+
+        <div class="field-group5">
+          <div class="input-item" id="cnpj-box">
+            <label for="cnpj">CNPJ:</label>
+            <input type="text" id="cnpj" name="cnpj" [(ngModel)]="fornecedor.Cnpj" appCnpjValidator required maxlength="18">
+            <div *ngIf="fornecedorForm.controls['cnpj'] && fornecedorForm.controls['cnpj'].errors && fornecedorForm.controls['cnpj'].errors['invalidCnpj']" class="text-danger">CNPJ inválido!</div>
+          </div>
+
+          <div class="input-item" id="categoria-box">
+            <label for="categoria">Categoria:</label>
+            <select id="categoria" name="categoria" [(ngModel)]="fornecedor.Categoria" #categoria="ngModel">
+              <option value="Materia Prima">Materia Prima</option>
+              <option value="Embalagem">Embalagem</option>
+              <option value="Serviços">Serviços</option>
+              <option value="Produtos">Produtos</option>
+              <option value="Energia">Energia</option>
+              <option value="Telefonia">Telefonia</option>
+            </select>
+          </div>
+        
+        </div>
+
+        <div class="field-group2">
+        
+          <div class="input-item" id="logradouro-box">
+            <label for="logradouro">Logradouro:</label>
+            <select id="logradouro" name="logradouro" [(ngModel)]="fornecedor.Logradouro" #logradouro="ngModel">
+              <option value="Rua">Rua</option>
+              <option value="Avenida">Avenida</option>
+              <option value="Praça">Praça</option>
+              <option value="Travessa">Travessa</option>
+              <option value="Beco">Beco</option>
+              <option value="Alameda">Alameda</option>
+            </select>
+          </div>
+          <div class="input-item" id="endereco-box">
+            <label for="endereco">Endereço:</label>
+            <input type="text" id="endereco" name="endereco" [(ngModel)]="fornecedor.Endereco" #endereco="ngModel" maxlength="50">
+          </div>
+          <div class="input-item" id="numero-box">
+            <label for="numero">Número:</label>
+            <input type="text" id="numero" name="numero" [(ngModel)]="fornecedor.numero" #numero="ngModel" maxlength="10">
+          </div>
+        </div>
+
+        <div class="field-group22">
+            <div class="input-item" id="complemento-box">
+              <label for="complemento">Complemento:</label>
+              <input type="text" id="complemento" name="complemento" [(ngModel)]="fornecedor.Complemento" #complemento="ngModel" maxlength="100">
+            </div>
+        
+            <div class="input-item" id="cep-box">
+              <label for="cep">CEP:</label>
+              <input type="text" id="cep" name="cep" [(ngModel)]="fornecedor.Cep" #cep="ngModel" maxlength="10">
+            </div>
+        
+          </div>
+
+        <div class="field-group3">
+          <div class="input-item" id="telefone1-box">
+            <label for="telefone1">Telefone 1:</label>
+            <input type="text" id="telefone1" name="telefone1" [(ngModel)]="fornecedor.Telefone1" #telefone1="ngModel" maxlength="15">
+          </div>
+
+          <div class="input-item" id="telefone2-box">
+            <label for="telefone2">Telefone 2:</label>
+            <input type="text" id="telefone2" name="telefone2" [(ngModel)]="fornecedor.Telefone2" #telefone2="ngModel" maxlength="15">
+          </div>
+          
+          <div class="input-item" id="email-box">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" [(ngModel)]="fornecedor.email" #email="ngModel" required email maxlength="50">
+          </div>
+        </div>
+        
+        <div class="field-group333">
+
+          <div class="input-item" id="cidade-box">
+            <label for="cidade">Cidade:</label>
+            <input type="text" id="cidade" name="cidade" [(ngModel)]="fornecedor.Cidade" #cidade="ngModel" maxlength="50">
+          </div>
+          
+          <div class="input-item" id="bairro-box">
+            <label for="bairro">Bairro:</label>
+            <input type="text" id="bairro" name="bairro" [(ngModel)]="fornecedor.Bairro" #bairro="ngModel" maxlength="30">
+          </div>
+          
+        </div>
+
+        <div id="success-message" *ngIf="successMessage">Fornecedor adicionado com sucesso!</div>
+      </div>
+
+      <div class="btn01">
+        <button type="submit" class="btn btn-primary" [disabled]="fornecedorForm.controls['cnpj'] && fornecedorForm.controls['cnpj'].errors && fornecedorForm.controls['cnpj'].errors['invalidCnpj']">Salvar</button>
+        <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+  <!-- Fim do cadastro -->
+
+  <!-- Inicio do consultar -->
+  <div *ngIf="action === 'consultar'">
+    <div *ngIf="!fornecedorSelecionado">
+      <label for="fornecedor">Selecione um Fornecedor</label>
+      <select id="fornecedor" (change)="onFornecedorChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione um fornecedor</option>
+        <option *ngFor="let fornecedor of fornecedores" [value]="fornecedor.Idfornecedor">{{ fornecedor.Nome_fornecedor }} {{ fornecedor.Apelido }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="fornecedorSelecionado">
+      <div class="banner">CONSULTA DE FORNECEDOR</div>
+      <form>
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="nome-box">
+              <label for="nome">Nome:</label>
+              <input class="input-caixa" type="text" id="nome" name="nome" [(ngModel)]="fornecedorSelecionado.Nome_fornecedor" #nome="ngModel" disabled>
+            </div>
+            <div class="input-item" id="apelido-box">
+              <label for="apelido">Apelido:</label>
+              <input type="text" id="apelido" name="apelido" [(ngModel)]="fornecedorSelecionado.Apelido" #apelido="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="field-group5">
+            <div class="input-item" id="cnpj-box">
+              <label for="cnpj">CNPJ:</label>
+              <input type="text" id="cnpj" name="cnpj" [(ngModel)]="fornecedorSelecionado.Cnpj" #cnpj="ngModel" disabled>
+            </div>
+
+            <div class="input-item" id="categoria-box">
+              <label for="categoria">Categoria:</label>
+              <input type="text" id="categoria" name="categoria" [(ngModel)]="fornecedorSelecionado.Categoria" #categoria="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="field-group2">
+            
+            <div class="input-item" id="logradouro-box">
+              <label for="logradouro">Logradouro:</label>
+              <select id="logradouro" name="logradouro" [(ngModel)]="fornecedorSelecionado.Logradouro" #logradouro="ngModel" disabled>
+                <option value="Rua">Rua</option>
+                <option value="Avenida">Avenida</option>
+                <option value="Praça">Praça</option>
+                <option value="Travessa">Travessa</option>
+                <option value="Beco">Beco</option>
+                <option value="Alameda">Alameda</option>
+              </select>
+            </div>
+
+            <div class="input-item" id="endereco-box">
+              <label for="endereco">Endereço:</label>
+              <input type="text" id="endereco" name="endereco" [(ngModel)]="fornecedorSelecionado.Endereco" #endereco="ngModel" disabled>
+            </div>
+            
+            <div class="input-item" id="numero-box">
+              <label for="numero">Número:</label>
+              <input type="text" id="numero" name="numero" [(ngModel)]="fornecedorSelecionado.numero" #numero="ngModel" disabled>
+            </div>
+          
+          </div>  
+            
+          <div class="field-group22">
+              <div class="input-item" id="complemento-box">
+                <label for="complemento">Complemento:</label>
+                <input type="text" id="complemento" name="complemento" [(ngModel)]="fornecedorSelecionado.Complemento" #complemento="ngModel" disabled>
+              </div>
+              
+              <div class="input-item" id="cep-box">
+                <label for="cep">CEP:</label>
+                <input type="text" id="cep" name="cep" [(ngModel)]="fornecedorSelecionado.Cep" #cep="ngModel" disabled>
+              </div>
+          
+            </div>
+          
+
+          <div class="field-group3">
+
+            <div class="input-item" id="telefone1-box">
+              <label for="telefone1">Telefone 1:</label>
+              <input type="text" id="telefone1" name="telefone1" [(ngModel)]="fornecedorSelecionado.Telefone1" #telefone1="ngModel" disabled>
+            </div>
+            <div class="input-item" id="telefone2-box">
+              <label for="telefone2">Telefone 2:</label>
+              <input type="text" id="telefone2" name="telefone2" [(ngModel)]="fornecedorSelecionado.Telefone2" #telefone2="ngModel" disabled>
+            </div>
+            <div class="input-item" id="email-box">
+              <label for="email">Email:</label>
+              <input type="email" id="email" name="email" [(ngModel)]="fornecedorSelecionado.email" #email="ngModel" disabled>
+            </div>
+          
+          </div>
+
+          <div class="field-group333">
+
+            <div class="input-item" id="cidade-box">
+              <label for="cidade">Cidade:</label>
+              <input type="text" id="cidade" name="cidade" [(ngModel)]="fornecedorSelecionado.Cidade" #cidade="ngModel" disabled>
+            </div>
+
+            <div class="input-item" id="bairro-box">
+              <label for="bairro">Bairro:</label>
+              <input type="text" id="bairro" name="bairro" [(ngModel)]="fornecedorSelecionado.Bairro" #bairro="ngModel" disabled>
+            </div>
+
+          </div>
+
+          <div class="btn01">
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Fim do consultar -->
+
+  <!-- Inicio do Editar -->
+  <div *ngIf="action === 'editar'">
+    <div *ngIf="!fornecedorSelecionado">
+      <label for="fornecedor">Selecione um Fornecedor</label>
+      <select id="fornecedor" (change)="onFornecedorChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione um fornecedor</option>
+        <option *ngFor="let fornecedor of fornecedores" [value]="fornecedor.Idfornecedor">{{ fornecedor.Nome_fornecedor }} {{ fornecedor.Apelido }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="fornecedorSelecionado">
+      <div class="banner">EDIÇÂO DE FORNECEDOR</div>
+      <form #fornecedorForm="ngForm" (ngSubmit)="updateFornecedor()">
+
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="nome-box">
+              <label for="nome">Nome:</label>
+              <input class="input-caixa" type="text" id="nome" name="nome" [(ngModel)]="fornecedor.Nome_fornecedor" #nome="ngModel" required maxlength="50">
+            </div>
+            <div class="input-item" id="apelido-box">
+              <label for="apelido">Apelido:</label>
+              <input type="text" id="apelido" name="apelido" [(ngModel)]="fornecedor.Apelido" #apelido="ngModel" maxlength="18">
+            </div>
+          </div>
+  
+          <div class="field-group5">
+            <div class="input-item" id="cnpj-box">
+              <label for="cnpj">CNPJ:</label>
+              <input type="text" id="cnpj" name="cnpj" [(ngModel)]="fornecedor.Cnpj" appCnpjValidator required maxlength="18">
+              <div *ngIf="fornecedorForm.controls['cnpj'] && fornecedorForm.controls['cnpj'].errors && fornecedorForm.controls['cnpj'].errors['invalidCnpj']" class="text-danger">CNPJ inválido!</div>
+            </div>
+  
+            <div class="input-item" id="categoria-box">
+              <label for="categoria">Categoria:</label>
+              <select id="categoria" name="categoria" [(ngModel)]="fornecedor.Categoria" #categoria="ngModel">
+                <option value="Materia Prima">Materia Prima</option>
+                <option value="Embalagem">Embalagem</option>
+                <option value="Serviços">Serviços</option>
+                <option value="Produtos">Produtos</option>
+                <option value="Energia">Energia</option>
+                <option value="Telefonia">Telefonia</option>
+              </select>
+            </div>
+          
+          </div>
+  
+          <div class="field-group2">
+          
+            <div class="input-item" id="logradouro-box">
+              <label for="logradouro">Logradouro:</label>
+              <select id="logradouro" name="logradouro" [(ngModel)]="fornecedor.Logradouro" #logradouro="ngModel">
+                <option value="Rua">Rua</option>
+                <option value="Avenida">Avenida</option>
+                <option value="Praça">Praça</option>
+                <option value="Travessa">Travessa</option>
+                <option value="Beco">Beco</option>
+                <option value="Alameda">Alameda</option>
+              </select>
+            </div>
+            <div class="input-item" id="endereco-box">
+              <label for="endereco">Endereço:</label>
+              <input type="text" id="endereco" name="endereco" [(ngModel)]="fornecedor.Endereco" #endereco="ngModel" maxlength="50">
+            </div>
+            <div class="input-item" id="numero-box">
+              <label for="numero">Número:</label>
+              <input type="text" id="numero" name="numero" [(ngModel)]="fornecedor.numero" #numero="ngModel" maxlength="10">
+            </div>
+          </div>
+  
+          <div class="field-group22">
+              <div class="input-item" id="complemento-box">
+                <label for="complemento">Complemento:</label>
+                <input type="text" id="complemento" name="complemento" [(ngModel)]="fornecedor.Complemento" #complemento="ngModel" maxlength="100">
+              </div>
+          
+              <div class="input-item" id="cep-box">
+                <label for="cep">CEP:</label>
+                <input type="text" id="cep" name="cep" [(ngModel)]="fornecedor.Cep" #cep="ngModel" maxlength="10">
+              </div>
+          
+            </div>
+  
+          <div class="field-group3">
+            <div class="input-item" id="telefone1-box">
+              <label for="telefone1">Telefone 1:</label>
+              <input type="text" id="telefone1" name="telefone1" [(ngModel)]="fornecedor.Telefone1" #telefone1="ngModel" maxlength="15">
+            </div>
+  
+            <div class="input-item" id="telefone2-box">
+              <label for="telefone2">Telefone 2:</label>
+              <input type="text" id="telefone2" name="telefone2" [(ngModel)]="fornecedor.Telefone2" #telefone2="ngModel" maxlength="15">
+            </div>
+            
+            <div class="input-item" id="email-box">
+              <label for="email">Email:</label>
+              <input type="email" id="email" name="email" [(ngModel)]="fornecedor.email" #email="ngModel" required email maxlength="50">
+            </div>
+          </div>
+          
+          <div class="field-group333">
+  
+            <div class="input-item" id="cidade-box">
+              <label for="cidade">Cidade:</label>
+              <input type="text" id="cidade" name="cidade" [(ngModel)]="fornecedor.Cidade" #cidade="ngModel" maxlength="50">
+            </div>
+            
+            <div class="input-item" id="bairro-box">
+              <label for="bairro">Bairro:</label>
+              <input type="text" id="bairro" name="bairro" [(ngModel)]="fornecedor.Bairro" #bairro="ngModel" maxlength="30">
+            </div>
+            
+          </div>
+  
+          <div id="success-message" *ngIf="successMessage">Fornecedor adicionado com sucesso!</div>
+        </div>
+  
+        <div class="btn01">
+          <button type="submit" class="btn btn-primary" [disabled]="fornecedorForm.controls['cnpj'] && fornecedorForm.controls['cnpj'].errors && fornecedorForm.controls['cnpj'].errors['invalidCnpj']">Salvar</button>
+          <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+        </div>
+        
+      </form>
+   
+    </div>
+
+  </div>
+  <!-- Fim do Editar -->
+  
+  <!-- Inicio do Excluir -->
+  <div *ngIf="action === 'excluir'">
+    <h2>Excluir Fornecedor</h2>
+    <div *ngIf="fornecedorSelecionado">
+      <p>Tem certeza que deseja excluir o fornecedor {{ fornecedorSelecionado.Nome_fornecedor }} {{ fornecedorSelecionado.Apelido }}?</p>
+      <button type="button" class="btn btn-danger" (click)="deleteFornecedor()">Excluir</button>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+    </div>
+    <div *ngIf="!fornecedorSelecionado">
+      <label for="fornecedor">Selecione um Fornecedor</label>
+      <select id="fornecedor" (change)="onFornecedorChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione um fornecedor</option>
+        <option *ngFor="let fornecedor of fornecedores" [value]="fornecedor.Idfornecedor">{{ fornecedor.Nome_fornecedor }} {{ fornecedor.Apelido }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+  </div>
+  <!-- Fim do Excluir -->
+</div>

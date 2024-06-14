@@ -1,0 +1,223 @@
+<div class="container mt-3">
+  <div class="op01" *ngIf="!action">
+    <div class="banner1">Funcionários</div>
+    <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Novo Funcionário</button>
+    <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar Funcionários</button>
+    <button class="btn btn-dark action-button" (click)="setAction('editar')">Editar Funcionário</button>
+    <button class="btn btn-dark action-button" (click)="setAction('excluir')">Excluir Funcionário</button>
+    <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+  </div>
+
+  <!-- Cadastro -->
+  <div *ngIf="action === 'cadastrar'">
+    <div class="banner">CADASTRO DE FUNCIONÁRIO</div>
+    <form #funcionarioForm="ngForm" (ngSubmit)="addFuncionario()">
+      <div class="principal">
+        <div class="field-group">
+          <div class="input-item" id="nome-box">
+            <label for="nome">Nome:</label>
+            <input class="input-caixa" type="text" id="nome" name="nome" [(ngModel)]="funcionario.nomefuncionario" #nome="ngModel" required maxlength="50">
+          </div>
+          <div class="input-item" id="apelido-box">
+            <label for="apelido">Apelido:</label>
+            <input type="text" id="apelido" name="apelido" [(ngModel)]="funcionario.apelido" #apelido="ngModel" maxlength="20">
+          </div>
+        </div>
+
+        <div class="field-group5">
+          <div class="input-item" id="cpf-box">
+            <label for="cpf">CPF:</label>
+            <input type="text" id="cpf" name="cpf" [(ngModel)]="funcionario.cpf" appCpfValidator required maxlength="15">
+            <div *ngIf="funcionarioForm.controls['cpf'] && funcionarioForm.controls['cpf'].errors && funcionarioForm.controls['cpf'].errors['invalidCpf']" class="text-danger">CPF inválido!</div>
+          </div>
+          <div class="input-item" id="inicio-box">
+            <label for="inicio">Data de Início:</label>
+            <input type="date" id="inicio" name="inicio" [(ngModel)]="funcionario.inicio" #inicio="ngModel">
+          </div>
+          <div class="input-item" id="fim-box">
+            <label for="fim">Data de Fim:</label>
+            <input type="date" id="fim" name="fim" [(ngModel)]="funcionario.fim" #fim="ngModel">
+          </div>
+          <div class="input-item" id="categoria-box">
+            <label for="categoria">Categoria:</label>
+            <select id="categoria" name="categoria" [(ngModel)]="funcionario.categoria" #categoria="ngModel" required>
+              <option value="vendedor">Vendedor</option>
+              <option value="gerente">Gerente</option>
+              <option value="auxiliar">Auxiliar</option>
+              <option value="assistente">Assistente</option>
+              <option value="supervisor">Supervisor</option>
+              <option value="diretoria">Diretoria</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-item" id="idloja-box">
+          <label for="idloja">Loja:</label>
+          <select id="idloja" name="idloja" [(ngModel)]="funcionario.idloja" #idloja="ngModel" required>
+            <option *ngFor="let loja of lojas" [value]="loja.Idloja">{{ loja.nome_loja }}</option>
+          </select>
+        </div>
+
+        <div id="success-message" *ngIf="successMessage">{{ successMessage }}</div>
+        <div id="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+      </div>
+
+      <div class="btn01">
+        <button type="submit" class="btn btn-primary" [disabled]="funcionarioForm.controls['cpf'] && funcionarioForm.controls['cpf'].errors && funcionarioForm.controls['cpf'].errors['invalidCpf']">Salvar</button>
+        <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+  <!-- Fim do cadastro -->
+
+  <!-- Consultar -->
+  <div *ngIf="action === 'consultar'">
+    <div *ngIf="!funcionarioSelecionado">
+      <label for="funcionario">Selecione um Funcionário</label>
+      <select id="funcionario" (change)="onFuncionarioChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione um funcionário</option>
+        <option *ngFor="let funcionario of funcionarios" [value]="funcionario.Idfuncionario">{{ funcionario.nomefuncionario }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="funcionarioSelecionado">
+      <div class="banner">CONSULTA DE FUNCIONÁRIO</div>
+      <form>
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="nome-box">
+              <label for="nome">Nome:</label>
+              <input class="input-caixa" type="text" id="nome" name="nome" [(ngModel)]="funcionarioSelecionado.nomefuncionario" #nome="ngModel" disabled>
+            </div>
+            <div class="input-item" id="apelido-box">
+              <label for="apelido">Apelido:</label>
+              <input type="text" id="apelido" name="apelido" [(ngModel)]="funcionarioSelecionado.apelido" #apelido="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="field-group5">
+            <div class="input-item" id="cpf-box">
+              <label for="cpf">CPF:</label>
+              <input type="text" id="cpf" name="cpf" [(ngModel)]="funcionarioSelecionado.cpf" #cpf="ngModel" disabled>
+            </div>
+            <div class="input-item" id="inicio-box">
+              <label for="inicio">Data de Início:</label>
+              <input type="date" id="inicio" name="inicio" [(ngModel)]="funcionarioSelecionado.inicio" #inicio="ngModel" disabled>
+            </div>
+            <div class="input-item" id="fim-box">
+              <label for="fim">Data de Fim:</label>
+              <input type="date" id="fim" name="fim" [(ngModel)]="funcionarioSelecionado.fim" #fim="ngModel" disabled>
+            </div>
+            <div class="input-item" id="categoria-box">
+              <label for="categoria">Categoria:</label>
+              <input type="text" id="categoria" name="categoria" [(ngModel)]="funcionarioSelecionado.categoria" #categoria="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="input-item" id="idloja-box">
+            <label for="idloja">Loja:</label>
+            <input type="text" id="idloja" name="idloja" [(ngModel)]="funcionarioSelecionado.idloja" #idloja="ngModel" disabled>
+          </div>
+
+          <div class="btn01">
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Fim do consultar -->
+
+  <!-- Editar -->
+  <div *ngIf="action === 'editar'">
+    <div *ngIf="!funcionarioSelecionado">
+      <label for="funcionario">Selecione um Funcionário</label>
+      <select id="funcionario" (change)="onFuncionarioChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione um funcionário</option>
+        <option *ngFor="let funcionario of funcionarios" [value]="funcionario.Idfuncionario">{{ funcionario.nomefuncionario }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="funcionarioSelecionado">
+      <div class="banner">ALTERAÇÃO DE FUNCIONÁRIO</div>
+      <form #funcionarioForm="ngForm" (ngSubmit)="updateFuncionario()">
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="nome-box">
+              <label for="nome">Nome:</label>
+              <input class="input-caixa" type="text" id="nome" name="nome" [(ngModel)]="funcionario.nomefuncionario" #nome="ngModel" required maxlength="50">
+            </div>
+            <div class="input-item" id="apelido-box">
+              <label for="apelido">Apelido:</label>
+              <input type="text" id="apelido" name="apelido" [(ngModel)]="funcionario.apelido" #apelido="ngModel" maxlength="20">
+            </div>
+          </div>
+
+          <div class="field-group5">
+            <div class="input-item" id="cpf-box">
+              <label for="cpf">CPF:</label>
+              <input type="text" id="cpf" name="cpf" [(ngModel)]="funcionario.cpf" appCpfValidator required maxlength="15">
+              <div *ngIf="funcionarioForm.controls['cpf'] && funcionarioForm.controls['cpf'].errors && funcionarioForm.controls['cpf'].errors['invalidCpf']" class="text-danger">CPF inválido!</div>
+            </div>
+            <div class="input-item" id="inicio-box">
+              <label for="inicio">Data de Início:</label>
+              <input type="date" id="inicio" name="inicio" [(ngModel)]="funcionario.inicio" #inicio="ngModel">
+            </div>
+            <div class="input-item" id="fim-box">
+              <label for="fim">Data de Fim:</label>
+              <input type="date" id="fim" name="fim" [(ngModel)]="funcionario.fim" #fim="ngModel">
+            </div>
+            <div class="input-item" id="categoria-box">
+              <label for="categoria">Categoria:</label>
+              <select id="categoria" name="categoria" [(ngModel)]="funcionario.categoria" #categoria="ngModel" required>
+                <option value="vendedor">Vendedor</option>
+                <option value="gerente">Gerente</option>
+                <option value="auxiliar">Auxiliar</option>
+                <option value="assistente">Assistente</option>
+                <option value="supervisor">Supervisor</option>
+                <option value="diretoria">Diretoria</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-item" id="idloja-box">
+            <label for="idloja">Loja:</label>
+            <select id="idloja" name="idloja" [(ngModel)]="funcionario.idloja" #idloja="ngModel" required>
+              <option *ngFor="let loja of lojas" [value]="loja.Idloja">{{ loja.nome_loja }}</option>
+            </select>
+          </div>
+
+          <div id="success-message" *ngIf="successMessage">{{ successMessage }}</div>
+          <div id="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+        </div>
+
+        <div class="btn01">
+          <button type="submit" class="btn btn-primary" [disabled]="funcionarioForm.controls['cpf'] && funcionarioForm.controls['cpf'].errors && funcionarioForm.controls['cpf'].errors['invalidCpf']">Salvar</button>
+          <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Fim do editar -->
+
+  <!-- Excluir -->
+  <div *ngIf="action === 'excluir'">
+    <h2>Excluir Funcionário</h2>
+    <div *ngIf="funcionarioSelecionado">
+      <p>Tem certeza que deseja excluir o funcionário {{ funcionarioSelecionado.nomefuncionario }}?</p>
+      <button type="button" class="btn btn-danger" (click)="deleteFuncionario()">Excluir</button>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+    </div>
+    <div *ngIf="!funcionarioSelecionado">
+      <label for="funcionario">Selecione um Funcionário</label>
+      <select id="funcionario" (change)="onFuncionarioChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione um funcionário</option>
+        <option *ngFor="let funcionario of funcionarios" [value]="funcionario.Idfuncionario">{{ funcionario.nomefuncionario }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+  </div>
+  <!-- Fim do excluir -->
+</div>

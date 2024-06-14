@@ -1,0 +1,32 @@
+versoes instaladas: Angular CLI: 17.3.6
+Node: 20.13.1
+Package Manager: npm 10.5.2
+OS: win32 x64
+
+ng new systak
+cd systak
+
+ng add @angular/material
+
+npm install bootstrap
+
+npm install @ng-bootstrap/ng-bootstrap
+
+criar o diretorio enviroments com os dois arquivos: environment.prod.ts e environment.ts
+
+criar os diretorios service, model e componentes
+
+criar o arquivo auth.interceptor
+
+criar os servicos auth e auth-guard
+
+criar no diretorio dos componentes home, login, index
+
+no app.component.htm criar um menu de navegação com as opções 
+
+criar o componente cliente
+
+O erro do menu de navegação é necessario fazer os ajustes no angular.json
+
+
+

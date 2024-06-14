@@ -1,0 +1,8 @@
+.banner {
+    text-align: center;
+    margin-bottom: 20px; /* Adiciona um espaçamento na parte inferior do banner */
+}
+
+.banner img {
+    max-width: 100%; /* Garante que a imagem não ultrapasse a largura do contêiner */
+}
