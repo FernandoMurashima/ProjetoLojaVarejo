@@ -104,12 +104,14 @@
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" [(ngModel)]="cliente.email" #email="ngModel" required email maxlength="50">
           </div>
+
           <div class="input-item" id="conta-contabil-box">
             <label for="conta-contabil">Conta Contábil:</label>
             <select id="conta-contabil" name="conta-contabil" [(ngModel)]="cliente.ContaContabil" #contaContabil="ngModel">
-              <option *ngFor="let nat of natLancamentos" [value]="nat.id">{{ nat.descricao }}</option>
+              <option *ngFor="let nat of natLancamentos" [value]="nat.idnatureza">{{ nat.descricao }}</option>
             </select>
           </div>
+
         </div>
 
         <div id="success-message" *ngIf="successMessage">Cliente adicionado com sucesso!</div>
@@ -228,7 +230,7 @@
             <div class="input-item" id="conta-contabil-box">
               <label for="conta-contabil">Conta Contábil:</label>
               <select id="conta-contabil" name="conta-contabil" [(ngModel)]="clienteSelecionado.ContaContabil" #contaContabil="ngModel" disabled>
-                <option *ngFor="let nat of natLancamentos" [value]="nat.id">{{ nat.descricao }}</option>
+                <option *ngFor="let nat of natLancamentos" [value]="nat.idnatureza">{{ nat.descricao }}</option>
               </select>
             </div>
           </div>
@@ -350,7 +352,7 @@
             <div class="input-item" id="conta-contabil-box">
               <label for="conta-contabil">Conta Contábil:</label>
               <select id="conta-contabil" name="conta-contabil" [(ngModel)]="cliente.ContaContabil" #contaContabil="ngModel">
-                <option *ngFor="let nat of natLancamentos" [value]="nat.id">{{ nat.descricao }}</option>
+                <option *ngFor="let nat of natLancamentos" [value]="nat.idnatureza">{{ nat.descricao }}</option>
               </select>
             </div>
           </div>

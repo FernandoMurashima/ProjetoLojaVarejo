@@ -26,6 +26,7 @@ import { VendedorComponent } from './componentes/vendedor/vendedor.component';
 import { FuncionarioComponent } from './componentes/funcionario/funcionario.component';
 import { LojaComponent } from './componentes/loja/loja.component';
 import { UserComponent } from './componentes/user/user.component';
+import { NatLancamentoComponent } from './componentes/nat-lancamento/nat-lancamento.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { UserComponent } from './componentes/user/user.component';
     VendedorComponent,
     FuncionarioComponent,
     LojaComponent,
-    UserComponent
+    UserComponent,
+    NatLancamentoComponent
   ],
   
   imports: [

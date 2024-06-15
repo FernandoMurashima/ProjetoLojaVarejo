@@ -10,6 +10,7 @@
         <li class="nav-item">
           <a class="nav-link" routerLink="/home">Home</a>
         </li>
+
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Cadastro
@@ -23,6 +24,7 @@
             <li><a class="dropdown-item" routerLink="/cadastro/users">Usuarios</a></li>
           </ul>
         </li>
+        
         <li class="nav-item">
           <a class="nav-link" routerLink="/financeiro">Financeiro</a>
         </li>
@@ -32,9 +34,25 @@
         <li class="nav-item">
           <a class="nav-link" routerLink="/estoque">Estoque</a>
         </li>
+        
         <li class="nav-item">
           <a class="nav-link" routerLink="/relatorios">Relatórios</a>
         </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="configuradoresDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Configuradores
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="configuradoresDropdown">
+
+            <li><a class="dropdown-item" routerLink="/configuradores/natureza-lancamentos">Natureza</a></li>
+            <li><a class="dropdown-item" routerLink="/configuradores/cor">Cor</a></li>
+            <li><a class="dropdown-item" routerLink="/configuradores/tamanho">Tamanho</a></li>
+            
+          </ul>
+        </li>
+
+
         <li class="nav-item">
           <a class="nav-link" routerLink="/sair">Sair</a>
         </li>

@@ -10,6 +10,8 @@ import { VendedorComponent } from './componentes/vendedor/vendedor.component';
 import { FuncionarioComponent } from './componentes/funcionario/funcionario.component';
 import { LojaComponent } from './componentes/loja/loja.component';
 import { UserComponent } from './componentes/user/user.component'; 
+import { NatLancamentoComponent } from './componentes/nat-lancamento/nat-lancamento.component'; 
+
 
 export const DEFAULT_ROUTE = '/index';
 
@@ -28,6 +30,7 @@ const routes: Routes = [
   { path: 'venda', component: HomeComponent },
   { path: 'estoque', component: HomeComponent },
   { path: 'relatorios', component: HomeComponent },
+  { path: 'configuradores/natureza-lancamentos', component: NatLancamentoComponent, canActivate: [AuthGuardService] },
   { path: 'sair', component: LoginComponent }
 ];
 

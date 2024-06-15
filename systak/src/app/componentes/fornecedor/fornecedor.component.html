@@ -111,7 +111,7 @@
         <div class="input-item" id="conta-contabil-box">
           <label for="conta-contabil">Conta Contábil:</label>
           <select id="conta-contabil" name="conta-contabil" [(ngModel)]="fornecedor.ContaContabil" #contaContabil="ngModel">
-            <option *ngFor="let nat of natLancamentos" [value]="nat.id">{{ nat.descricao }}</option>
+            <option *ngFor="let nat of natLancamentos" [value]="nat.idnatureza">{{ nat.descricao }}</option>
           </select>
         </div>
 
@@ -242,7 +242,7 @@
           <div class="input-item" id="conta-contabil-box">
             <label for="conta-contabil">Conta Contábil:</label>
             <select id="conta-contabil" name="conta-contabil" [(ngModel)]="fornecedorSelecionado.ContaContabil" #contaContabil="ngModel" disabled>
-              <option *ngFor="let nat of natLancamentos" [value]="nat.id">{{ nat.descricao }}</option>
+              <option *ngFor="let nat of natLancamentos" [value]="nat.idnatureza">{{ nat.descricao }}</option>
             </select>
           </div>
 
@@ -392,7 +392,7 @@
           <div class="input-item" id="conta-contabil-box">
             <label for="conta-contabil">Conta Contábil:</label>
             <select id="conta-contabil" name="conta-contabil" [(ngModel)]="fornecedor.ContaContabil" #contaContabil="ngModel">
-              <option *ngFor="let nat of natLancamentos" [value]="nat.id">{{ nat.descricao }}</option>
+              <option *ngFor="let nat of natLancamentos" [value]="nat.idnatureza">{{ nat.descricao }}</option>
             </select>
           </div>
           

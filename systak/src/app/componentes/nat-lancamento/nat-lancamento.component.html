@@ -1,0 +1,194 @@
+<div class="container mt-3">
+  <div class="op01" *ngIf="!action">
+    <div class="banner1">Naturezas de Lançamento</div>
+    <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Natureza</button>
+    <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar Natureza</button>
+    <button class="btn btn-dark action-button" (click)="setAction('editar')">Editar Natureza</button>
+    <button class="btn btn-dark action-button" (click)="setAction('excluir')">Excluir Natureza</button>
+    <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+  </div>
+
+  <!-- Cadastro de Natureza de Lançamento -->
+  <div *ngIf="action === 'cadastrar'">
+    <div class="banner">CADASTRO DE NATUREZA DE LANÇAMENTO</div>
+    <form #natLancamentoForm="ngForm" (ngSubmit)="addNatLancamento()">
+      <div class="principal">
+        <div class="field-group">
+          <div class="input-item" id="codigo-box">
+            <label for="codigo">Código:</label>
+            <input class="input-caixa" type="text" id="codigo" name="codigo" [(ngModel)]="natLancamento.codigo" #codigo="ngModel" required maxlength="10">
+          </div>
+          <div class="input-item" id="descricao-box">
+            <label for="descricao">Descrição:</label>
+            <input type="text" id="descricao" name="descricao" [(ngModel)]="natLancamento.descricao" #descricao="ngModel" maxlength="255">
+          </div>
+        </div>
+
+        <div class="field-group5">
+          <div class="input-item" id="categoria-box">
+            <label for="categoria_principal">Categoria Principal:</label>
+            <input type="text" id="categoria_principal" name="categoria_principal" [(ngModel)]="natLancamento.categoria_principal" #categoriaPrincipal="ngModel" maxlength="50">
+          </div>
+          <div class="input-item" id="subcategoria-box">
+            <label for="subcategoria">Subcategoria:</label>
+            <input type="text" id="subcategoria" name="subcategoria" [(ngModel)]="natLancamento.subcategoria" #subcategoria="ngModel" maxlength="50">
+          </div>
+          <div class="input-item" id="tipo-box">
+            <label for="tipo">Tipo:</label>
+            <input type="text" id="tipo" name="tipo" [(ngModel)]="natLancamento.tipo" #tipo="ngModel" maxlength="20">
+          </div>
+          <div class="input-item" id="status-box">
+            <label for="status">Status:</label>
+            <input type="text" id="status" name="status" [(ngModel)]="natLancamento.status" #status="ngModel" maxlength="10">
+          </div>
+          <div class="input-item" id="tipo-natureza-box">
+            <label for="tipo_natureza">Tipo de Natureza:</label>
+            <input type="text" id="tipo_natureza" name="tipo_natureza" [(ngModel)]="natLancamento.tipo_natureza" #tipoNatureza="ngModel" maxlength="10">
+          </div>
+        </div>
+
+        <div id="success-message" *ngIf="successMessage">Natureza de lançamento adicionada com sucesso!</div>
+      </div>
+
+      <div class="btn01">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Consulta de Natureza de Lançamento -->
+  <div *ngIf="action === 'consultar'">
+    <div *ngIf="!natLancamentoSelecionado">
+      <label for="natureza">Selecione uma Natureza de Lançamento</label>
+      <select id="natureza" (change)="onNatLancamentoChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione uma natureza de lançamento</option>
+        <option *ngFor="let nat of natLancamentos" [value]="nat.idnatureza">{{ nat.descricao }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="natLancamentoSelecionado">
+      <div class="banner">CONSULTA DE NATUREZA DE LANÇAMENTO</div>
+      <form>
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="codigo-box">
+              <label for="codigo">Código:</label>
+              <input class="input-caixa" type="text" id="codigo" name="codigo" [(ngModel)]="natLancamentoSelecionado.codigo" #codigo="ngModel" disabled>
+            </div>
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input type="text" id="descricao" name="descricao" [(ngModel)]="natLancamentoSelecionado.descricao" #descricao="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="field-group5">
+            <div class="input-item" id="categoria-box">
+              <label for="categoria_principal">Categoria Principal:</label>
+              <input type="text" id="categoria_principal" name="categoria_principal" [(ngModel)]="natLancamentoSelecionado.categoria_principal" #categoriaPrincipal="ngModel" disabled>
+            </div>
+            <div class="input-item" id="subcategoria-box">
+              <label for="subcategoria">Subcategoria:</label>
+              <input type="text" id="subcategoria" name="subcategoria" [(ngModel)]="natLancamentoSelecionado.subcategoria" #subcategoria="ngModel" disabled>
+            </div>
+            <div class="input-item" id="tipo-box">
+              <label for="tipo">Tipo:</label>
+              <input type="text" id="tipo" name="tipo" [(ngModel)]="natLancamentoSelecionado.tipo" #tipo="ngModel" disabled>
+            </div>
+            <div class="input-item" id="status-box">
+              <label for="status">Status:</label>
+              <input type="text" id="status" name="status" [(ngModel)]="natLancamentoSelecionado.status" #status="ngModel" disabled>
+            </div>
+            <div class="input-item" id="tipo-natureza-box">
+              <label for="tipo_natureza">Tipo de Natureza:</label>
+              <input type="text" id="tipo_natureza" name="tipo_natureza" [(ngModel)]="natLancamentoSelecionado.tipo_natureza" #tipoNatureza="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="btn01">
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edição de Natureza de Lançamento -->
+  <div *ngIf="action === 'editar'">
+    <div *ngIf="!natLancamentoSelecionado">
+      <label for="natureza">Selecione uma Natureza de Lançamento</label>
+      <select id="natureza" (change)="onNatLancamentoChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione uma natureza de lançamento</option>
+        <option *ngFor="let nat of natLancamentos" [value]="nat.idnatureza">{{ nat.descricao }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="natLancamentoSelecionado">
+      <div class="banner">ALTERAÇÃO DE NATUREZA DE LANÇAMENTO</div>
+      <form #natLancamentoForm="ngForm" (ngSubmit)="updateNatLancamento()">
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="codigo-box">
+              <label for="codigo">Código:</label>
+              <input class="input-caixa" type="text" id="codigo" name="codigo" [(ngModel)]="natLancamento.codigo" #codigo="ngModel" required maxlength="10">
+            </div>
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input type="text" id="descricao" name="descricao" [(ngModel)]="natLancamento.descricao" #descricao="ngModel" maxlength="255">
+            </div>
+          </div>
+
+          <div class="field-group5">
+            <div class="input-item" id="categoria-box">
+              <label for="categoria_principal">Categoria Principal:</label>
+              <input type="text" id="categoria_principal" name="categoria_principal" [(ngModel)]="natLancamento.categoria_principal" #categoriaPrincipal="ngModel" maxlength="50">
+            </div>
+            <div class="input-item" id="subcategoria-box">
+              <label for="subcategoria">Subcategoria:</label>
+              <input type="text" id="subcategoria" name="subcategoria" [(ngModel)]="natLancamento.subcategoria" #subcategoria="ngModel" maxlength="50">
+            </div>
+            <div class="input-item" id="tipo-box">
+              <label for="tipo">Tipo:</label>
+              <input type="text" id="tipo" name="tipo" [(ngModel)]="natLancamento.tipo" #tipo="ngModel" maxlength="20">
+            </div>
+            <div class="input-item" id="status-box">
+              <label for="status">Status:</label>
+              <input type="text" id="status" name="status" [(ngModel)]="natLancamento.status" #status="ngModel" maxlength="10">
+            </div>
+            <div class="input-item" id="tipo-natureza-box">
+              <label for="tipo_natureza">Tipo de Natureza:</label>
+              <input type="text" id="tipo_natureza" name="tipo_natureza" [(ngModel)]="natLancamento.tipo_natureza" #tipoNatureza="ngModel" maxlength="10">
+            </div>
+          </div>
+
+          <div id="success-message" *ngIf="successMessage">Natureza de lançamento atualizada com sucesso!</div>
+
+          <div class="btn01">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Exclusão de Natureza de Lançamento -->
+  <div *ngIf="action === 'excluir'">
+    <h2>Excluir Natureza de Lançamento</h2>
+    <div *ngIf="natLancamentoSelecionado">
+      <p>Tem certeza que deseja excluir a natureza de lançamento {{ natLancamentoSelecionado.descricao }}?</p>
+      <button type="button" class="btn btn-danger" (click)="deleteNatLancamento()">Excluir</button>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+    </div>
+    <div *ngIf="!natLancamentoSelecionado">
+      <label for="natureza">Selecione uma Natureza de Lançamento</label>
+      <select id="natureza" (change)="onNatLancamentoChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione uma natureza de lançamento</option>
+        <option *ngFor="let nat of natLancamentos" [value]="nat.idnatureza">{{ nat.descricao }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+  </div>
+</div>
