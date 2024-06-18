@@ -14,6 +14,7 @@ import { FornecedorComponent } from './componentes/fornecedor/fornecedor.compone
 import { CpfValidatorDirective } from './Arquivos/cpf-validator.directive';
 import { CnpjValidatorDirective } from './Arquivos/cnpj-validator-directive';
 import { PhoneMaskDirective } from './Arquivos/phone-mask.directive';
+import { CepMaskDirective } from './Arquivos/cep-mask.directive';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,6 +28,7 @@ import { FuncionarioComponent } from './componentes/funcionario/funcionario.comp
 import { LojaComponent } from './componentes/loja/loja.component';
 import { UserComponent } from './componentes/user/user.component';
 import { NatLancamentoComponent } from './componentes/nat-lancamento/nat-lancamento.component';
+import { ProdutoComponent } from './componentes/produto/produto.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +45,9 @@ import { NatLancamentoComponent } from './componentes/nat-lancamento/nat-lancame
     FuncionarioComponent,
     LojaComponent,
     UserComponent,
-    NatLancamentoComponent
+    NatLancamentoComponent,
+    ProdutoComponent,
+    CepMaskDirective,
   ],
   
   imports: [

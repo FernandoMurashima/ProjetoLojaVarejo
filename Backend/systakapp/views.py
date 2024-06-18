@@ -8,7 +8,7 @@ from .serializers import (
     EstoqueSerializer, VendaSerializer, VendaItemSerializer, MovimentacaoFinanceiraSerializer,
     MovimentacaoProdutosSerializer, InventarioSerializer, InventarioItemSerializer,
     ReceberSerializer, ReceberItensSerializer, PagarSerializer, PagarItemSerializer,
-    CompraSerializer, CompraItemSerializer, PedidoCompraSerializer, PedidoCompraItemSerializer, LojaSerializer,
+    CompraSerializer, CompraItemSerializer, PedidoCompraSerializer, PedidoCompraItemSerializer, LojaSerializer, GrupoSerializer, SubgrupoSerializer
 )
 
 from .models import (
@@ -16,7 +16,7 @@ from .models import (
     Nat_Lancamento, ContaBancaria, Produto, ProdutoDetalhe, Tabelapreco, Estoque,
     Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos, Inventario,
     InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem,
-    PedidoCompra, PedidoCompraItem
+    PedidoCompra, PedidoCompraItem, Grupo, Subgrupo
 )
 
 from rest_framework.response import Response
@@ -189,6 +189,23 @@ class PedidoCompraItemViewSet(viewsets.ModelViewSet):
     queryset = PedidoCompraItem.objects.all()
     serializer_class = PedidoCompraItemSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class GrupoViewSet(viewsets.ModelViewSet):
+    queryset = Grupo.objects.all()
+    serializer_class = GrupoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class SubgrupoViewSet(viewsets.ModelViewSet):
+    queryset = Subgrupo.objects.all()
+    serializer_class = SubgrupoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        grupo_id = self.request.query_params.get('grupoId', None)
+        if grupo_id is not None:
+            return self.queryset.filter(idgrupo=grupo_id)
+        return self.queryset   
 
 
 

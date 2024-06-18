@@ -1,17 +1,43 @@
+/* Estilização da navbar */
 .navbar-nav .nav-item {
-    margin-right: 20px;
-  }
-  
-  .dropdown-menu .dropdown-item {
-    font-size: 16px;
-  }
-  
-  .banner {
-    background-color: #343a40;  /* Dark background similar to navbar for consistency */
-    color: #ffffff;            /* White text color */
-    text-align: center;        /* Center the text */
-    padding: 10px 0;           /* Add some padding for spacing */
-    font-size: 24px;           /* Larger font size for visibility */
-    font-weight: bold;         /* Make the font bold */
-    border-bottom: 2px solid #666; /* Optional: adds a subtle border for a distinct look */
-  }
+  margin-right: 20px;
+}
+
+.dropdown-menu .dropdown-item {
+  font-size: 16px;
+}
+
+/* Estilização do banner principal */
+.banner {
+  background-color: #343a40;  /* Dark background similar to navbar for consistency */
+  color: #ffffff;            /* White text color */
+  text-align: center;        /* Center the text */
+  padding: 10px 0;           /* Add some padding for spacing */
+  font-size: 24px;           /* Larger font size for visibility */
+  font-weight: bold;         /* Make the font bold */
+  border-bottom: 2px solid #666; /* Optional: adds a subtle border for a distinct look */
+}
+
+/* Certificar-se de que o container principal ocupa toda a largura da tela */
+.container-fluid {
+  width: 100vw; /* Ocupar 100% da largura da tela */
+  padding: 0; /* Remover padding padrão */
+  margin: 0; /* Remover margem padrão */
+  box-sizing: border-box; /* Incluir padding e borda na largura total */
+}
+
+/* Estilização do conteúdo principal para garantir que ocupe toda a largura da tela */
+.container {
+  width: 100%;
+  padding: 0; /* Remover padding padrão */
+  margin: 0; /* Remover margem padrão */
+  box-sizing: border-box; /* Incluir padding e borda na largura total */
+}
+
+/* Garantir que o router-outlet ocupe a largura total */
+.router-outlet {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

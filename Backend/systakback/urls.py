@@ -36,6 +36,8 @@ router.register(r'compras', views.CompraViewSet)
 router.register(r'compra-itens', views.CompraItemViewSet)
 router.register(r'pedido-compras', views.PedidoCompraViewSet)
 router.register(r'pedido-compra-itens', views.PedidoCompraItemViewSet)
+router.register(r'grupos', views.GrupoViewSet)
+router.register(r'subgrupos', views.SubgrupoViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -43,5 +45,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', auth_views.obtain_auth_token),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
-    path('natureza_lancamentos/', NatLancamentoList.as_view(), name='natureza_lancamentos'),
+    # path('natureza_lancamentos/', NatLancamentoList.as_view(), name='natureza_lancamentos'),
+    path('natureza-lancamentos/', views.NaturezaLancamentoViewSet.as_view({'get': 'list'}), name='natureza-lancamentos'),
 ]

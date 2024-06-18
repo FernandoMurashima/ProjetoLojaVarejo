@@ -1,0 +1,283 @@
+<div class="container-fluid mt-3">
+  <div class="op01" *ngIf="!action">
+    <div class="banner1">Produtos</div>
+    <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Novo Produto</button>
+    <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar Produtos</button>
+    <button class="btn btn-dark action-button" (click)="setAction('editar')">Editar Produto</button>
+    <button class="btn btn-dark action-button" (click)="setAction('excluir')">Excluir Produto</button>
+    <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+  </div>
+
+  <div *ngIf="action === 'cadastrar'">
+    <div class="banner">CADASTRO DE PRODUTO</div>
+    <form (ngSubmit)="addProduto()">
+      <div class="principal">
+        <div class="field-group">
+          <div class="input-item" id="descricao-box">
+            <label for="descricao">Descrição:</label>
+            <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="produto.Descricao" #descricao="ngModel" required maxlength="100">
+          </div>
+          <div class="input-item" id="desc-reduzida-box">
+            <label for="desc_reduzida">Descrição Reduzida:</label>
+            <input type="text" id="desc_reduzida" name="desc_reduzida" [(ngModel)]="produto.Desc_reduzida" #desc_reduzida="ngModel" maxlength="100">
+          </div>
+          <div class="input-item" id="tipo-box">
+            <label for="tipo">Tipo de Produto:</label>
+            <input type="text" id="tipo" name="tipo" [(ngModel)]="produto.Tipoproduto" #tipo="ngModel" maxlength="1">
+          </div>
+        </div>
+
+        <div class="field-group5">
+          <div class="input-item" id="classificacao-fiscal-box">
+            <label for="classificacao_fiscal">Classificação Fiscal:</label>
+            <input type="text" id="classificacao_fiscal" name="classificacao_fiscal" [(ngModel)]="produto.classificacao_fiscal" #classificacao_fiscal="ngModel" required maxlength="100">
+          </div>
+          <div class="input-item" id="unidade-box">
+            <label for="unidade">Unidade:</label>
+            <input type="text" id="unidade" name="unidade" [(ngModel)]="produto.unidade" #unidade="ngModel" required maxlength="15">
+          </div>
+        </div>
+
+        <div class="field-group2">
+          <div class="input-item" id="grupo-box">
+            <label for="grupo">Grupo:</label>
+            <select id="grupo" name="grupo" [(ngModel)]="produto.grupo" (change)="onGrupoChange($event)">
+              <option *ngFor="let grupo of grupos" [value]="grupo.Idgrupo">{{ grupo.Descricao }}</option>
+            </select>
+          </div>
+          <div class="input-item" id="subgrupo-box">
+            <label for="subgrupo">Subgrupo:</label>
+            <select id="subgrupo" name="subgrupo" [(ngModel)]="produto.subgrupo">
+              <option *ngFor="let subgrupo of subgrupos" [value]="subgrupo.Idsubgrupo">{{ subgrupo.Descricao }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-item" id="familia-box">
+          <label for="familia">Família:</label>
+          <input type="text" id="familia" name="familia" [(ngModel)]="produto.familia" #familia="ngModel" maxlength="100">
+        </div>
+
+        <div class="field-group3">
+          <div class="input-item" id="grade-box">
+            <label for="grade">Grade:</label>
+            <input type="text" id="grade" name="grade" [(ngModel)]="produto.grade" #grade="ngModel" maxlength="100">
+          </div>
+          <div class="input-item" id="colecao-box">
+            <label for="colecao">Coleção:</label>
+            <input type="text" id="colecao" name="colecao" [(ngModel)]="produto.colecao" #colecao="ngModel" maxlength="100">
+          </div>
+        </div>
+
+        <div class="input-item" id="produto-foto-box">
+          <label for="produto_foto">Foto do Produto:</label>
+          <input type="text" id="produto_foto" name="produto_foto" [(ngModel)]="produto.produto_foto" #produto_foto="ngModel" maxlength="100">
+        </div>
+
+        <div class="input-item" id="material-box">
+          <label for="material">Material:</label>
+          <input type="text" id="material" name="material" [(ngModel)]="produto.Material" #material="ngModel" maxlength="50">
+        </div>
+
+        <div id="success-message" *ngIf="successMessage">Produto adicionado com sucesso!</div>
+      </div>
+      
+      <div class="btn01">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="action === 'consultar'">
+    <div *ngIf="!produtoSelecionado">
+      <label for="produto">Selecione um Produto</label>
+      <select id="produto" (change)="onProdutoChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione um produto</option>
+        <option *ngFor="let produto of produtos" [value]="produto.Idproduto">{{ produto.Descricao }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="produtoSelecionado">
+      <div class="banner">CONSULTA DE PRODUTO</div>
+      <form>
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="produtoSelecionado.Descricao" #descricao="ngModel" disabled>
+            </div>
+            <div class="input-item" id="desc-reduzida-box">
+              <label for="desc_reduzida">Descrição Reduzida:</label>
+              <input type="text" id="desc_reduzida" name="desc_reduzida" [(ngModel)]="produtoSelecionado.Desc_reduzida" #desc_reduzida="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="field-group5">
+            <div class="input-item" id="classificacao-fiscal-box">
+              <label for="classificacao_fiscal">Classificação Fiscal:</label>
+              <input type="text" id="classificacao_fiscal" name="classificacao_fiscal" [(ngModel)]="produtoSelecionado.classificacao_fiscal" #classificacao_fiscal="ngModel" disabled>
+            </div>
+            <div class="input-item" id="unidade-box">
+              <label for="unidade">Unidade:</label>
+              <input type="text" id="unidade" name="unidade" [(ngModel)]="produtoSelecionado.unidade" #unidade="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="field-group2">
+            <div class="input-item" id="grupo-box">
+              <label for="grupo">Grupo:</label>
+              <input type="text" id="grupo" name="grupo" [(ngModel)]="produtoSelecionado.grupo" #grupo="ngModel" disabled>
+            </div>
+            <div class="input-item" id="subgrupo-box">
+              <label for="subgrupo">Subgrupo:</label>
+              <input type="text" id="subgrupo" name="subgrupo" [(ngModel)]="produtoSelecionado.subgrupo" #subgrupo="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="input-item" id="familia-box">
+            <label for="familia">Família:</label>
+            <input type="text" id="familia" name="familia" [(ngModel)]="produtoSelecionado.familia" #familia="ngModel" disabled>
+          </div>
+
+          <div class="field-group3">
+            <div class="input-item" id="grade-box">
+              <label for="grade">Grade:</label>
+              <input type="text" id="grade" name="grade" [(ngModel)]="produtoSelecionado.grade" #grade="ngModel" disabled>
+            </div>
+            <div class="input-item" id="colecao-box">
+              <label for="colecao">Coleção:</label>
+              <input type="text" id="colecao" name="colecao" [(ngModel)]="produtoSelecionado.colecao" #colecao="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="input-item" id="produto-foto-box">
+            <label for="produto_foto">Foto do Produto:</label>
+            <input type="text" id="produto_foto" name="produto_foto" [(ngModel)]="produtoSelecionado.produto_foto" #produto_foto="ngModel" disabled>
+          </div>
+
+          <div class="input-item" id="material-box">
+            <label for="material">Material:</label>
+            <input type="text" id="material" name="material" [(ngModel)]="produtoSelecionado.Material" #material="ngModel" disabled>
+          </div>
+
+          <div class="btn01">
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="action === 'editar'">
+    <div *ngIf="!produtoSelecionado">
+      <label for="produto">Selecione um Produto</label>
+      <select id="produto" (change)="onProdutoChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione um produto</option>
+        <option *ngFor="let produto of produtos" [value]="produto.Idproduto">{{ produto.Descricao }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="produtoSelecionado">
+      <div class="banner">ALTERAÇÃO DE PRODUTO</div>
+      <form (ngSubmit)="updateProduto()">
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="produto.Descricao" #descricao="ngModel" required maxlength="100">
+            </div>
+            <div class="input-item" id="desc-reduzida-box">
+              <label for="desc_reduzida">Descrição Reduzida:</label>
+              <input type="text" id="desc_reduzida" name="desc_reduzida" [(ngModel)]="produto.Desc_reduzida" #desc_reduzida="ngModel" maxlength="100">
+            </div>
+            <div class="input-item" id="tipo-box">
+              <label for="tipo">Tipo de Produto:</label>
+              <input type="text" id="tipo" name="tipo" [(ngModel)]="produto.Tipoproduto" #tipo="ngModel" maxlength="1">
+            </div>
+
+
+          </div>
+
+          <div class="field-group5">
+            <div class="input-item" id="classificacao-fiscal-box">
+              <label for="classificacao_fiscal">Classificação Fiscal:</label>
+              <input type="text" id="classificacao_fiscal" name="classificacao_fiscal" [(ngModel)]="produto.classificacao_fiscal" #classificacao_fiscal="ngModel" required maxlength="100">
+            </div>
+            <div class="input-item" id="unidade-box">
+              <label for="unidade">Unidade:</label>
+              <input type="text" id="unidade" name="unidade" [(ngModel)]="produto.unidade" #unidade="ngModel" required maxlength="15">
+            </div>
+          </div>
+
+          <div class="field-group2">
+            <div class="input-item" id="grupo-box">
+              <label for="grupo">Grupo:</label>
+              <select id="grupo" name="grupo" [(ngModel)]="produto.grupo" (change)="onGrupoChange($event)">
+                <option *ngFor="let grupo of grupos" [value]="grupo.Idgrupo">{{ grupo.Descricao }}</option>
+              </select>
+            </div>
+            <div class="input-item" id="subgrupo-box">
+              <label for="subgrupo">Subgrupo:</label>
+              <select id="subgrupo" name="subgrupo" [(ngModel)]="produto.subgrupo">
+                <option *ngFor="let subgrupo of subgrupos" [value]="subgrupo.Idsubgrupo">{{ subgrupo.Descricao }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-item" id="familia-box">
+            <label for="familia">Família:</label>
+            <input type="text" id="familia" name="familia" [(ngModel)]="produto.familia" #familia="ngModel" maxlength="100">
+          </div>
+
+          <div class="field-group3">
+            <div class="input-item" id="grade-box">
+              <label for="grade">Grade:</label>
+              <input type="text" id="grade" name="grade" [(ngModel)]="produto.grade" #grade="ngModel" maxlength="100">
+            </div>
+            <div class="input-item" id="colecao-box">
+              <label for="colecao">Coleção:</label>
+              <input type="text" id="colecao" name="colecao" [(ngModel)]="produto.colecao" #colecao="ngModel" maxlength="100">
+            </div>
+          </div>
+
+          <div class="input-item" id="produto-foto-box">
+            <label for="produto_foto">Foto do Produto:</label>
+            <input type="text" id="produto_foto" name="produto_foto" [(ngModel)]="produto.produto_foto" #produto_foto="ngModel" maxlength="100">
+          </div>
+
+          <div class="input-item" id="material-box">
+            <label for="material">Material:</label>
+            <input type="text" id="material" name="material" [(ngModel)]="produto.Material" #material="ngModel" maxlength="50">
+          </div>
+
+          <div id="success-message" *ngIf="successMessage">Produto atualizado com sucesso!</div>
+        </div>
+        
+        <div class="btn01">
+          <button type="submit" class="btn btn-primary">Salvar</button>
+          <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="action === 'excluir'">
+    <h2>Excluir Produto</h2>
+    <div *ngIf="produtoSelecionado">
+      <p>Tem certeza que deseja excluir o produto {{ produtoSelecionado.Descricao }}?</p>
+      <button type="button" class="btn btn-danger" (click)="deleteProduto()">Excluir</button>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+    </div>
+    <div *ngIf="!produtoSelecionado">
+      <label for="produto">Selecione um Produto</label>
+      <select id="produto" (change)="onProdutoChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione um produto</option>
+        <option *ngFor="let produto of produtos" [value]="produto.Idproduto">{{ produto.Descricao }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+  </div>
+</div>

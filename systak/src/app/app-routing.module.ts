@@ -11,6 +11,7 @@ import { FuncionarioComponent } from './componentes/funcionario/funcionario.comp
 import { LojaComponent } from './componentes/loja/loja.component';
 import { UserComponent } from './componentes/user/user.component'; 
 import { NatLancamentoComponent } from './componentes/nat-lancamento/nat-lancamento.component'; 
+import { ProdutoComponent } from './componentes/produto/produto.component';
 
 
 export const DEFAULT_ROUTE = '/index';
@@ -31,6 +32,7 @@ const routes: Routes = [
   { path: 'estoque', component: HomeComponent },
   { path: 'relatorios', component: HomeComponent },
   { path: 'configuradores/natureza-lancamentos', component: NatLancamentoComponent, canActivate: [AuthGuardService] },
+  { path: 'cadastro/produtos', component: ProdutoComponent, canActivate: [AuthGuardService] },
   { path: 'sair', component: LoginComponent }
 ];
 
