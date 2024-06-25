@@ -1,0 +1,142 @@
+/* Estilização do formulário */
+form {
+    padding: 5px;
+    /* border: 2px solid; */
+    width: 100%; /* Ocupar 100% da largura do contêiner */
+    box-sizing: border-box; /* Incluir padding e borda na largura total */
+    margin: 0; /* Remover margens externas */
+    margin-bottom: 5px;
+}
+
+.container mt-3{
+    /* border: 2px solid; */
+    padding: 5px;
+    margin-top: 5px;
+    width: 150%; /* Ocupar 100% da largura do contêiner pai */
+    box-sizing: border-box; /* Incluir padding e borda na largura total */
+}
+
+
+/* Estilização principal */
+.principal {
+    /* border: 2px solid; */
+    padding: 5px;
+    margin-top: 5px;
+    width: 100%; /* Ocupar 100% da largura do contêiner pai */
+    box-sizing: border-box; /* Incluir padding e borda na largura total */
+}
+
+/* Estilização dos grupos de campos */
+.field-group,
+.field-group2,
+.field-group22,
+.field-group3,
+.field-group333,
+.field-group4,
+.field-group44,
+.field-group5 {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr); /* 10 colunas */
+    gap: 10px;
+}
+
+/* Estilização dos itens de entrada */
+.input-item {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilização dos inputs */
+.input-caixa, input {
+    width: 100%; /* Faz os inputs preencherem seus contêineres */
+    padding: 4px 8px; /* Ajusta o padding para diminuir a altura */
+    font-size: 14px; /* Opcional: Ajusta o tamanho da fonte */
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
+}
+
+/* Estilização dos botões */
+.button {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    /* border: 2px solid; */
+    padding: 5px;
+    margin: 10px 0; /* Remover margem à esquerda e direita */
+}
+
+/* Estilização individual dos botões */
+.botao {
+    padding: 10px 20px;
+}
+
+/* Estilização do banner e botões */
+.banner,
+.buttons {
+    grid-column: 1 / -1; /* Faz com que o banner e botões ocupem todas as colunas */
+}
+
+/* Estilização do banner principal */
+.banner {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    /* border: 2px solid; */
+    padding: 5px;
+    width: 98.7vw; /* Ocupar 100% da largura do contêiner */
+    margin: 0; /* Remover margens externas */
+}
+
+/* Estilização do banner secundário */
+.banner1 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border: 1px solid;
+    padding: 5px;
+    width: 98.61vw;
+    margin-left: 0;
+ 
+}
+
+/* Estilização do banner principal */
+.banner-principal {
+    background-color: #343a40;  /* Dark background similar to navbar for consistency */
+    color: #ffffff;            /* White text color */
+    text-align: center;        /* Center the text */
+    padding: 10px 0;           /* Add some padding for spacing */
+    font-size: 24px;           /* Larger font size for visibility */
+    font-weight: bold;         /* Make the font bold */
+    /* border-bottom: 2px solid #666;  */
+    width: 98.7vw;
+}
+
+/* Estilização dos botões primários */
+.btn01 .btn-primary {
+    padding: 5px;
+    margin-top: 5px;
+    margin-right: 40px;
+    
+}
+
+.btn01{
+    padding: 20px;
+    border: 2px solid;
+    width: 98vw;
+}
+
+/* Estilização das opções */
+.op01 {
+    border: 2px solid;
+    width: 98.7vw;
+}
+
+/* Estilização dos botões de ação */
+.action-button {
+    margin: 10px;
+    margin-right: auto;
+    margin-left: 200px;
+}
+
+/* Posicionamento específico dos campos */
+#descricao-box { grid-row: 1; grid-column: 1; width: 600px; }
+#codigo-box { grid-row: 1; grid-column: 2; width: 250px; }

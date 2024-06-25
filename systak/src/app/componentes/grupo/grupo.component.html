@@ -1,0 +1,171 @@
+<div class="container mt-3">
+  <div class="op01" *ngIf="!action">
+    <div class="banner1">Grupos</div>
+    <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Novo Grupo</button>
+    <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar Grupos</button>
+    <button class="btn btn-dark action-button" (click)="setAction('editar')">Editar Grupo</button>
+    <button class="btn btn-dark action-button" (click)="setAction('excluir')">Excluir Grupo</button>
+    <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+  </div>
+
+  <!-- Inicio do cadastro -->
+  <div *ngIf="action === 'cadastrar'">
+    <div class="banner">CADASTRO DE GRUPO</div>
+    <form #grupoForm="ngForm" (ngSubmit)="addGrupo()">
+      <div class="principal">
+        <div class="field-group">
+          <div class="input-item" id="codigo-box">
+            <label for="codigo">Código:</label>
+            <input class="input-caixa" type="text" id="codigo" name="codigo" [(ngModel)]="grupo.Codigo" #codigo="ngModel" required maxlength="12">
+          </div>
+          <div class="input-item" id="descricao-box">
+            <label for="descricao">Descrição:</label>
+            <input type="text" id="descricao" name="descricao" [(ngModel)]="grupo.Descricao" #descricao="ngModel" required maxlength="100">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="input-item" id="margem-box">
+            <label for="margem">Margem:</label>
+            <input type="number" id="margem" name="margem" [(ngModel)]="grupo.Margem" #margem="ngModel" required>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Tipos de Subgrupo:</label>
+          <div *ngFor="let tipo of tiposDeSubgrupo">
+            <input type="checkbox" [value]="tipo.Idtipodesubgrupo" (change)="onTipoChange($event)"> {{ tipo.Descricao }}
+          </div>
+        </div>
+
+        <div id="success-message" *ngIf="successMessage">Grupo adicionado com sucesso!</div>
+      </div>
+
+      <div class="btn01">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+  <!-- Fim do cadastro -->
+
+  <!-- Inicio do consultar -->
+  <div *ngIf="action === 'consultar'">
+    <div *ngIf="!grupoSelecionado">
+      <label for="grupo">Selecione um Grupo</label>
+      <select id="grupo" (change)="onGrupoChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione um grupo</option>
+        <option *ngFor="let grupo of grupos" [value]="grupo.Idgrupo">{{ grupo.Descricao }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="grupoSelecionado">
+      <div class="banner">CONSULTA DE GRUPO</div>
+      <form>
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="codigo-box">
+              <label for="codigo">Código:</label>
+              <input class="input-caixa" type="text" id="codigo" name="codigo" [(ngModel)]="grupoSelecionado.Codigo" #codigo="ngModel" disabled>
+            </div>
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input type="text" id="descricao" name="descricao" [(ngModel)]="grupoSelecionado.Descricao" #descricao="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="input-item" id="margem-box">
+              <label for="margem">Margem:</label>
+              <input type="number" id="margem" name="margem" [(ngModel)]="grupoSelecionado.Margem" #margem="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>Tipos de Subgrupo:</label>
+            <div *ngFor="let tipo of tiposDeSubgrupo">
+              <input type="checkbox" [checked]="selectedSubgrupoCodigos.includes(tipo.codigosubgrupo)" disabled> {{ tipo.Descricao }}
+            </div>
+          </div>
+
+          <div class="btn01">
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Fim do consultar -->
+
+  <!-- Inicio do Editar -->
+  <div *ngIf="action === 'editar'">
+    <div *ngIf="!grupoSelecionado">
+      <label for="grupo">Selecione um Grupo</label>
+      <select id="grupo" (change)="onGrupoChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione um grupo</option>
+        <option *ngFor="let grupo of grupos" [value]="grupo.Idgrupo">{{ grupo.Descricao }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="grupoSelecionado">
+      <div class="banner">ALTERAÇÃO DE GRUPO</div>
+      <form #grupoForm="ngForm" (ngSubmit)="updateGrupo()">
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="codigo-box">
+              <label for="codigo">Código:</label>
+              <input class="input-caixa" type="text" id="codigo" name="codigo" [(ngModel)]="grupo.Codigo" #codigo="ngModel" required maxlength="12">
+            </div>
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input type="text" id="descricao" name="descricao" [(ngModel)]="grupo.Descricao" #descricao="ngModel" required maxlength="100">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="input-item" id="margem-box">
+              <label for="margem">Margem:</label>
+              <input type="number" id="margem" name="margem" [(ngModel)]="grupo.Margem" #margem="ngModel" required>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>Tipos de Subgrupo:</label>
+            <div *ngFor="let tipo of tiposDeSubgrupo">
+              <input type="checkbox" [value]="tipo.Idtipodesubgrupo" [checked]="selectedSubgrupoCodigos.includes(tipo.codigosubgrupo)" (change)="onTipoChange($event)"> {{ tipo.Descricao }}
+            </div>
+          </div>
+
+          <div id="success-message" *ngIf="successMessage">Grupo atualizado com sucesso!</div>
+
+          <div class="btn01">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Fim do Editar -->
+
+  <!-- Inicio do Excluir -->
+  <div *ngIf="action === 'excluir'">
+    <h2>Excluir Grupo</h2>
+    <div *ngIf="grupoSelecionado">
+      <p>Tem certeza que deseja excluir o grupo {{ grupoSelecionado.Descricao }}?</p>
+      <button type="button" class="btn btn-danger" (click)="deleteGrupo()">Excluir</button>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+    </div>
+    <div *ngIf="!grupoSelecionado">
+      <label for="grupo">Selecione um Grupo</label>
+      <select id="grupo" (change)="onGrupoChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione um grupo</option>
+        <option *ngFor="let grupo of grupos" [value]="grupo.Idgrupo">{{ grupo.Descricao }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+  </div>
+  <!-- Fim do Excluir -->
+</div>

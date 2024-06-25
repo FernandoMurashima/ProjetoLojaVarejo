@@ -15,6 +15,7 @@ import { CpfValidatorDirective } from './Arquivos/cpf-validator.directive';
 import { CnpjValidatorDirective } from './Arquivos/cnpj-validator-directive';
 import { PhoneMaskDirective } from './Arquivos/phone-mask.directive';
 import { CepMaskDirective } from './Arquivos/cep-mask.directive';
+import { SafeUrlPipe } from './safe-url.pipe';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -29,10 +30,26 @@ import { LojaComponent } from './componentes/loja/loja.component';
 import { UserComponent } from './componentes/user/user.component';
 import { NatLancamentoComponent } from './componentes/nat-lancamento/nat-lancamento.component';
 import { ProdutoComponent } from './componentes/produto/produto.component';
+import { ColecaoComponent } from './componentes/colecao/colecao.component';
+import { MaterialComponent } from './componentes/material/material.component';
+import { UnidadeComponent } from './componentes/unidade/unidade.component';
+import { FamiliaComponent } from './componentes/familia/familia.component';
+import { CorComponent } from './componentes/cor/cor.component';
+import { TamanhoComponent } from './componentes/tamanho/tamanho.component';
+import { GradeComponent } from './componentes/grade/grade.component';
+import { NcmComponent } from './componentes/ncm/ncm.component';
+import { PdvComponent } from './componentes/pdv/pdv.component';
+import { GrupoComponent } from './componentes/grupo/grupo.component';
+import { SubgrupoComponent } from './componentes/subgrupo/subgrupo.component';
+
+import { GrupoService } from './service/grupo.service';
+import { SubgrupoService } from './service/subgrupo.service';
+import { TiposDeSubgrupoService } from './service/tiposdesubgrupo.service';
 
 @NgModule({
   declarations: [
     AppComponent,
+    SafeUrlPipe,
     LoginComponent,
     HomeComponent,
     IndexComponent,
@@ -48,6 +65,17 @@ import { ProdutoComponent } from './componentes/produto/produto.component';
     NatLancamentoComponent,
     ProdutoComponent,
     CepMaskDirective,
+    ColecaoComponent,
+    MaterialComponent,
+    UnidadeComponent,
+    FamiliaComponent,
+    CorComponent,
+    TamanhoComponent,
+    GradeComponent,
+    NcmComponent,
+    PdvComponent,
+    GrupoComponent,
+    SubgrupoComponent,
   ],
   
   imports: [
@@ -64,6 +92,9 @@ import { ProdutoComponent } from './componentes/produto/produto.component';
   ],
   providers: [
     AuthService,
+    GrupoService,
+    SubgrupoService,
+    TiposDeSubgrupoService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

@@ -122,10 +122,29 @@ class Funcionarios(models.Model):
     def __str__(self):
         return self.nomefuncionario
 
+class Ncm(models.Model):
+    ncm = models.CharField(max_length=20)
+    campo1 = models.CharField(max_length=25, blank=True, null=True)
+    descricao = models.CharField(max_length=1000)
+    aliquota = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.ncm
+
+class Grade(models.Model):
+    Idgrade = models.AutoField(primary_key=True)
+    Descricao = models.CharField(max_length=100)
+    Status = models.CharField(max_length=10, null=True, blank=True)
+    data_cadastro = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.Descricao
+
 class Tamanho(models.Model):
     Idtamanho = models.AutoField(primary_key=True)
-    Descricao = models.CharField(max_length=100)
+    idgrade = models.ForeignKey(Grade, on_delete=models.CASCADE)
     Tamanho = models.CharField(max_length=10)
+    Status = models.CharField(max_length=10, null=True, blank=True)
     data_cadastro = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -134,7 +153,9 @@ class Tamanho(models.Model):
 class Cor(models.Model):
     Idcor = models.AutoField(primary_key=True)
     Descricao = models.CharField(max_length=100)
+    Codigo = models.CharField(max_length=12, null=True, blank=True)
     Cor = models.CharField(max_length=30)
+    Status = models.CharField(max_length=10, null=True, blank=True)
     data_cadastro = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -162,13 +183,53 @@ class Subgrupo(models.Model):
     def __str__(self):
         return self.Descricao
 
+class Tiposdesubgrupo(models.Model):
+    Idtipodesubgrupo = models.AutoField(primary_key=True)
+    Descricao = models.CharField(max_length=100)
+    codigosubgrupo = models.CharField(max_length=2)
+
+    def __str__(self):
+        return self.Descricao
+
+
+
 class Material(models.Model):
     Idmaterial = models.AutoField(primary_key=True)
     Descricao = models.CharField(max_length=100)    
+    Codigo = models.CharField(max_length=10, null=True, blank=True)    
+    Status = models.CharField(max_length=10, null=True, blank=True)
     data_cadastro = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.Descricao
+
+class Colecao(models.Model):
+    Idcolecao = models.AutoField(primary_key=True)
+    Descricao = models.CharField(max_length=100)
+    Codigo = models.CharField(max_length=10, null=True, blank=True)    
+    Status = models.CharField(max_length=10, null=True, blank=True) 
+    data_cadastro = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.Descricao
+    
+class Familia(models.Model):
+    Idfamilia = models.AutoField(primary_key=True)
+    Descricao = models.CharField(max_length=100)    
+    Codigo = models.CharField(max_length=10, null=True, blank=True)
+    data_cadastro = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.Descricao    
+
+class Unidade(models.Model):
+    Idunidade = models.AutoField(primary_key=True)
+    Descricao = models.CharField(max_length=100)
+    Codigo = models.CharField(max_length=10, null=True, blank=True)    
+    data_cadastro = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.Descricao    
 
 
 class Nat_Lancamento(models.Model):
@@ -202,6 +263,7 @@ class Produto(models.Model):
     Tipoproduto = models.CharField(max_length=1)
     Descricao = models.CharField(max_length=100)
     Desc_reduzida = models.CharField(max_length=100)
+    referencia = models.CharField(max_length=11, default='00.00.00000', unique=True)
     classificacao_fiscal = models.CharField(max_length=100)
     unidade = models.CharField(max_length=15)
     grupo = models.CharField(max_length=100, null=True, blank=True)
@@ -209,7 +271,9 @@ class Produto(models.Model):
     familia = models.CharField(max_length=100, null=True, blank=True)
     grade = models.CharField(max_length=100, null=True, blank=True)
     colecao = models.CharField(max_length=100, null=True, blank=True)
-    produto_foto = models.CharField(max_length=100, null=True, blank=True)
+    produto_foto = models.CharField(max_length=1000, null=True, blank=True)
+    produto_foto1 = models.CharField(max_length=1000, null=True, blank=True)
+    produto_foto2 = models.CharField(max_length=1000, null=True, blank=True)
     Material = models.CharField(max_length=50, null=True, blank=True)
     data_cadastro = models.DateTimeField(default=timezone.now)
 
@@ -218,7 +282,8 @@ class Produto(models.Model):
 
 class ProdutoDetalhe(models.Model):
     Idprodutodetalhe = models.AutoField(primary_key=True)
-    CodigodeBarra = models.CharField(max_length=20)
+    CodigodeBarra = models.CharField(max_length=20, unique=True)
+    Codigoproduto = models.CharField(max_length=6, default='000000', unique=True)
     data_cadastro = models.DateTimeField(default=timezone.now)
     Idproduto = models.ForeignKey(Produto, on_delete=models.CASCADE)    
     Idtamanho = models.ForeignKey(Tamanho, on_delete=models.CASCADE)

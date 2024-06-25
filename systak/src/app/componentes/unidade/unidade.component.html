@@ -1,0 +1,120 @@
+<div class="container mt-3">
+    <div class="op01" *ngIf="!action">
+      <div class="banner1">Unidades</div>
+      <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Nova Unidade</button>
+      <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar Unidades</button>
+      <button class="btn btn-dark action-button" (click)="setAction('editar')">Editar Unidade</button>
+      <button class="btn btn-dark action-button" (click)="setAction('excluir')">Excluir Unidade</button>
+      <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+    </div>
+  
+    <!-- Inicio do cadastro -->
+    <div *ngIf="action === 'cadastrar'">
+      <div class="banner">CADASTRO DE UNIDADE</div>
+      <form #unidadeForm="ngForm" (ngSubmit)="addUnidade()">
+        <div class="principal">
+          <div class="input-item" id="descricao-box">
+            <label for="descricao">Descrição:</label>
+            <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="unidade.Descricao" #descricao="ngModel" required maxlength="100">
+          </div>
+          <div class="input-item" id="codigo-box">
+            <label for="codigo">Código:</label>
+            <input type="text" id="codigo" name="codigo" [(ngModel)]="unidade.Codigo" #codigo="ngModel" required maxlength="10">
+          </div>
+        </div>
+        <div id="success-message" *ngIf="successMessage">Unidade adicionada com sucesso!</div>
+        <div class="btn01">
+          <button type="submit" class="btn btn-primary">Salvar</button>
+          <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+    <!-- Fim do cadastro -->
+  
+    <!-- Inicio do consultar -->
+    <div *ngIf="action === 'consultar'">
+      <div *ngIf="!unidadeSelecionada">
+        <label for="unidade">Selecione uma Unidade</label>
+        <select id="unidade" (change)="onUnidadeChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione uma unidade</option>
+          <option *ngFor="let unidade of unidades" [value]="unidade.Idunidade">{{ unidade.Descricao }} ({{ unidade.Codigo }})</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+  
+      <div *ngIf="unidadeSelecionada">
+        <div class="banner">CONSULTA DE UNIDADE</div>
+        <form>
+          <div class="principal">
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="unidadeSelecionada.Descricao" #descricao="ngModel" disabled>
+            </div>
+            <div class="input-item" id="codigo-box">
+              <label for="codigo">Código:</label>
+              <input type="text" id="codigo" name="codigo" [(ngModel)]="unidadeSelecionada.Codigo" #codigo="ngModel" disabled>
+            </div>
+          </div>
+          <div class="btn01">
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Fim do consultar -->
+  
+    <!-- Inicio do Editar -->
+    <div *ngIf="action === 'editar'">
+      <div *ngIf="!unidadeSelecionada">
+        <label for="unidade">Selecione uma Unidade</label>
+        <select id="unidade" (change)="onUnidadeChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione uma unidade</option>
+          <option *ngFor="let unidade of unidades" [value]="unidade.Idunidade">{{ unidade.Descricao }} ({{ unidade.Codigo }})</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+  
+      <div *ngIf="unidadeSelecionada">
+        <div class="banner">ALTERAÇÃO DE UNIDADE</div>
+        <form #unidadeForm="ngForm" (ngSubmit)="updateUnidade()">
+          <div class="principal">
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="unidade.Descricao" #descricao="ngModel" required maxlength="100">
+            </div>
+            <div class="input-item" id="codigo-box">
+              <label for="codigo">Código:</label>
+              <input type="text" id="codigo" name="codigo" [(ngModel)]="unidade.Codigo" #codigo="ngModel" required maxlength="10">
+            </div>
+          </div>
+          <div id="success-message" *ngIf="successMessage">Unidade atualizada com sucesso!</div>
+          <div class="btn01">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Fim do Editar -->
+  
+    <!-- Inicio do Excluir -->
+    <div *ngIf="action === 'excluir'">
+      <h2>Excluir Unidade</h2>
+      <div *ngIf="unidadeSelecionada">
+        <p>Tem certeza que deseja excluir a unidade {{ unidadeSelecionada.Descricao }} ({{ unidadeSelecionada.Codigo }})?</p>
+        <button type="button" class="btn btn-danger" (click)="deleteUnidade()">Excluir</button>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+      </div>
+      <div *ngIf="!unidadeSelecionada">
+        <label for="unidade">Selecione uma Unidade</label>
+        <select id="unidade" (change)="onUnidadeChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione uma unidade</option>
+          <option *ngFor="let unidade of unidades" [value]="unidade.Idunidade">{{ unidade.Descricao }} ({{ unidade.Codigo }})</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+    </div>
+    <!-- Fim do Excluir -->
+  
+  </div>
+  

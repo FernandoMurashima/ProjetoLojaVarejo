@@ -20,7 +20,7 @@
             <li><a class="dropdown-item" routerLink="/cadastro/fornecedores">Fornecedores</a></li>
             <li><a class="dropdown-item" routerLink="/cadastro/funcionarios">Funcionários</a></li>
             <li><a class="dropdown-item" routerLink="/cadastro/lojas">Lojas</a></li>
-            <li><a class="dropdown-item" routerLink="/cadastro/produtos">Produtos</a></li>
+            
             <li><a class="dropdown-item" routerLink="/cadastro/users">Usuarios</a></li>
           </ul>
         </li>
@@ -31,13 +31,38 @@
         <li class="nav-item">
           <a class="nav-link" routerLink="/venda">Venda</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/estoque">Estoque</a>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="estoqueDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Produtos
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="estoqueDropdown">
+
+            <li><a class="dropdown-item" routerLink="/cadastro/produtos">Produtos</a></li>
+            <li><a class="dropdown-item" routerLink="/estoque/ncm">Classifição Fiscal (NMC)</a></li>
+            <li><a class="dropdown-item" routerLink="/configuradores/familia">Familia</a></li>
+            <li><a class="dropdown-item" routerLink="/configuradores/cores">Cor</a></li>
+            <li><a class="dropdown-item" routerLink="/configuradores/grades">Grade</a></li>
+            <li><a class="dropdown-item" routerLink="/configuradores/tamanhos">Tamanho</a></li>
+            <li><a class="dropdown-item" routerLink="/configuradores/colecao">Coleção</a></li>
+            <li><a class="dropdown-item" routerLink="/configuradores/material">Material</a></li>
+            <li><a class="dropdown-item" routerLink="/configuradores/unidade">Unidade</a></li>
+            <li><a class="dropdown-item" routerLink="/estoque/grupo">Grupo/Subgrupo</a></li>
+            
+          </ul>
         </li>
         
+
+
+
         <li class="nav-item">
           <a class="nav-link" routerLink="/relatorios">Relatórios</a>
         </li>
+
+        
+
+
+
 
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="configuradoresDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -46,8 +71,24 @@
           <ul class="dropdown-menu" aria-labelledby="configuradoresDropdown">
 
             <li><a class="dropdown-item" routerLink="/configuradores/natureza-lancamentos">Natureza</a></li>
-            <li><a class="dropdown-item" routerLink="/configuradores/cor">Cor</a></li>
-            <li><a class="dropdown-item" routerLink="/configuradores/tamanho">Tamanho</a></li>
+       
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="configuradoresDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Configuradores
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="configuradoresDropdown">
+    
+                <li><a class="dropdown-item" routerLink="/configuradores/natureza-lancamentos">Natureza</a></li>
+                <li><a class="dropdown-item" routerLink="/configuradores/cores">Cor</a></li>
+                <li><a class="dropdown-item" routerLink="/configuradores/grades">Grade</a></li>
+                <li><a class="dropdown-item" routerLink="/configuradores/tamanhos">Tamanho</a></li>
+                <li><a class="dropdown-item" routerLink="/configuradores/colecao">Coleção</a></li>
+                <li><a class="dropdown-item" routerLink="/configuradores/material">Material</a></li>
+                <li><a class="dropdown-item" routerLink="/configuradores/unidade">Unidade</a></li>
+                <li><a class="dropdown-item" routerLink="/configuradores/familia">Familia</a></li>
+                
+              </ul>
+            </li>
             
           </ul>
         </li>

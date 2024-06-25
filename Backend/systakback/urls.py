@@ -3,48 +3,52 @@ from rest_framework import routers
 from rest_framework.authtoken import views as auth_views
 from rest_framework.authtoken.views import obtain_auth_token
 from django.contrib import admin
-from systakapp import views 
-from systakapp.views import NatLancamentoList  # Certifique-se de importar a classe NatLancamentoList
+from systakapp import views
 
 router = routers.DefaultRouter()
 
 router.register(r'users', views.UserViewSet)
-router.register(r'lojas', views.LojaViewSet)
 router.register(r'clientes', views.ClienteViewSet)
 router.register(r'fornecedores', views.FornecedorViewSet)
 router.register(r'vendedores', views.VendedorViewSet)
 router.register(r'funcionarios', views.FuncionariosViewSet)
 router.register(r'tamanhos', views.TamanhoViewSet)
 router.register(r'cores', views.CorViewSet)
-router.register(r'natureza-lancamentos', views.NaturezaLancamentoViewSet)  # Aqui está a ViewSet que você já registrou
-router.register(r'contas-bancarias', views.ContaBancariaViewSet)
+router.register(r'naturezaslancamento', views.NaturezaLancamentoViewSet)
+router.register(r'contasbancarias', views.ContaBancariaViewSet)
 router.register(r'produtos', views.ProdutoViewSet)
-router.register(r'produto-detalhes', views.ProdutoDetalheViewSet)
-router.register(r'tabela-precos', views.TabelaprecoViewSet)
-router.register(r'estoque', views.EstoqueViewSet)
+router.register(r'produtodetalhes', views.ProdutoDetalheViewSet)
+router.register(r'tabelaspreco', views.TabelaprecoViewSet)
+router.register(r'estoques', views.EstoqueViewSet)
 router.register(r'vendas', views.VendaViewSet)
-router.register(r'venda-itens', views.VendaItemViewSet)
-router.register(r'movimentacao-financeira', views.MovimentacaoFinanceiraViewSet)
-router.register(r'movimentacao-produtos', views.MovimentacaoProdutosViewSet)
+router.register(r'vendaitens', views.VendaItemViewSet)
+router.register(r'movimentacoesfinanceiras', views.MovimentacaoFinanceiraViewSet)
+router.register(r'movimentacoesprodutos', views.MovimentacaoProdutosViewSet)
 router.register(r'inventarios', views.InventarioViewSet)
-router.register(r'inventario-itens', views.InventarioItemViewSet)
-router.register(r'receber', views.ReceberViewSet)
-router.register(r'receber-itens', views.ReceberItensViewSet)
-router.register(r'pagar', views.PagarViewSet)
-router.register(r'pagar-itens', views.PagarItemViewSet)
+router.register(r'inventarioitens', views.InventarioItemViewSet)
+router.register(r'recebers', views.ReceberViewSet)
+router.register(r'receberitens', views.ReceberItensViewSet)
+router.register(r'pagars', views.PagarViewSet)
+router.register(r'pagaritens', views.PagarItemViewSet)
 router.register(r'compras', views.CompraViewSet)
-router.register(r'compra-itens', views.CompraItemViewSet)
-router.register(r'pedido-compras', views.PedidoCompraViewSet)
-router.register(r'pedido-compra-itens', views.PedidoCompraItemViewSet)
+router.register(r'compraitens', views.CompraItemViewSet)
+router.register(r'pedidoscompra', views.PedidoCompraViewSet)
+router.register(r'pedidocompraitens', views.PedidoCompraItemViewSet)
+router.register(r'lojas', views.LojaViewSet)
 router.register(r'grupos', views.GrupoViewSet)
-router.register(r'subgrupos', views.SubgrupoViewSet)
+router.register(r'unidade', views.UnidadeViewSet)
+router.register(r'material', views.MaterialViewSet)
+router.register(r'familia', views.FamiliaViewSet)
+router.register(r'colecao', views.ColecaoViewSet)
+router.register(r'grades', views.GradeViewSet)
+router.register(r'ncms', views.NcmViewSet)
+router.register(r'Tiposdesubgrupos', views.TiposdesubgrupoViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', auth_views.obtain_auth_token),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
-    # path('natureza_lancamentos/', NatLancamentoList.as_view(), name='natureza_lancamentos'),
-    path('natureza-lancamentos/', views.NaturezaLancamentoViewSet.as_view({'get': 'list'}), name='natureza-lancamentos'),
+    path('', include(router.urls)),
+    path('grupos/<int:grupoId>/subgrupos/', views.SubgrupoListByGrupo.as_view(), name='subgrupos_por_grupo'),
 ]

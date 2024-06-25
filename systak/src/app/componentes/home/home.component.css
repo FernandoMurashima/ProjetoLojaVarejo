@@ -1,8 +1,10 @@
 .banner {
     text-align: center;
     margin-bottom: 20px; /* Adiciona um espaçamento na parte inferior do banner */
+    margin-left: 13px;
 }
 
 .banner img {
-    max-width: 100%; /* Garante que a imagem não ultrapasse a largura do contêiner */
+    width: 98.7vw; /* Garante que a imagem não ultrapasse a largura do contêiner */
+    height: 765px;
 }

@@ -1,6 +1,12 @@
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets, permissions, generics
-
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from django.http import JsonResponse
+from django.http import HttpResponse
 from .serializers import (
     UserSerializer, ClienteSerializer, FornecedorSerializer, VendedorSerializer,
     FuncionariosSerializer, TamanhoSerializer, CorSerializer, NaturezaLancamentoSerializer,
@@ -8,26 +14,18 @@ from .serializers import (
     EstoqueSerializer, VendaSerializer, VendaItemSerializer, MovimentacaoFinanceiraSerializer,
     MovimentacaoProdutosSerializer, InventarioSerializer, InventarioItemSerializer,
     ReceberSerializer, ReceberItensSerializer, PagarSerializer, PagarItemSerializer,
-    CompraSerializer, CompraItemSerializer, PedidoCompraSerializer, PedidoCompraItemSerializer, LojaSerializer, GrupoSerializer, SubgrupoSerializer
+    CompraSerializer, CompraItemSerializer, PedidoCompraSerializer, PedidoCompraItemSerializer, LojaSerializer, GrupoSerializer, SubgrupoSerializer,
+    UnidadeSerializer, MaterialSerializer, FamiliaSerializer, ColecaoSerializer,GradeSerializer, NcmSerializer, TiposdesubgrupoSerializer
 )
 
 from .models import (
     User, Loja, Cliente, Fornecedor, Vendedor, Funcionarios, Tamanho, Cor,
     Nat_Lancamento, ContaBancaria, Produto, ProdutoDetalhe, Tabelapreco, Estoque,
     Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos, Inventario,
-    InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem,
-    PedidoCompra, PedidoCompraItem, Grupo, Subgrupo
+    InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem,Grade,
+    PedidoCompra, PedidoCompraItem, Grupo, Subgrupo, Unidade, Material, Familia, Colecao, Ncm, Tiposdesubgrupo
 )
 
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.serializers import AuthTokenSerializer
-from django.http import JsonResponse
-
-
-from rest_framework.permissions import IsAuthenticated
 import logging
 
 logger = logging.getLogger(__name__)
@@ -36,6 +34,27 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+class UnidadeViewSet(viewsets.ModelViewSet):
+    queryset = Unidade.objects.all()
+    serializer_class = UnidadeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class MaterialViewSet(viewsets.ModelViewSet):
+    queryset = Material.objects.all()
+    serializer_class = MaterialSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class FamiliaViewSet(viewsets.ModelViewSet):
+    queryset = Familia.objects.all()
+    serializer_class = FamiliaSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class ColecaoViewSet(viewsets.ModelViewSet):
+    queryset = Colecao.objects.all()
+    serializer_class = ColecaoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 
 class LojaViewSet(viewsets.ModelViewSet):
     queryset = Loja.objects.all()
@@ -190,6 +209,26 @@ class PedidoCompraItemViewSet(viewsets.ModelViewSet):
     serializer_class = PedidoCompraItemSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+class CustomAuthToken(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = AuthTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
+
+class GradeViewSet(viewsets.ModelViewSet):
+    queryset = Grade.objects.all()
+    serializer_class = GradeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class NcmViewSet(viewsets.ModelViewSet):
+    queryset = Ncm.objects.all()
+    serializer_class = NcmSerializer
+
+class TiposdesubgrupoViewSet(viewsets.ModelViewSet):
+    queryset = Tiposdesubgrupo.objects.all()
+    serializer_class = TiposdesubgrupoSerializer
 
 class GrupoViewSet(viewsets.ModelViewSet):
     queryset = Grupo.objects.all()
@@ -201,21 +240,25 @@ class SubgrupoViewSet(viewsets.ModelViewSet):
     serializer_class = SubgrupoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def delete(self, request, grupoId=None):
+        if grupoId is None:
+            return Response({"detail": "Nenhum grupoId fornecido."}, status=status.HTTP_400_BAD_REQUEST)
+        Subgrupo.objects.filter(idgrupo_id=grupoId).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class SubgrupoListByGrupo(generics.ListAPIView):
+    serializer_class = SubgrupoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
     def get_queryset(self):
-        grupo_id = self.request.query_params.get('grupoId', None)
-        if grupo_id is not None:
-            return self.queryset.filter(idgrupo=grupo_id)
-        return self.queryset   
+        grupo_id = self.kwargs.get('grupoId')
+        if grupo_id:
+            return Subgrupo.objects.filter(idgrupo=grupo_id)
+        return Subgrupo.objects.none()
 
-
-
-class CustomAuthToken(APIView):
-    """
-    View personalizada para autenticação e geração de token.
-    """
-    def post(self, request, *args, **kwargs):
-        serializer = AuthTokenSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
+    def delete(self, request, *args, **kwargs):
+        grupo_id = self.kwargs.get('grupoId')
+        if grupo_id:
+            Subgrupo.objects.filter(idgrupo=grupo_id).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_400_BAD_REQUEST)

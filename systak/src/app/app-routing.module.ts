@@ -12,6 +12,16 @@ import { LojaComponent } from './componentes/loja/loja.component';
 import { UserComponent } from './componentes/user/user.component'; 
 import { NatLancamentoComponent } from './componentes/nat-lancamento/nat-lancamento.component'; 
 import { ProdutoComponent } from './componentes/produto/produto.component';
+import { UnidadeComponent } from './componentes/unidade/unidade.component';
+import { ColecaoComponent } from './componentes/colecao/colecao.component';
+import { MaterialComponent } from './componentes/material/material.component';
+import { FamiliaComponent } from './componentes/familia/familia.component';
+import { CorComponent } from './componentes/cor/cor.component';
+import { GradeComponent } from './componentes/grade/grade.component';
+import { TamanhoComponent } from './componentes/tamanho/tamanho.component';
+import { NcmComponent } from './componentes/ncm/ncm.component';
+import { GrupoComponent } from './componentes/grupo/grupo.component';
+import { SubgrupoComponent } from './componentes/subgrupo/subgrupo.component';
 
 
 export const DEFAULT_ROUTE = '/index';
@@ -32,6 +42,15 @@ const routes: Routes = [
   { path: 'estoque', component: HomeComponent },
   { path: 'relatorios', component: HomeComponent },
   { path: 'configuradores/natureza-lancamentos', component: NatLancamentoComponent, canActivate: [AuthGuardService] },
+  { path: 'configuradores/unidade', component: UnidadeComponent, canActivate: [AuthGuardService] },
+  { path: 'configuradores/colecao', component: ColecaoComponent, canActivate: [AuthGuardService] },
+  { path: 'configuradores/material', component: MaterialComponent, canActivate: [AuthGuardService] },
+  { path: 'configuradores/familia', component: FamiliaComponent, canActivate: [AuthGuardService] },
+  { path: 'configuradores/cores', component: CorComponent, canActivate: [AuthGuardService] },
+  { path: 'configuradores/grades', component: GradeComponent, canActivate: [AuthGuardService] },
+  { path: 'configuradores/tamanhos', component: TamanhoComponent, canActivate: [AuthGuardService] },
+  { path: 'estoque/ncm', component: NcmComponent, canActivate: [AuthGuardService] },
+  { path: 'estoque/grupo', component: GrupoComponent, canActivate: [AuthGuardService] },
   { path: 'cadastro/produtos', component: ProdutoComponent, canActivate: [AuthGuardService] },
   { path: 'sair', component: LoginComponent }
 ];

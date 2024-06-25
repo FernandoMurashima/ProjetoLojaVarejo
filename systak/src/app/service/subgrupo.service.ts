@@ -12,32 +12,25 @@ export interface Subgrupo {
   data_cadastro: Date;
 }
 
+type SubgrupoCreate = Omit<Subgrupo, 'Idsubgrupo'>;
+
 @Injectable({
   providedIn: 'root'
 })
 export class SubgrupoService {
-  private apiUrl = `${environment.apiURL}/subgrupos/`;
+  private subgrupoApiUrl = `${environment.apiURL}/subgrupos/`;
 
   constructor(private http: HttpClient) {}
 
-  loadByGrupo(grupoId: string): Observable<Subgrupo[]> {
-    const url = `${this.apiUrl}?grupoId=${grupoId}`;
-    return this.http.get<Subgrupo[]>(url);
+  loadByGrupo(idgrupo: number): Observable<Subgrupo[]> {
+    return this.http.get<Subgrupo[]>(`${this.subgrupoApiUrl}?idgrupo=${idgrupo}`);
   }
 
-  get(id: number): Observable<Subgrupo> {
-    return this.http.get<Subgrupo>(`${this.apiUrl}${id}/`);
+  addSubgrupo(subgrupo: SubgrupoCreate): Observable<Subgrupo> {
+    return this.http.post<Subgrupo>(this.subgrupoApiUrl, subgrupo);
   }
 
-  addSubgrupo(subgrupo: Subgrupo): Observable<Subgrupo> {
-    return this.http.post<Subgrupo>(this.apiUrl, subgrupo);
-  }
-
-  updateSubgrupo(id: number, subgrupo: Subgrupo): Observable<Subgrupo> {
-    return this.http.put<Subgrupo>(`${this.apiUrl}${id}/`, subgrupo);
-  }
-
-  deleteSubgrupo(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}${id}/`);
+  deleteSubgrupos(idgrupo: number): Observable<any> {
+    return this.http.delete(`${this.subgrupoApiUrl}?idgrupo=${idgrupo}`);
   }
 }

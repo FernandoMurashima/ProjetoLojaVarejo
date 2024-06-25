@@ -1,0 +1,142 @@
+<div class="container mt-3">
+    <div class="op01" *ngIf="!action">
+      <div class="banner1">Materiais</div>
+      <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Novo Material</button>
+      <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar Materiais</button>
+      <button class="btn btn-dark action-button" (click)="setAction('editar')">Editar Material</button>
+      <button class="btn btn-dark action-button" (click)="setAction('excluir')">Excluir Material</button>
+      <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+    </div>
+  
+    <!-- Inicio do cadastro -->
+    <div *ngIf="action === 'cadastrar'">
+      <div class="banner">CADASTRO DE MATERIAL</div>
+      <form #materialForm="ngForm" (ngSubmit)="addMaterial()">
+        <div class="principal">
+          <div class="input-item" id="descricao-box">
+            <label for="descricao">Descrição:</label>
+            <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="material.Descricao" #descricao="ngModel" required maxlength="100">
+          </div>
+          <div class="input-item" id="codigo-box">
+            <label for="codigo">Código:</label>
+            <input type="text" id="codigo" name="codigo" [(ngModel)]="material.Codigo" #codigo="ngModel" maxlength="10">
+          </div>
+          <div class="input-item" id="status-box">
+            <label for="status">Status:</label>
+            <select id="status" name="status" [(ngModel)]="material.Status" #status="ngModel" required>
+              <option value="Ativo">Ativo</option>
+              <option value="Inativo">Inativo</option>
+              <option value="Finalizado">Finalizado</option>
+              <option value="Projetado">Projetado</option>
+            </select>
+          </div>
+        </div>
+        <div id="success-message" *ngIf="successMessage">Material adicionado com sucesso!</div>
+        <div class="btn01">
+          <button type="submit" class="btn btn-primary">Salvar</button>
+          <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+    <!-- Fim do cadastro -->
+  
+    <!-- Inicio do consultar -->
+    <div *ngIf="action === 'consultar'">
+      <div *ngIf="!materialSelecionado">
+        <label for="material">Selecione um Material</label>
+        <select id="material" (change)="onMaterialChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione um material</option>
+          <option *ngFor="let material of materiais" [value]="material.Idmaterial">{{ material.Descricao }} ({{ material.Codigo }})</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+  
+      <div *ngIf="materialSelecionado">
+        <div class="banner">CONSULTA DE MATERIAL</div>
+        <form>
+          <div class="principal">
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="materialSelecionado.Descricao" #descricao="ngModel" disabled>
+            </div>
+            <div class="input-item" id="codigo-box">
+              <label for="codigo">Código:</label>
+              <input type="text" id="codigo" name="codigo" [(ngModel)]="materialSelecionado.Codigo" #codigo="ngModel" disabled>
+            </div>
+            <div class="input-item" id="status-box">
+              <label for="status">Status:</label>
+              <input type="text" id="status" name="status" [(ngModel)]="materialSelecionado.Status" #status="ngModel" disabled>
+            </div>
+          </div>
+          <div class="btn01">
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Fim do consultar -->
+  
+    <!-- Inicio do Editar -->
+    <div *ngIf="action === 'editar'">
+      <div *ngIf="!materialSelecionado">
+        <label for="material">Selecione um Material</label>
+        <select id="material" (change)="onMaterialChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione um material</option>
+          <option *ngFor="let material of materiais" [value]="material.Idmaterial">{{ material.Descricao }} ({{ material.Codigo }})</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+  
+      <div *ngIf="materialSelecionado">
+        <div class="banner">ALTERAÇÃO DE MATERIAL</div>
+        <form #materialForm="ngForm" (ngSubmit)="updateMaterial()">
+          <div class="principal">
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="material.Descricao" #descricao="ngModel" required maxlength="100">
+            </div>
+            <div class="input-item" id="codigo-box">
+              <label for="codigo">Código:</label>
+              <input type="text" id="codigo" name="codigo" [(ngModel)]="material.Codigo" #codigo="ngModel" maxlength="10">
+            </div>
+            <div class="input-item" id="status-box">
+              <label for="status">Status:</label>
+              <select id="status" name="status" [(ngModel)]="material.Status" #status="ngModel" required>
+                <option value="Ativo">Ativo</option>
+                <option value="Inativo">Inativo</option>
+                <option value="Finalizado">Finalizado</option>
+                <option value="Projetado">Projetado</option>
+              </select>
+            </div>
+          </div>
+          <div id="success-message" *ngIf="successMessage">Material atualizado com sucesso!</div>
+          <div class="btn01">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Fim do Editar -->
+  
+    <!-- Inicio do Excluir -->
+    <div *ngIf="action === 'excluir'">
+      <h2>Excluir Material</h2>
+      <div *ngIf="materialSelecionado">
+        <p>Tem certeza que deseja excluir o material {{ materialSelecionado.Descricao }} ({{ materialSelecionado.Codigo }})?</p>
+        <button type="button" class="btn btn-danger" (click)="deleteMaterial()">Excluir</button>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+      </div>
+      <div *ngIf="!materialSelecionado">
+        <label for="material">Selecione um Material</label>
+        <select id="material" (change)="onMaterialChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione um material</option>
+          <option *ngFor="let material of materiais" [value]="material.Idmaterial">{{ material.Descricao }} ({{ material.Codigo }})</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+    </div>
+    <!-- Fim do Excluir -->
+  
+  </div>
+  

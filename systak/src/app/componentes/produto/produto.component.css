@@ -1,108 +1,40 @@
-/* Estilização do contêiner principal */
-.container-fluid {
-    width: 100vw; /* Ocupar 100% da largura da tela */
-    padding: 0; /* Remover padding padrão */
-    margin: 0; /* Remover margem padrão */
+/* Estilização do formulário */
+form {
+    padding: 5px;
+    /* border: 2px solid; */
+    width: 100%; /* Ocupar 100% da largura do contêiner */
+    box-sizing: border-box; /* Incluir padding e borda na largura total */
+    margin: 0; /* Remover margens externas */
+    margin-bottom: 5px;
+}
+
+.container mt-3{
+    /* border: 2px solid; */
+    padding: 5px;
+    margin-top: 5px;
+    width: 150%; /* Ocupar 100% da largura do contêiner pai */
     box-sizing: border-box; /* Incluir padding e borda na largura total */
 }
 
-/* Estilização do formulário */
-form {
-    padding: 10px;
-    border: 2px solid;
-    width: 100vw; /* Ocupar 100% da largura da janela de visualização */
-    margin: 0; /* Remover margens externas */
-    box-sizing: border-box; /* Incluir padding e borda na largura total */
-    
-}
 
 /* Estilização principal */
 .principal {
-    border: 2px solid;
+    /* border: 2px solid; */
     padding: 5px;
     margin-top: 5px;
     width: 100%; /* Ocupar 100% da largura do contêiner pai */
     box-sizing: border-box; /* Incluir padding e borda na largura total */
 }
 
-/* Estilização do banner e botões */
-.banner, .buttons {
-    grid-column: 1 / -1; /* Faz com que o banner e botões ocupem todas as colunas */
-}
-
-/* Estilização do banner principal */
-.banner {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    border: 2px solid;
-    padding: 5px;
-}
-
-/* Estilização do banner secundário */
-.banner1 {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    border: 1px solid;
-    padding: 5px;
-}
-
-/* Estilização dos botões */
-.button {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-    border: 2px solid;
-    padding: 5px;
-    margin: 10px;
-    margin-right: auto;
-    margin-left: 90px;
-}
-
-/* Estilização individual dos botões */
-.botao {
-    padding: 10px 20px;
-}
-
-/* Estilização dos inputs */
-.input-caixa, input {
-    width: 100%; /* Faz os inputs preencherem seus contêineres */
-    padding: 8px;
-}
-
-/* Estilização do banner principal */
-.banner-principal {
-    background-color: #343a40;  /* Dark background similar to navbar for consistency */
-    color: #ffffff;            /* White text color */
-    text-align: center;        /* Center the text */
-    padding: 10px 0;           /* Add some padding for spacing */
-    font-size: 24px;           /* Larger font size for visibility */
-    font-weight: bold;         /* Make the font bold */
-    border-bottom: 2px solid #666; /* Optional: adds a subtle border for a distinct look */
-}
-
-/* Estilização dos botões primários */
-.btn01 .btn-primary {
-    padding: 5px;
-    margin-top: 5px;
-    margin-right: 30px;
-}
-
-/* Estilização das opções */
-.op01 {
-    border: 2px solid;
-}
-
-/* Estilização dos botões de ação */
-.action-button {
-    margin: 10px;
-    margin-right: auto;
-    margin-left: 90px;
-}
-
 /* Estilização dos grupos de campos */
-.field-group, .field-group2, .field-group3, .field-group4, .field-group44, .field-group5 {
+.field-group,
+.field-group2,
+.field-group22,
+.field-group3,
+.field-group333,
+.field-group4,
+.field-group44,
+.field-group5 {
     display: grid;
     grid-template-columns: repeat(10, 1fr); /* 10 colunas */
     gap: 10px;
@@ -114,23 +46,112 @@ form {
     flex-direction: column;
 }
 
-/* Posicionamento específico dos campos */
-#nome-box { grid-row: 1; grid-column: 1; width: 600px; }
-#apelido-box { grid-row: 1; grid-column: 2; width: 250px; }
-#data-cadastro-box { grid-row: 1; grid-column: 3; width: 250px; }
-#cpf-box { grid-row: 2; grid-column: 1; width: 350px; }
-#aniversario-box { grid-row: 2; grid-column: 3; width: 250px; }
-#categoria-box { grid-row: 2; grid-column: 5; width: 200px; }
-#bloqueio-box { grid-row: 2; grid-column: 7; width: 50px; }
-#mala-direta-box { grid-row: 2; grid-column: 9; width: 50px; }
-#tipo-box { grid-row: 3; grid-column: 1; width: 100px; }
-#endereco-box { grid-row: 3; grid-column: 2; width: 950px; }
-#numero-box { grid-row: 3; grid-column: 8; width: 100px; }
-#complemento-box { grid-row: 4; grid-column: 1; width: 1000px; }
-#cidade-box { grid-row: 5; grid-column: 1; width: 500px; }
-#bairro-box { grid-row: 5; grid-column: 3; width: 500px; }
-#cep-box { grid-row: 5; grid-column: 8; width: 120px; }
-#telefone1-box { grid-row: 6; grid-column: 1; width: 150px; }
-#telefone2-box { grid-row: 6; grid-column: 3; width: 150px; }
-#email-box { grid-row: 6; grid-column: 5; width: 500px; }
-#conta-contabil-box { grid-row: 6; grid-column: 7; width: 250px; }
+/* Estilização dos inputs */
+.input-caixa, input {
+    width: 100%; /* Faz os inputs preencherem seus contêineres */
+    padding: 4px 8px; /* Ajusta o padding para diminuir a altura */
+    font-size: 14px; /* Opcional: Ajusta o tamanho da fonte */
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
+}
+
+/* Estilização dos botões */
+.button {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    /* border: 2px solid; */
+    padding: 5px;
+    margin: 10px 0; /* Remover margem à esquerda e direita */
+}
+
+/* Estilização individual dos botões */
+.botao {
+    padding: 10px 20px;
+}
+
+/* Estilização do banner e botões */
+.banner,
+.buttons {
+    grid-column: 1 / -1; /* Faz com que o banner e botões ocupem todas as colunas */
+}
+
+/* Estilização do banner principal */
+.banner {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    /* border: 2px solid; */
+    padding: 5px;
+    width: 98.7vw; /* Ocupar 100% da largura do contêiner */
+    margin: 0; /* Remover margens externas */
+}
+
+/* Estilização do banner secundário */
+.banner1 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border: 1px solid;
+    padding: 5px;
+    width: 98.61vw;
+    margin-left: 0;
+ 
+}
+
+/* Estilização do banner principal */
+.banner-principal {
+    background-color: #343a40;  /* Dark background similar to navbar for consistency */
+    color: #ffffff;            /* White text color */
+    text-align: center;        /* Center the text */
+    padding: 10px 0;           /* Add some padding for spacing */
+    font-size: 24px;           /* Larger font size for visibility */
+    font-weight: bold;         /* Make the font bold */
+    /* border-bottom: 2px solid #666;  */
+    width: 98.7vw;
+}
+
+/* Estilização dos botões primários */
+.btn01 .btn-primary {
+    padding: 5px;
+    margin-top: 5px;
+    margin-right: 40px;
+    
+}
+
+.btn01{
+    padding: 10px;
+    border: 2px solid;
+    width: 98vw;
+    margin-top: 10px;
+}
+
+/* Estilização das opções */
+.op01 {
+    border: 2px solid;
+    width: 98.7vw;
+}
+
+/* Estilização dos botões de ação */
+.action-button {
+    margin: 10px;
+    margin-right: auto;
+    margin-left: 200px;
+}
+
+#descricao-box            { grid-row: 1; grid-column: 1; width: 800px; }
+#desc-reduzida-box        { grid-row: 1; grid-column: 2; width: 550px; }
+#tipo-box                 { grid-row: 1; grid-column: 3; width: 200px; }
+#grade-box                { grid-row: 1; grid-column: 4; width: 250px; }
+
+#classificacao-fiscal-box { grid-row: 2; grid-column: 1; width: 350px; }
+#unidade-box              { grid-row: 2; grid-column: 2; width: 350px; }
+#grupo-box                { grid-row: 2; grid-column: 3; width: 350px; }
+#subgrupo-box             { grid-row: 2; grid-column: 4; width: 350px; }
+#familia-box              { grid-row: 2; grid-column: 5; width: 350px; }
+
+#colecao-box              { grid-row: 3; grid-column: 1; width: 350px; }
+#material-box             { grid-row: 3; grid-column: 2; width: 350px; }
+
+#produto-foto-box         { grid-row: 4; grid-column: 1; width: 350px; }
+#produto-foto1-box        { grid-row: 4; grid-column: 2; width: 350px; }
+#produto-foto2-box        { grid-row: 4; grid-column: 3; width: 350px; }

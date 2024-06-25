@@ -16,8 +16,11 @@ export interface Produto {
   grade?: string;
   colecao?: string;
   produto_foto?: string;
+  produto_foto1?: string;
+  produto_foto2?: string;
   Material?: string;
   data_cadastro: Date;
+  [key: string]: any; // Adicionando esta linha para permitir indexação dinâmica
 }
 
 @Injectable({

@@ -1,0 +1,148 @@
+<div class="container mt-3">
+    <div class="op01" *ngIf="!action">
+      <div class="banner1">Tamanhos</div>
+      <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Novo Tamanho</button>
+      <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar Tamanhos</button>
+      <button class="btn btn-dark action-button" (click)="setAction('editar')">Editar Tamanho</button>
+      <button class="btn btn-dark action-button" (click)="setAction('excluir')">Excluir Tamanho</button>
+      <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+    </div>
+  
+    <!-- Inicio do cadastro -->
+    <div *ngIf="action === 'cadastrar'">
+      <div class="banner">CADASTRO DE TAMANHO</div>
+      <form #tamanhoForm="ngForm" (ngSubmit)="addTamanho()">
+        <div class="principal">
+          <div class="input-item" id="descricao-box">
+            <label for="idgrade">Grade:</label>
+            <select id="idgrade" name="idgrade" [(ngModel)]="ttamanho.idgrade" #idgrade="ngModel" required>
+              <option *ngFor="let grade of grades" [value]="grade.Idgrade">{{ grade.Descricao }}</option>
+            </select>
+          </div>
+          <div class="input-item" id="tamanho-box">
+            <label for="tamanho">Tamanho:</label>
+            <input class="input-caixa" type="text" id="tamanho" name="tamanho" [(ngModel)]="ttamanho.Tamanho" #tamanho="ngModel" required maxlength="10">
+          </div>
+          <div class="input-item" id="status-box">
+            <label for="status">Status:</label>
+            <select id="status" name="status" [(ngModel)]="ttamanho.Status" #status="ngModel" required>
+              <option value="Ativa">Ativa</option>
+              <option value="Desativada">Desativada</option>
+              <option value="Planejamento">Planejamento</option>
+            </select>
+          </div>
+        </div>
+  
+        <div id="success-message" *ngIf="successMessage">Tamanho adicionado com sucesso!</div>
+  
+        <div class="btn01">
+          <button type="submit" class="btn btn-primary">Salvar</button>
+          <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+    <!-- Fim do cadastro -->
+  
+    <!-- Inicio do consultar -->
+    <div *ngIf="action === 'consultar'">
+      <div *ngIf="!tamanhoSelecionado">
+        <label for="tamanho">Selecione um Tamanho</label>
+        <select id="tamanho" (change)="onTamanhoChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione um tamanho</option>
+          <option *ngFor="let tamanho of tamanhos" [value]="tamanho.Idtamanho">{{ tamanho.Tamanho }}</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+  
+      <div *ngIf="tamanhoSelecionado">
+        <div class="banner">CONSULTA DE TAMANHO</div>
+        <form>
+          <div class="principal">
+            <div class="input-item" id="idgrade-box">
+              <label for="idgrade">Grade:</label>
+              <input class="input-caixa" type="text" id="idgrade" name="idgrade" [(ngModel)]="tamanhoSelecionado.gradeDescricao" #idgrade="ngModel" disabled>
+            </div>
+            <div class="input-item" id="tamanho-box">
+              <label for="tamanho">Tamanho:</label>
+              <input class="input-caixa" type="text" id="tamanho" name="tamanho" [(ngModel)]="tamanhoSelecionado.Tamanho" #tamanho="ngModel" disabled>
+            </div>
+            <div class="input-item" id="status-box">
+              <label for="status">Status:</label>
+              <input class="input-caixa" type="text" id="status" name="status" [(ngModel)]="tamanhoSelecionado.Status" #status="ngModel" disabled>
+            </div>
+          </div>
+          <div class="btn01">
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Fim do consultar -->
+  
+    <!-- Inicio do Editar -->
+    <div *ngIf="action === 'editar'">
+      <div *ngIf="!tamanhoSelecionado">
+        <label for="tamanho">Selecione um Tamanho</label>
+        <select id="tamanho" (change)="onTamanhoChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione um tamanho</option>
+          <option *ngFor="let tamanho of tamanhos" [value]="tamanho.Idtamanho">{{ tamanho.Tamanho }}</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+  
+      <div *ngIf="tamanhoSelecionado">
+        <div class="banner">ALTERAÇÃO DE TAMANHO</div>
+        <form #tamanhoForm="ngForm" (ngSubmit)="updateTamanho()">
+          <div class="principal">
+            <div class="input-item" id="descricao-box">
+              <label for="idgrade">Grade:</label>
+              <select id="idgrade" name="idgrade" [(ngModel)]="ttamanho.idgrade" #idgrade="ngModel" required>
+                <option *ngFor="let grade of grades" [value]="grade.Idgrade">{{ grade.Descricao }}</option>
+              </select>
+            </div>
+            <div class="input-item" id="tamanho-box">
+              <label for="tamanho">Tamanho:</label>
+              <input class="input-caixa" type="text" id="tamanho" name="tamanho" [(ngModel)]="ttamanho.Tamanho" #tamanho="ngModel" required maxlength="10">
+            </div>
+            <div class="input-item" id="status-box">
+              <label for="status">Status:</label>
+              <select id="status" name="status" [(ngModel)]="ttamanho.Status" #status="ngModel" required>
+                <option value="Ativa">Ativa</option>
+                <option value="Desativada">Desativada</option>
+                <option value="Planejamento">Planejamento</option>
+              </select>
+            </div>
+          </div>
+  
+          <div id="success-message" *ngIf="successMessage">Tamanho atualizado com sucesso!</div>
+  
+          <div class="btn01">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Fim do Editar -->
+    
+    <!-- Inicio do Excluir -->
+    <div *ngIf="action === 'excluir'">
+      <h2>Excluir Tamanho</h2>
+      <div *ngIf="tamanhoSelecionado">
+        <p>Tem certeza que deseja excluir o tamanho {{ tamanhoSelecionado.Tamanho }}?</p>
+        <button type="button" class="btn btn-danger" (click)="deleteTamanho()">Excluir</button>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+      </div>
+      <div *ngIf="!tamanhoSelecionado">
+        <label for="tamanho">Selecione um Tamanho</label>
+        <select id="tamanho" (change)="onTamanhoChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione um tamanho</option>
+          <option *ngFor="let tamanho of tamanhos" [value]="tamanho.Idtamanho">{{ tamanho.Tamanho }}</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+    </div>
+    <!-- Fim do Excluir -->
+  
+  </div>
+  

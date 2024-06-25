@@ -1,0 +1,168 @@
+<div class="container mt-3">
+  <div class="op01" *ngIf="!action">
+      <div class="banner1">NCMs</div>
+      <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Novo NCM</button>
+      <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar NCMs</button>
+      <button class="btn btn-dark action-button" (click)="setAction('editar')">Editar NCM</button>
+      <button class="btn btn-dark action-button" (click)="setAction('excluir')">Excluir NCM</button>
+      <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+  </div>
+
+  <!-- Inicio do cadastro -->
+  <div *ngIf="action === 'cadastrar'">
+      <div class="banner">CADASTRO DE NCM</div>
+      <form #ncmForm="ngForm" (ngSubmit)="addNcm()">
+          <div class="principal">
+              <div class="field-group">
+                  <div class="input-item" id="descricao-box">
+                      <label for="descricao">Descrição:</label>
+                      <textarea id="descricao" name="descricao" [(ngModel)]="tncm.descricao" #descricao="ngModel" required maxlength="1000"></textarea>
+                  </div>
+              </div>
+
+              <div class="field-group44">
+                  <div class="input-item" id="ncm-box">
+                      <label for="ncm">NCM:</label>
+                      <input class="input-caixa" type="text" id="ncm" name="ncm" [(ngModel)]="tncm.ncm" #ncm="ngModel" required maxlength="20">
+                  </div>
+
+                  <div class="input-item" id="campo1-box">
+                      <label for="campo1">Campo 1:</label>
+                      <input type="text" id="campo1" name="campo1" [(ngModel)]="tncm.campo1" #campo1="ngModel" maxlength="25">
+                  </div>
+
+                  <div class="input-item" id="aliquota-box">
+                      <label for="aliquota">Alíquota:</label>
+                      <input type="text" id="aliquota" name="aliquota" [(ngModel)]="tncm.aliquota" #aliquota="ngModel" maxlength="20">
+                  </div>
+              </div>
+
+              <div id="success-message" *ngIf="successMessage">NCM adicionado com sucesso!</div>
+          </div>
+
+          <div class="btn01">
+              <button type="submit" class="btn btn-primary">Salvar</button>
+              <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+          </div>
+      </form>
+  </div>
+  <!-- Fim do cadastro -->
+
+  <!-- Inicio do consultar -->
+  <div *ngIf="action === 'consultar'">
+      <div *ngIf="!ncmSelecionado">
+          <label for="ncm">Selecione um NCM</label>
+          <select id="ncm" (change)="onNcmChange($event)" class="form-control">
+              <option value="" disabled selected>Selecione um NCM</option>
+              <option *ngFor="let ncm of ncms" [value]="ncm.id">{{ ncm.ncm }} - {{ ncm.descricao | slice:0:100 }}</option>
+          </select>
+          <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+
+      <div *ngIf="ncmSelecionado">
+          <div class="banner">CONSULTA DE NCM</div>
+          <form>
+              <div class="principal">
+                  <div class="field-group">
+                      <div class="input-item" id="descricao-box">
+                          <label for="descricao">Descrição:</label>
+                          <textarea id="descricao" name="descricao" [(ngModel)]="ncmSelecionado.descricao" #descricao="ngModel" disabled></textarea>
+                      </div>
+                  </div>
+
+                  <div class="field-group4">
+                      <div class="input-item" id="ncm-box">
+                          <label for="ncm">NCM:</label>
+                          <input class="input-caixa" type="text" id="ncm" name="ncm" [(ngModel)]="ncmSelecionado.ncm" #ncm="ngModel" disabled>
+                      </div>
+
+                      <div class="input-item" id="campo1-box">
+                          <label for="campo1">Campo 1:</label>
+                          <input type="text" id="campo1" name="campo1" [(ngModel)]="ncmSelecionado.campo1" #campo1="ngModel" disabled>
+                      </div>
+
+                      <div class="input-item" id="aliquota-box">
+                          <label for="aliquota">Alíquota:</label>
+                          <input type="text" id="aliquota" name="aliquota" [(ngModel)]="ncmSelecionado.aliquota" #aliquota="ngModel" disabled>
+                      </div>
+                  </div>
+
+                  <div class="btn01">
+                      <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+                  </div>
+              </div>
+          </form>
+      </div>
+  </div>
+  <!-- Fim do consultar -->
+
+  <!-- Inicio do Editar -->
+  <div *ngIf="action === 'editar'">
+      <div *ngIf="!ncmSelecionado">
+          <label for="ncm">Selecione um NCM</label>
+          <select id="ncm" (change)="onNcmChange($event)" class="form-control">
+              <option value="" disabled selected>Selecione um NCM</option>
+              <option *ngFor="let ncm of ncms" [value]="ncm.id">{{ ncm.ncm }} - {{ ncm.descricao | slice:0:100 }}</option>
+          </select>
+          <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+
+      <div *ngIf="ncmSelecionado">
+          <div class="banner">ALTERAÇÃO DE NCM</div>
+          <form #ncmForm="ngForm" (ngSubmit)="updateNcm()">
+              <div class="principal">
+                  <div class="field-group">
+                      <div class="input-item" id="descricao-box">
+                          <label for="descricao">Descrição:</label>
+                          <textarea id="descricao" name="descricao" [(ngModel)]="tncm.descricao" #descricao="ngModel" required maxlength="1000"></textarea>
+                      </div>
+                  </div>
+
+                  <div class="field-group44">
+                      <div class="input-item" id="ncm-box">
+                          <label for="ncm">NCM:</label>
+                          <input class="input-caixa" type="text" id="ncm" name="ncm" [(ngModel)]="tncm.ncm" #ncm="ngModel" required maxlength="20">
+                      </div>
+
+                      <div class="input-item" id="campo1-box">
+                          <label for="campo1">Campo 1:</label>
+                          <input type="text" id="campo1" name="campo1" [(ngModel)]="tncm.campo1" #campo1="ngModel" maxlength="25">
+                      </div>
+
+                      <div class="input-item" id="aliquota-box">
+                          <label for="aliquota">Alíquota:</label>
+                          <input type="text" id="aliquota" name="aliquota" [(ngModel)]="tncm.aliquota" #aliquota="ngModel" maxlength="20">
+                      </div>
+                  </div>
+
+                  <div id="success-message" *ngIf="successMessage">NCM adicionado com sucesso!</div>
+              </div>
+
+              <div class="btn01">
+                  <button type="submit" class="btn btn-primary">Salvar</button>
+                  <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+              </div>
+          </form>
+      </div>
+  </div>
+  <!-- Fim do Editar -->
+
+  <!-- Inicio do Excluir -->
+  <div *ngIf="action === 'excluir'">
+      <h2>Excluir NCM</h2>
+      <div *ngIf="ncmSelecionado">
+          <p>Tem certeza que deseja excluir o NCM {{ ncmSelecionado.ncm }}?</p>
+          <button type="button" class="btn btn-danger" (click)="deleteNcm()">Excluir</button>
+          <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+      </div>
+      <div *ngIf="!ncmSelecionado">
+          <label for="ncm">Selecione um NCM</label>
+          <select id="ncm" (change)="onNcmChange($event)" class="form-control">
+              <option value="" disabled selected>Selecione um NCM</option>
+              <option *ngFor="let ncm of ncms" [value]="ncm.id">{{ ncm.ncm }} - {{ ncm.descricao | slice:0:100 }}</option>
+          </select>
+          <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+  </div>
+  <!-- Fim do Excluir -->
+</div>

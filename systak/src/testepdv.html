@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDV Layout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            height: 95%;
+            border: 2px solid #ddd;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+        .main {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: 20%;
+            background-color: #f4f4f4;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-right: 2px solid #ddd;
+        }
+        .product-image-container, .menu-container {
+            width: 100%;
+            background-color: #fff;
+            border: 2px solid #ddd;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .sidebar img {
+            max-width: 100%;
+            max-height: 200px;
+            border: 2px solid #ddd;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .menu-container ul {
+            list-style-type: none;
+            padding: 0;
+            width: 100%;
+            text-align: left;
+        }
+        .menu-container li {
+            padding: 5px 0;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .product-input {
+            margin-bottom: 20px;
+        }
+        .product-display {
+            flex: 1;
+            background-color: #fff;
+            border: 2px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .product-display h2 {
+            margin: 0;
+            margin-bottom: 10px;
+        }
+        .product-info {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .product-info div {
+            flex: 1;
+            padding: 0 10px;
+            text-align: center;
+        }
+        .product-info div:first-child {
+            text-align: left;
+        }
+        .product-info div:last-child {
+            text-align: right;
+        }
+        .purchase-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .footer {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-top: 2px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PDV - Ponto de Venda</h1>
+        </div>
+        <div class="main">
+            <div class="sidebar">
+                <div class="product-image-container">
+                    <p>Produto camisa de manga</p>
+                    <img src="https://via.placeholder.com/150" alt="Foto do Produto" id="product-image">
+                </div>
+                <div class="menu-container">
+                    <h2>Menu</h2>
+                    <ul>
+                        <li>Opção 1</li>
+                        <li>Opção 2</li>
+                        <li>Opção 3</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="content">
+                <div class="product-input">
+                    <label for="product-code">Código do Produto:</label>
+                    <input type="text" id="product-code" placeholder="Digite o código do produto">
+                </div>
+                <div class="product-display">
+                    <h2>Produto Digitado</h2>
+                    <div class="product-info">
+                        <div id="product-item-number">Item: 1</div>
+                        <div id="product-code-display">Código: 12345</div>
+                        <div id="product-description-display">Descrição: Produto Exemplo</div>
+                        <div id="product-qty-display">Qtd: 1</div>
+                        <div id="product-price-display">Preço: R$ 10,00</div>
+                        <div id="product-total-display">Total: R$ 10,00</div>
+                    </div>
+                </div>
+                <div class="purchase-summary">
+                    <div>
+                        <h2>Total da Compra</h2>
+                    </div>
+                    <div>
+                        <h2>R$ 0,00</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 PDV</p>
+        </div>
+    </div>
+</body>
+</html>

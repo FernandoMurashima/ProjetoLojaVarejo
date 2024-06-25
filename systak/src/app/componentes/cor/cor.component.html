@@ -1,0 +1,151 @@
+<div class="container mt-3">
+    <div class="op01" *ngIf="!action">
+      <div class="banner1">Cores</div>
+      <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Nova Cor</button>
+      <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar Cores</button>
+      <button class="btn btn-dark action-button" (click)="setAction('editar')">Editar Cor</button>
+      <button class="btn btn-dark action-button" (click)="setAction('excluir')">Excluir Cor</button>
+      <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+    </div>
+  
+    <!-- Inicio do cadastro -->
+    <div *ngIf="action === 'cadastrar'">
+      <div class="banner">CADASTRO DE COR</div>
+      <form #corForm="ngForm" (ngSubmit)="addCor()">
+        <div class="principal">
+          <div class="input-item" id="descricao-box">
+            <label for="descricao">Descrição:</label>
+            <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="tcor.Descricao" #descricao="ngModel" required maxlength="100">
+          </div>
+          <div class="input-item" id="codigo-box">
+            <label for="codigo">Código:</label>
+            <input type="text" id="codigo" name="codigo" [(ngModel)]="tcor.Codigo" #codigo="ngModel" maxlength="12">
+          </div>
+          <div class="input-item" id="cor-box">
+            <label for="cor">Cor:</label>
+            <input type="text" id="cor" name="cor" [(ngModel)]="tcor.Cor" #cor="ngModel" required maxlength="30">
+          </div>
+          <div class="input-item" id="status-box">
+            <label for="status">Status:</label>
+            <select id="status" name="status" [(ngModel)]="cor.status" #status="ngModel" required>
+              <option value="Ativa">Ativa</option>
+              <option value="Desativada">Desativada</option>
+              <option value="Planejamento">Planejamento</option>
+            </select>
+          </div>
+        </div>
+        <div id="success-message" *ngIf="successMessage">Cor adicionada com sucesso!</div>
+        <div class="btn01">
+          <button type="submit" class="btn btn-primary">Salvar</button>
+          <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+    <!-- Fim do cadastro -->
+  
+    <!-- Inicio do consultar -->
+    <div *ngIf="action === 'consultar'">
+      <div *ngIf="!corSelecionada">
+        <label for="cor">Selecione uma Cor</label>
+        <select id="cor" (change)="onCorChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione uma cor</option>
+          <option *ngFor="let cor of cores" [value]="cor.Idcor">{{ cor.Descricao }} ({{ cor.Codigo }})</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+  
+      <div *ngIf="corSelecionada">
+        <div class="banner">CONSULTA DE COR</div>
+        <form>
+          <div class="principal">
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="corSelecionada.Descricao" #descricao="ngModel" disabled>
+            </div>
+            <div class="input-item" id="codigo-box">
+              <label for="codigo">Código:</label>
+              <input type="text" id="codigo" name="codigo" [(ngModel)]="corSelecionada.Codigo" #codigo="ngModel" disabled>
+            </div>
+            <div class="input-item" id="cor-box">
+              <label for="cor">Cor:</label>
+              <input type="text" id="cor" name="cor" [(ngModel)]="corSelecionada.Cor" #cor="ngModel" disabled>
+            </div>
+            <div class="input-item" id="status-box">
+              <label for="status">Status:</label>
+              <input type="text" id="status" name="status" [(ngModel)]="corSelecionada.Status" #status="ngModel" disabled>
+            </div>
+          </div>
+          <div class="btn01">
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Fim do consultar -->
+  
+    <!-- Inicio do Editar -->
+    <div *ngIf="action === 'editar'">
+      <div *ngIf="!corSelecionada">
+        <label for="cor">Selecione uma Cor</label>
+        <select id="cor" (change)="onCorChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione uma cor</option>
+          <option *ngFor="let cor of cores" [value]="cor.Idcor">{{ cor.Descricao }} ({{ cor.Codigo }})</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+  
+      <div *ngIf="corSelecionada">
+        <div class="banner">ALTERAÇÃO DE COR</div>
+        <form #corForm="ngForm" (ngSubmit)="updateCor()">
+          <div class="principal">
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="tcor.Descricao" #descricao="ngModel" required maxlength="100">
+            </div>
+            <div class="input-item" id="codigo-box">
+              <label for="codigo">Código:</label>
+              <input type="text" id="codigo" name="codigo" [(ngModel)]="tcor.Codigo" #codigo="ngModel" maxlength="12">
+            </div>
+            <div class="input-item" id="cor-box">
+              <label for="cor">Cor:</label>
+              <input type="text" id="cor" name="cor" [(ngModel)]="tcor.Cor" #cor="ngModel" required maxlength="30">
+            </div>
+            <div class="input-item" id="status-box">
+              <label for="status">Status:</label>
+              <select id="status" name="status" [(ngModel)]="cor.status" #status="ngModel" required>
+                <option value="Ativa">Ativa</option>
+                <option value="Desativada">Desativada</option>
+                <option value="Planejamento">Planejamento</option>
+              </select>
+            </div>
+          </div>
+          <div id="success-message" *ngIf="successMessage">Cor atualizada com sucesso!</div>
+          <div class="btn01">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Fim do Editar -->
+  
+    <!-- Inicio do Excluir -->
+    <div *ngIf="action === 'excluir'">
+      <h2>Excluir Cor</h2>
+      <div *ngIf="corSelecionada">
+        <p>Tem certeza que deseja excluir a cor {{ corSelecionada.Descricao }}?</p>
+        <button type="button" class="btn btn-danger" (click)="deleteCor()">Excluir</button>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+      </div>
+      <div *ngIf="!corSelecionada">
+        <label for="cor">Selecione uma Cor</label>
+        <select id="cor" (change)="onCorChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione uma cor</option>
+          <option *ngFor="let cor of cores" [value]="cor.Idcor">{{ cor.Descricao }} ({{ cor.Codigo }})</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+    </div>
+    <!-- Fim do Excluir -->
+  </div>
+  
