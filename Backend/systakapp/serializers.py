@@ -5,7 +5,7 @@ from .models import (
     Nat_Lancamento, ContaBancaria, Produto, ProdutoDetalhe, Tabelapreco, Estoque,
     Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos, Inventario,
     InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem,
-    PedidoCompra, PedidoCompraItem, Grupo, Subgrupo, Unidade, Material, Familia, Colecao, Grade, Ncm, Tiposdesubgrupo
+    PedidoCompra, PedidoCompraItem, Grupo, Unidade, Material, Familia, Colecao, Grade, Ncm, Subgrupo, GrupoDetalhe
 )
 
 class UserSerializer(serializers.ModelSerializer):
@@ -152,16 +152,6 @@ class PedidoCompraItemSerializer(serializers.ModelSerializer):
         model = PedidoCompraItem
         fields = '__all__'
 
-class GrupoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Grupo
-        fields = '__all__'
-
-class SubgrupoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Subgrupo
-        fields = '__all__'
-
 class UnidadeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Unidade
@@ -192,7 +182,22 @@ class NcmSerializer(serializers.ModelSerializer):
         model = Ncm
         fields = '__all__'        
 
-class TiposdesubgrupoSerializer(serializers.ModelSerializer):
+class GrupoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Tiposdesubgrupo
+        model = Grupo
+        fields = '__all__'
+
+class GrupoDetalheSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GrupoDetalhe
+        fields = '__all__'
+    
+    def validate(self, data):
+        if GrupoDetalhe.objects.filter(idgrupo=data['idgrupo'], idsubgrupo=data['idsubgrupo']).exists():
+            raise serializers.ValidationError("Essa combinação de grupo e subgrupo já foi cadastrada.")
+        return data
+
+class SubGrupoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subgrupo
         fields = '__all__'        

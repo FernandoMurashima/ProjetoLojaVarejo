@@ -49,7 +49,6 @@ export class ProdutoComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProdutos();
-    this.loadGrupos();
     this.loadGrades(); // Carregar grades
     this.loadUnidades(); // Carregar unidades
     this.loadColecoes(); // Carregar coleções
@@ -113,8 +112,7 @@ export class ProdutoComponent implements OnInit {
 
   populateProdutoDescriptions() {
     this.produtos.forEach(produto => {
-      produto['grupoDescricao'] = this.grupos.find(grupo => grupo.Idgrupo.toString() === produto.grupo)?.Descricao || '';
-      produto['subgrupoDescricao'] = this.subgrupos.find(subgrupo => subgrupo.Idsubgrupo.toString() === produto.subgrupo)?.Descricao || '';
+      
       produto['gradeDescricao'] = this.grades.find(grade => grade.Idgrade.toString() === produto.grade)?.Descricao || '';
       produto['unidadeDescricao'] = this.unidades.find(unidade => unidade.Idunidade.toString() === produto.unidade)?.Descricao || '';
       produto['colecaoDescricao'] = this.colecoes.find(colecao => colecao.Idcolecao.toString() === produto.colecao)?.Descricao || '';
@@ -124,29 +122,9 @@ export class ProdutoComponent implements OnInit {
     });
   }
 
-  loadGrupos() {
-    this.grupoService.load().subscribe({
-      next: (data: Grupo[]) => {
-        this.grupos = data;
-      },
-      error: (error: any) => {
-        console.error('Erro ao carregar grupos', error);
-      }
-    });
-  }
+  
 
-  loadSubgrupos(idgrupo: number) { // Alteração: idgrupo agora é number
-    this.subgrupoService.loadByGrupo(idgrupo).subscribe({ // Alteração: conversão removida
-      next: (data: Subgrupo[]) => {
-        this.subgrupos = data;
-        this.populateProdutoDescriptions();
-      },
-      error: (error: any) => {
-        console.error('Erro ao carregar subgrupos', error);
-      }
-    });
-  }
-
+  
   // Método para carregar grades ativas
   loadGrades() {
     this.gradeService.loadActive().subscribe({
@@ -277,15 +255,12 @@ export class ProdutoComponent implements OnInit {
   
     if (this.produtoSelecionado) {
       this.produto = { ...this.produtoSelecionado };
-      if (this.produtoSelecionado.grupo) {
-        this.loadSubgrupos(+this.produtoSelecionado.grupo); // Alteração: conversão para number adicionada
-      }
     }
   }
 
   onGrupoChange(event: Event) {
     const selectedId = +(event.target as HTMLSelectElement).value; // Alteração: conversão para number adicionada
-    this.loadSubgrupos(selectedId);
+    
   }
 
   onFotoChange(field: string, event: Event) {

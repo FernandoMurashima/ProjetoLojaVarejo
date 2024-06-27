@@ -14,16 +14,16 @@ from .serializers import (
     EstoqueSerializer, VendaSerializer, VendaItemSerializer, MovimentacaoFinanceiraSerializer,
     MovimentacaoProdutosSerializer, InventarioSerializer, InventarioItemSerializer,
     ReceberSerializer, ReceberItensSerializer, PagarSerializer, PagarItemSerializer,
-    CompraSerializer, CompraItemSerializer, PedidoCompraSerializer, PedidoCompraItemSerializer, LojaSerializer, GrupoSerializer, SubgrupoSerializer,
-    UnidadeSerializer, MaterialSerializer, FamiliaSerializer, ColecaoSerializer,GradeSerializer, NcmSerializer, TiposdesubgrupoSerializer
-)
+    CompraSerializer, CompraItemSerializer, PedidoCompraSerializer, PedidoCompraItemSerializer, LojaSerializer, GrupoSerializer,
+    UnidadeSerializer, MaterialSerializer, FamiliaSerializer, ColecaoSerializer,GradeSerializer, NcmSerializer, SubGrupoSerializer,GrupoDetalheSerializer
+    )
 
 from .models import (
     User, Loja, Cliente, Fornecedor, Vendedor, Funcionarios, Tamanho, Cor,
     Nat_Lancamento, ContaBancaria, Produto, ProdutoDetalhe, Tabelapreco, Estoque,
     Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos, Inventario,
     InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem,Grade,
-    PedidoCompra, PedidoCompraItem, Grupo, Subgrupo, Unidade, Material, Familia, Colecao, Ncm, Tiposdesubgrupo
+    PedidoCompra, PedidoCompraItem, Grupo, Unidade, Material, Familia, Colecao, Ncm, Subgrupo, GrupoDetalhe
 )
 
 import logging
@@ -226,39 +226,20 @@ class NcmViewSet(viewsets.ModelViewSet):
     queryset = Ncm.objects.all()
     serializer_class = NcmSerializer
 
-class TiposdesubgrupoViewSet(viewsets.ModelViewSet):
-    queryset = Tiposdesubgrupo.objects.all()
-    serializer_class = TiposdesubgrupoSerializer
 
 class GrupoViewSet(viewsets.ModelViewSet):
     queryset = Grupo.objects.all()
     serializer_class = GrupoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-class SubgrupoViewSet(viewsets.ModelViewSet):
+class GrupoDetalheViewSet(viewsets.ModelViewSet):
+    queryset = GrupoDetalhe.objects.all()
+    serializer_class = GrupoDetalheSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class SubGrupoViewSet(viewsets.ModelViewSet):
     queryset = Subgrupo.objects.all()
-    serializer_class = SubgrupoSerializer
+    serializer_class = SubGrupoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def delete(self, request, grupoId=None):
-        if grupoId is None:
-            return Response({"detail": "Nenhum grupoId fornecido."}, status=status.HTTP_400_BAD_REQUEST)
-        Subgrupo.objects.filter(idgrupo_id=grupoId).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
-class SubgrupoListByGrupo(generics.ListAPIView):
-    serializer_class = SubgrupoSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        grupo_id = self.kwargs.get('grupoId')
-        if grupo_id:
-            return Subgrupo.objects.filter(idgrupo=grupo_id)
-        return Subgrupo.objects.none()
-
-    def delete(self, request, *args, **kwargs):
-        grupo_id = self.kwargs.get('grupoId')
-        if grupo_id:
-            Subgrupo.objects.filter(idgrupo=grupo_id).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_400_BAD_REQUEST)

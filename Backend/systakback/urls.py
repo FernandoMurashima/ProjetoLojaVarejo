@@ -35,14 +35,15 @@ router.register(r'compraitens', views.CompraItemViewSet)
 router.register(r'pedidoscompra', views.PedidoCompraViewSet)
 router.register(r'pedidocompraitens', views.PedidoCompraItemViewSet)
 router.register(r'lojas', views.LojaViewSet)
-router.register(r'grupos', views.GrupoViewSet)
 router.register(r'unidade', views.UnidadeViewSet)
 router.register(r'material', views.MaterialViewSet)
 router.register(r'familia', views.FamiliaViewSet)
 router.register(r'colecao', views.ColecaoViewSet)
 router.register(r'grades', views.GradeViewSet)
 router.register(r'ncms', views.NcmViewSet)
-router.register(r'Tiposdesubgrupos', views.TiposdesubgrupoViewSet)
+router.register(r'grupos', views.GrupoViewSet)
+router.register(r'grupodetalhes', views.GrupoDetalheViewSet)
+router.register(r'subgrupos', views.SubGrupoViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -50,5 +51,6 @@ urlpatterns = [
     path('api-token-auth/', auth_views.obtain_auth_token),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path('', include(router.urls)),
-    path('grupos/<int:grupoId>/subgrupos/', views.SubgrupoListByGrupo.as_view(), name='subgrupos_por_grupo'),
 ]
+
+

@@ -1,1 +1,140 @@
-<p>subgrupo works!</p>
+<div class="container mt-3">
+    <div class="op01" *ngIf="!action">
+      <div class="banner1">Subgrupos</div>
+      <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Novo Subgrupo</button>
+      <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar Subgrupos</button>
+      <button class="btn btn-dark action-button" (click)="setAction('editar')">Editar Subgrupo</button>
+      <button class="btn btn-dark action-button" (click)="setAction('excluir')">Excluir Subgrupo</button>
+      <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+    </div>
+  
+    <!-- Inicio do cadastro -->
+    <div *ngIf="action === 'cadastrar'">
+      <div class="banner">CADASTRO DE SUBGRUPO</div>
+      <form #subgrupoForm="ngForm" (ngSubmit)="addSubgrupo()">
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input type="text" id="descricao" name="descricao" [(ngModel)]="subgrupo.Descricao" #descricao="ngModel" required maxlength="100">
+            </div>
+          </div>
+  
+          <div class="field-group">
+            <div class="input-item" id="margem-box">
+              <label for="margem">Margem:</label>
+              <input type="number" id="margem" name="margem" [(ngModel)]="subgrupo.Margem" #margem="ngModel" required>
+            </div>
+          </div>
+  
+          <div id="success-message" *ngIf="successMessage">Subgrupo adicionado com sucesso!</div>
+        </div>
+  
+        <div class="btn01">
+          <button type="submit" class="btn btn-primary">Salvar</button>
+          <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+    <!-- Fim do cadastro -->
+  
+    <!-- Inicio do consultar -->
+    <div *ngIf="action === 'consultar'">
+      <div *ngIf="!subgrupoSelecionado">
+        <label for="subgrupo">Selecione um Subgrupo</label>
+        <select id="subgrupo" (change)="onSubgrupoChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione um subgrupo</option>
+          <option *ngFor="let subgrupo of subgrupos" [value]="subgrupo.Idsubgrupo">{{ subgrupo.Descricao }}</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+  
+      <div *ngIf="subgrupoSelecionado">
+        <div class="banner">CONSULTA DE SUBGRUPO</div>
+        <form>
+          <div class="principal">
+            <div class="field-group">
+              <div class="input-item" id="descricao-box">
+                <label for="descricao">Descrição:</label>
+                <input type="text" id="descricao" name="descricao" [(ngModel)]="subgrupoSelecionado.Descricao" #descricao="ngModel" disabled>
+              </div>
+            </div>
+  
+            <div class="field-group">
+              <div class="input-item" id="margem-box">
+                <label for="margem">Margem:</label>
+                <input type="number" id="margem" name="margem" [(ngModel)]="subgrupoSelecionado.Margem" #margem="ngModel" disabled>
+              </div>
+            </div>
+  
+            <div class="btn01">
+              <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Fim do consultar -->
+  
+    <!-- Inicio do Editar -->
+    <div *ngIf="action === 'editar'">
+      <div *ngIf="!subgrupoSelecionado">
+        <label for="subgrupo">Selecione um Subgrupo</label>
+        <select id="subgrupo" (change)="onSubgrupoChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione um subgrupo</option>
+          <option *ngFor="let subgrupo of subgrupos" [value]="subgrupo.Idsubgrupo">{{ subgrupo.Descricao }}</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+  
+      <div *ngIf="subgrupoSelecionado">
+        <div class="banner">ALTERAÇÃO DE SUBGRUPO</div>
+        <form #subgrupoForm="ngForm" (ngSubmit)="updateSubgrupo()">
+          <div class="principal">
+            <div class="field-group">
+              <div class="input-item" id="descricao-box">
+                <label for="descricao">Descrição:</label>
+                <input type="text" id="descricao" name="descricao" [(ngModel)]="subgrupo.Descricao" #descricao="ngModel" required maxlength="100">
+              </div>
+            </div>
+  
+            <div class="field-group">
+              <div class="input-item" id="margem-box">
+                <label for="margem">Margem:</label>
+                <input type="number" id="margem" name="margem" [(ngModel)]="subgrupo.Margem" #margem="ngModel" required>
+              </div>
+            </div>
+  
+            <div id="success-message" *ngIf="successMessage">Subgrupo atualizado com sucesso!</div>
+  
+            <div class="btn01">
+              <button type="submit" class="btn btn-primary">Salvar</button>
+              <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Fim do Editar -->
+  
+    <!-- Inicio do Excluir -->
+    <div *ngIf="action === 'excluir'">
+      <h2>Excluir Subgrupo</h2>
+      <div *ngIf="subgrupoSelecionado">
+        <p>Tem certeza que deseja excluir o subgrupo {{ subgrupoSelecionado.Descricao }}?</p>
+        <button type="button" class="btn btn-danger" (click)="deleteSubgrupo()">Excluir</button>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+      </div>
+      <div *ngIf="!subgrupoSelecionado">
+        <label for="subgrupo">Selecione um Subgrupo</label>
+        <select id="subgrupo" (change)="onSubgrupoChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione um subgrupo</option>
+          <option *ngFor="let subgrupo of subgrupos" [value]="subgrupo.Idsubgrupo">{{ subgrupo.Descricao }}</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+    </div>
+    <!-- Fim do Excluir -->
+  
+  </div>
+  

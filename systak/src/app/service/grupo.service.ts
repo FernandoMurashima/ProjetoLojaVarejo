@@ -11,17 +11,7 @@ export interface Grupo {
   data_cadastro: Date;
 }
 
-export interface Subgrupo {
-  Idsubgrupo: number;
-  idgrupo: number;
-  Codigo: string;
-  Descricao: string;
-  Margem: number;
-  data_cadastro: Date;
-}
-
 type GrupoCreate = Omit<Grupo, 'Idgrupo'>;
-type SubgrupoCreate = Omit<Subgrupo, 'Idsubgrupo'>;
 
 @Injectable({
   providedIn: 'root'
@@ -49,17 +39,5 @@ export class GrupoService {
 
   deleteGrupo(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}${id}/`);
-  }
-
-  addSubgrupo(subgrupo: SubgrupoCreate): Observable<Subgrupo> {
-    return this.http.post<Subgrupo>(`${environment.apiURL}/subgrupos/`, subgrupo); 
-  }
-
-  getSubgrupos(idgrupo: number): Observable<Subgrupo[]> {
-    return this.http.get<Subgrupo[]>(`${this.apiUrl}${idgrupo}/subgrupos/`);
-  }
-
-  deleteSubgrupos(idgrupo: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}${idgrupo}/subgrupos/`);
   }
 }

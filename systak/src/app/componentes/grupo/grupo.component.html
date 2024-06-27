@@ -31,13 +31,6 @@
           </div>
         </div>
 
-        <div class="field-group">
-          <label>Tipos de Subgrupo:</label>
-          <div *ngFor="let tipo of tiposDeSubgrupo">
-            <input type="checkbox" [value]="tipo.Idtipodesubgrupo" (change)="onTipoChange($event)"> {{ tipo.Descricao }}
-          </div>
-        </div>
-
         <div id="success-message" *ngIf="successMessage">Grupo adicionado com sucesso!</div>
       </div>
 
@@ -79,13 +72,6 @@
             <div class="input-item" id="margem-box">
               <label for="margem">Margem:</label>
               <input type="number" id="margem" name="margem" [(ngModel)]="grupoSelecionado.Margem" #margem="ngModel" disabled>
-            </div>
-          </div>
-
-          <div class="field-group">
-            <label>Tipos de Subgrupo:</label>
-            <div *ngFor="let tipo of tiposDeSubgrupo">
-              <input type="checkbox" [checked]="selectedSubgrupoCodigos.includes(tipo.codigosubgrupo)" disabled> {{ tipo.Descricao }}
             </div>
           </div>
 
@@ -131,13 +117,6 @@
             </div>
           </div>
 
-          <div class="field-group">
-            <label>Tipos de Subgrupo:</label>
-            <div *ngFor="let tipo of tiposDeSubgrupo">
-              <input type="checkbox" [value]="tipo.Idtipodesubgrupo" [checked]="selectedSubgrupoCodigos.includes(tipo.codigosubgrupo)" (change)="onTipoChange($event)"> {{ tipo.Descricao }}
-            </div>
-          </div>
-
           <div id="success-message" *ngIf="successMessage">Grupo atualizado com sucesso!</div>
 
           <div class="btn01">
@@ -168,4 +147,5 @@
     </div>
   </div>
   <!-- Fim do Excluir -->
+
 </div>

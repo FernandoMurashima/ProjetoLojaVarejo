@@ -161,38 +161,6 @@ class Cor(models.Model):
     def __str__(self):
         return self.Descricao
     
-
-class Grupo(models.Model):
-    Idgrupo = models.AutoField(primary_key=True)
-    Codigo = models.CharField(max_length=12)
-    Descricao = models.CharField(max_length=100)
-    Margem = models.DecimalField(max_digits=6, decimal_places=2)
-    data_cadastro = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return self.Descricao    
-
-class Subgrupo(models.Model):
-    Idsubgrupo = models.AutoField(primary_key=True)
-    idgrupo = models.ForeignKey(Grupo, on_delete=models.CASCADE)
-    Codigo = models.CharField(max_length=12)
-    Descricao = models.CharField(max_length=100)
-    Margem = models.DecimalField(max_digits=6, decimal_places=2)
-    data_cadastro = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return self.Descricao
-
-class Tiposdesubgrupo(models.Model):
-    Idtipodesubgrupo = models.AutoField(primary_key=True)
-    Descricao = models.CharField(max_length=100)
-    codigosubgrupo = models.CharField(max_length=2)
-
-    def __str__(self):
-        return self.Descricao
-
-
-
 class Material(models.Model):
     Idmaterial = models.AutoField(primary_key=True)
     Descricao = models.CharField(max_length=100)    
@@ -532,3 +500,29 @@ class PedidoCompraItem(models.Model):
 
     def __str__(self):
         return f'{self.Idpedidocompra} - {self.Total_item}'
+
+class Grupo(models.Model):
+    Idgrupo = models.AutoField(primary_key=True)
+    Codigo = models.CharField(max_length=12)
+    Descricao = models.CharField(max_length=100)
+    Margem = models.DecimalField(max_digits=6, decimal_places=2)
+    data_cadastro = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.Descricao  
+    
+class Subgrupo(models.Model):
+    Idsubgrupo = models.AutoField(primary_key=True)
+    Descricao = models.CharField(max_length=100)
+    Margem = models.DecimalField(max_digits=6, decimal_places=2)
+    data_cadastro = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.Descricao
+
+class GrupoDetalhe(models.Model):
+    IdGrupoDetalhe = models.AutoField(primary_key=True)
+    idgrupo = models.ForeignKey(Grupo, on_delete=models.CASCADE)
+    idsubgrupo = models.ForeignKey(Subgrupo, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.Descricao  
