@@ -1,1 +1,64 @@
-<p>grupodetalhe works!</p>
+<div class="container mt-3">
+  <div class="op01" *ngIf="!action">
+    <div class="banner1">Grupo Detalhe</div>
+    <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Subgrupo no Grupo</button>
+    <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar Subgrupos de Grupos</button>
+    <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+  </div>
+
+  <!-- Inicio do cadastro -->
+  <div *ngIf="action === 'cadastrar'">
+    <div class="banner">CADASTRO DE SUBGRUPO NO GRUPO</div>
+    <form #grupoDetalheForm="ngForm" (ngSubmit)="addGrupoDetalhe()">
+      <div class="principal">
+        <div class="field-group">
+          <div class="input-item" id="grupo-box">
+            <label for="grupo">Grupo:</label>
+            <select id="grupo" name="grupo" [(ngModel)]="grupoDetalhe.idgrupo" #grupo="ngModel" required>
+              <option *ngFor="let grupo of grupos" [value]="grupo.Idgrupo">{{ grupo.Descricao }}</option>
+            </select>
+          </div>
+          <div class="input-item" id="subgrupo-box">
+            <label for="subgrupo">Subgrupo:</label>
+            <select id="subgrupo" name="subgrupo" [(ngModel)]="grupoDetalhe.idsubgrupo" #subgrupo="ngModel" required>
+              <option *ngFor="let subgrupo of subgrupos" [value]="subgrupo.Idsubgrupo">{{ subgrupo.Descricao }}</option>
+            </select>
+          </div>
+        </div>
+        <div id="success-message" *ngIf="successMessage" class="text-success">{{ successMessage }}</div>
+        <div id="error-message" *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</div>
+      </div>
+
+      <div class="btn01">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+  <!-- Fim do cadastro -->
+
+  <!-- Inicio do consultar -->
+  <div *ngIf="action === 'consultar'">
+    <div *ngIf="!grupoSelecionado">
+      <label for="grupo">Selecione um Grupo</label>
+      <select id="grupo" (change)="onGrupoChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione um grupo</option>
+        <option *ngFor="let grupo of grupos" [value]="grupo.Idgrupo">{{ grupo.Descricao }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="grupoSelecionado">
+      <div class="banner">SUBGRUPOS DO GRUPO</div>
+      <div class="principal">
+        <ul>
+          <li *ngFor="let subgrupo of subgruposDoGrupo">{{ subgrupo.Descricao }}</li>
+        </ul>
+      </div>
+      <div class="btn01">
+        <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+      </div>
+    </div>
+  </div>
+  <!-- Fim do consultar -->
+</div>

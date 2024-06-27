@@ -22,7 +22,7 @@ import { TamanhoComponent } from './componentes/tamanho/tamanho.component';
 import { NcmComponent } from './componentes/ncm/ncm.component';
 import { GrupoComponent } from './componentes/grupo/grupo.component';
 import { SubgrupoComponent } from './componentes/subgrupo/subgrupo.component';
-
+import { GrupoDetalheComponent } from './componentes/grupodetalhe/grupodetalhe.component';
 
 export const DEFAULT_ROUTE = '/index';
 
@@ -52,7 +52,7 @@ const routes: Routes = [
   { path: 'estoque/ncm', component: NcmComponent, canActivate: [AuthGuardService] },
   { path: 'estoque/grupo', component: GrupoComponent, canActivate: [AuthGuardService] },
   { path: 'estoque/subgrupos', component: SubgrupoComponent, canActivate: [AuthGuardService] },
-  { path: 'cadastro/produtos', component: ProdutoComponent, canActivate: [AuthGuardService] },
+  { path: 'estoque/grupodetalhe', component: GrupoDetalheComponent, canActivate: [AuthGuardService] },
   { path: 'sair', component: LoginComponent }
 ];
 
