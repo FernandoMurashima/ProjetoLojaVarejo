@@ -53,6 +53,8 @@ const routes: Routes = [
   { path: 'estoque/grupo', component: GrupoComponent, canActivate: [AuthGuardService] },
   { path: 'estoque/subgrupos', component: SubgrupoComponent, canActivate: [AuthGuardService] },
   { path: 'estoque/grupodetalhe', component: GrupoDetalheComponent, canActivate: [AuthGuardService] },
+  { path: 'cadastro/produtos', component: ProdutoComponent, canActivate: [AuthGuardService] },
+  
   { path: 'sair', component: LoginComponent }
 ];
 
