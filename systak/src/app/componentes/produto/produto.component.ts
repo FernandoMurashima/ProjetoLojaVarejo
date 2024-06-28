@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ProdutoService, Produto } from '../../service/produto.service';
 import { GrupoService, Grupo } from '../../service/grupo.service';
 import { SubgrupoService, Subgrupo } from '../../service/subgrupo.service';
-import { GradeService, Grade } from '../../service/grade.service'; // Serviço para grades
-import { UnidadeService, Unidade } from '../../service/unidade.service'; // Serviço para unidades
-import { ColecaoService, Colecao } from '../../service/colecao.service'; // Serviço para coleções
-import { MaterialService, Material } from '../../service/material.service'; // Serviço para materiais
-import { FamiliaService, Familia } from '../../service/familia.service'; // Serviço para famílias
-import { NcmService, Ncm } from '../../service/ncm.service'; // Serviço para NCMs
+import { GrupoDetalheService, GrupoDetalhe } from '../../service/grupodetalhe.service';
+import { GradeService, Grade } from '../../service/grade.service';
+import { UnidadeService, Unidade } from '../../service/unidade.service';
+import { ColecaoService, Colecao } from '../../service/colecao.service';
+import { MaterialService, Material } from '../../service/material.service';
+import { FamiliaService, Familia } from '../../service/familia.service';
+import { NcmService, Ncm } from '../../service/ncm.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -20,12 +21,13 @@ export class ProdutoComponent implements OnInit {
   produtos: Produto[] = [];
   grupos: Grupo[] = [];
   subgrupos: Subgrupo[] = [];
-  grades: Grade[] = []; // Array para armazenar grades
-  unidades: Unidade[] = []; // Array para armazenar unidades
-  colecoes: Colecao[] = []; // Array para armazenar coleções
-  materiais: Material[] = []; // Array para armazenar materiais
-  familias: Familia[] = []; // Array para armazenar famílias
-  ncms: Ncm[] = []; // Array para armazenar NCMs
+  subgruposFiltrados: Subgrupo[] = [];
+  grades: Grade[] = [];
+  unidades: Unidade[] = [];
+  colecoes: Colecao[] = [];
+  materiais: Material[] = [];
+  familias: Familia[] = [];
+  ncms: Ncm[] = [];
   produtoSelecionado?: Produto;
   action: string = '';
 
@@ -38,23 +40,26 @@ export class ProdutoComponent implements OnInit {
     private produtoService: ProdutoService,
     private subgrupoService: SubgrupoService,
     private grupoService: GrupoService,
-    private gradeService: GradeService, // Injeção do serviço de grades
-    private unidadeService: UnidadeService, // Injeção do serviço de unidades
-    private colecaoService: ColecaoService, // Injeção do serviço de coleções
-    private materialService: MaterialService, // Injeção do serviço de materiais
-    private familiaService: FamiliaService, // Injeção do serviço de famílias
-    private ncmService: NcmService, // Injeção do serviço de NCMs
+    private gradeService: GradeService,
+    private unidadeService: UnidadeService,
+    private colecaoService: ColecaoService,
+    private materialService: MaterialService,
+    private familiaService: FamiliaService,
+    private ncmService: NcmService,
+    private grupoDetalheService: GrupoDetalheService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.loadProdutos();
-    this.loadGrades(); // Carregar grades
-    this.loadUnidades(); // Carregar unidades
-    this.loadColecoes(); // Carregar coleções
-    this.loadMateriais(); // Carregar materiais
-    this.loadFamilias(); // Carregar famílias
-    this.loadNcms(); // Carregar NCMs
+    this.loadGrades();
+    this.loadUnidades();
+    this.loadColecoes();
+    this.loadMateriais();
+    this.loadFamilias();
+    this.loadNcms();
+    this.loadGrupos();
+    this.loadSubgrupos();
   }
 
   createEmptyProduto(): Produto {
@@ -91,7 +96,7 @@ export class ProdutoComponent implements OnInit {
     this.produtoSelecionado = undefined;
     this.successMessage = '';
     this.errorMessage = '';
-    this.subgrupos = [];
+    this.subgruposFiltrados = [];
   }
 
   goToIndex() {
@@ -112,7 +117,6 @@ export class ProdutoComponent implements OnInit {
 
   populateProdutoDescriptions() {
     this.produtos.forEach(produto => {
-      
       produto['gradeDescricao'] = this.grades.find(grade => grade.Idgrade.toString() === produto.grade)?.Descricao || '';
       produto['unidadeDescricao'] = this.unidades.find(unidade => unidade.Idunidade.toString() === produto.unidade)?.Descricao || '';
       produto['colecaoDescricao'] = this.colecoes.find(colecao => colecao.Idcolecao.toString() === produto.colecao)?.Descricao || '';
@@ -122,10 +126,6 @@ export class ProdutoComponent implements OnInit {
     });
   }
 
-  
-
-  
-  // Método para carregar grades ativas
   loadGrades() {
     this.gradeService.loadActive().subscribe({
       next: (data: Grade[]) => {
@@ -137,7 +137,6 @@ export class ProdutoComponent implements OnInit {
     });
   }
 
-  // Método para carregar unidades
   loadUnidades() {
     this.unidadeService.load().subscribe({
       next: (data: Unidade[]) => {
@@ -149,7 +148,6 @@ export class ProdutoComponent implements OnInit {
     });
   }
 
-  // Método para carregar coleções
   loadColecoes() {
     this.colecaoService.load().subscribe({
       next: (data: Colecao[]) => {
@@ -161,7 +159,6 @@ export class ProdutoComponent implements OnInit {
     });
   }
 
-  // Método para carregar materiais ativos
   loadMateriais() {
     this.materialService.loadActive().subscribe({
       next: (data: Material[]) => {
@@ -173,7 +170,6 @@ export class ProdutoComponent implements OnInit {
     });
   }
 
-  // Método para carregar famílias
   loadFamilias() {
     this.familiaService.load().subscribe({
       next: (data: Familia[]) => {
@@ -185,7 +181,6 @@ export class ProdutoComponent implements OnInit {
     });
   }
 
-  // Método para carregar NCMs
   loadNcms() {
     this.ncmService.load().subscribe({
       next: (data: Ncm[]) => {
@@ -195,6 +190,77 @@ export class ProdutoComponent implements OnInit {
         console.error('Erro ao carregar NCMs', error);
       }
     });
+  }
+
+  loadGrupos() {
+    this.grupoService.load().subscribe({
+      next: (data: Grupo[]) => {
+        console.log('Grupos carregados:', data);
+        this.grupos = data;
+      },
+      error: (error: any) => {
+        console.error('Erro ao carregar grupos', error);
+      }
+    });
+  }
+
+  loadSubgrupos() {
+    this.subgrupoService.load().subscribe({
+      next: (data: Subgrupo[]) => {
+        console.log('Subgrupos carregados:', data);
+        this.subgrupos = data;
+      },
+      error: (error: any) => {
+        console.error('Erro ao carregar subgrupos', error);
+      }
+    });
+  }
+
+  onProdutoChange(event: Event) {
+    const selectedId = (event.target as HTMLSelectElement).value;
+    this.produtoSelecionado = this.produtos.find(p => p.Idproduto === +selectedId) ?? undefined;
+
+    if (this.produtoSelecionado) {
+      this.produto = { ...this.produtoSelecionado };
+    }
+  }
+
+  onGrupoChange(event: Event) {
+    const selectedId = +(event.target as HTMLSelectElement).value;
+    console.log('Grupo selecionado ID:', selectedId);
+    this.grupoDetalheService.loadByGrupo(selectedId).subscribe({
+      next: (data: GrupoDetalhe[]) => {
+        console.log('GrupoDetalhe carregado:', data);
+        const subgrupoIds = data.filter(detail => detail.idgrupo === selectedId).map(detail => detail.idsubgrupo);
+        this.subgruposFiltrados = this.subgrupos.filter(subgrupo => {
+          const isIncluded = subgrupoIds.includes(subgrupo.Idsubgrupo);
+          console.log(`Subgrupo ${subgrupo.Idsubgrupo} incluído:`, isIncluded);
+          return isIncluded;
+        });
+        console.log('Subgrupos filtrados:', this.subgruposFiltrados);
+      },
+      error: (error: any) => {
+        console.error('Erro ao carregar subgrupos do grupo', error);
+      }
+    });
+  }
+
+  onFotoChange(field: string, event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.value) {
+      this.produto[field] = input.value;
+    }
+  }
+
+  prefixImagePath(field: string) {
+    if (this.produto[field] && !this.produto[field].startsWith(this.imageBasePath)) {
+      this.produto[field] = `${this.imageBasePath}${this.produto[field]}`;
+    }
+  }
+
+  onClassificacaoFiscalChange(event: Event) {
+    const selectedNcm = (event.target as HTMLSelectElement).value;
+    this.produto.classificacao_fiscal = selectedNcm;
   }
 
   addProduto() {
@@ -247,37 +313,5 @@ export class ProdutoComponent implements OnInit {
         }
       });
     }
-  }
-
-  onProdutoChange(event: Event) {
-    const selectedId = (event.target as HTMLSelectElement).value;
-    this.produtoSelecionado = this.produtos.find(p => p.Idproduto === +selectedId) ?? undefined;
-  
-    if (this.produtoSelecionado) {
-      this.produto = { ...this.produtoSelecionado };
-    }
-  }
-
-  onGrupoChange(event: Event) {
-    const selectedId = +(event.target as HTMLSelectElement).value; // Alteração: conversão para number adicionada
-    
-  }
-
-  onFotoChange(field: string, event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.value) {
-      this.produto[field] = input.value;
-    }
-  }
-
-  prefixImagePath(field: string) {
-    if (this.produto[field] && !this.produto[field].startsWith(this.imageBasePath)) {
-      this.produto[field] = `${this.imageBasePath}${this.produto[field]}`;
-    }
-  }
-
-  onClassificacaoFiscalChange(event: Event) {
-    const selectedNcm = (event.target as HTMLSelectElement).value;
-    this.produto.classificacao_fiscal = selectedNcm;
   }
 }
