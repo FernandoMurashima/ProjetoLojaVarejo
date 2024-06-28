@@ -51,6 +51,7 @@ export class GrupoDetalheComponent implements OnInit {
     this.action = '';
     this.grupoDetalhe = this.createEmptyGrupoDetalhe();
     this.grupoSelecionado = undefined;
+    this.subgruposDoGrupo = [];
     this.successMessage = '';
     this.errorMessage = '';
   }
@@ -62,6 +63,7 @@ export class GrupoDetalheComponent implements OnInit {
   loadGrupos() {
     this.grupoService.load().subscribe({
       next: (data) => {
+        console.log('Grupos carregados:', data);
         this.grupos = data;
       },
       error: (error) => {
@@ -73,6 +75,7 @@ export class GrupoDetalheComponent implements OnInit {
   loadSubgrupos() {
     this.subgrupoService.load().subscribe({
       next: (data) => {
+        console.log('Subgrupos carregados:', data);
         this.subgrupos = data;
       },
       error: (error) => {
@@ -84,6 +87,7 @@ export class GrupoDetalheComponent implements OnInit {
   onGrupoChange(event: Event) {
     const selectedId = (event.target as HTMLSelectElement).value;
     this.grupoSelecionado = this.grupos.find(p => p.Idgrupo === +selectedId) ?? undefined;
+    console.log('Grupo selecionado:', this.grupoSelecionado);
 
     if (this.grupoSelecionado) {
       this.loadSubgruposDoGrupo(this.grupoSelecionado.Idgrupo);
@@ -92,13 +96,22 @@ export class GrupoDetalheComponent implements OnInit {
 
   loadSubgruposDoGrupo(idgrupo: number) {
     this.grupoDetalheService.loadByGrupo(idgrupo).subscribe({
-      next: (data) => {
-        this.subgruposDoGrupo = data;
+      next: (data: GrupoDetalhe[]) => {
+        console.log('Subgrupos do grupo carregados:', data);
+        this.subgruposDoGrupo = data
+          .filter(detail => detail.idgrupo === idgrupo)
+          .map(detail => this.subgrupos.find(subgrupo => subgrupo.Idsubgrupo === detail.idsubgrupo)!)
+          .filter(subgrupo => subgrupo !== undefined) as Subgrupo[];
       },
       error: (error) => {
         console.error('Erro ao carregar subgrupos do grupo', error);
       }
     });
+  }
+
+  getSubgrupoDescricao(Idsubgrupo: number): string {
+    const subgrupo = this.subgrupos.find(sg => sg.Idsubgrupo === Idsubgrupo);
+    return subgrupo ? subgrupo.Descricao : 'Descrição não encontrada';
   }
 
   addGrupoDetalhe() {
@@ -107,7 +120,7 @@ export class GrupoDetalheComponent implements OnInit {
         idgrupo: this.grupoDetalhe.idgrupo,
         idsubgrupo: this.grupoDetalhe.idsubgrupo
       };
-  
+
       this.grupoDetalheService.addGrupoDetalhe(grupoDetalheParaEnviar).subscribe({
         next: (data) => {
           this.successMessage = 'Subgrupo adicionado ao grupo com sucesso!';
@@ -121,5 +134,4 @@ export class GrupoDetalheComponent implements OnInit {
       });
     }
   }
-  
 }

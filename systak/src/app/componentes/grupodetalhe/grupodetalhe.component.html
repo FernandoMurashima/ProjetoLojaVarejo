@@ -39,24 +39,24 @@
 
   <!-- Inicio do consultar -->
   <div *ngIf="action === 'consultar'">
-    <div *ngIf="!grupoSelecionado">
+    <div class="banner">Detalhes do Grupo</div>
+    <div class="principal">
       <label for="grupo">Selecione um Grupo</label>
       <select id="grupo" (change)="onGrupoChange($event)" class="form-control">
         <option value="" disabled selected>Selecione um grupo</option>
         <option *ngFor="let grupo of grupos" [value]="grupo.Idgrupo">{{ grupo.Descricao }}</option>
       </select>
-      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      <!-- <button type="button" class="btn btn-secondary mt-3" (click)="resetAction()">Voltar</button> -->
     </div>
-
     <div *ngIf="grupoSelecionado">
-      <div class="banner">SUBGRUPOS DO GRUPO</div>
+      <div class="banner">Subgrupos do Grupo</div>
       <div class="principal">
         <ul>
-          <li *ngFor="let subgrupo of subgruposDoGrupo">{{ subgrupo.Descricao }}</li>
+          <li *ngFor="let subgrupo of subgruposDoGrupo">{{ getSubgrupoDescricao(subgrupo.Idsubgrupo) }}</li>
         </ul>
       </div>
       <div class="btn01">
-        <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
       </div>
     </div>
   </div>

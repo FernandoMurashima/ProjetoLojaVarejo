@@ -22,8 +22,8 @@ export class GrupoDetalheService {
     return this.http.get<GrupoDetalhe[]>(this.apiUrl);
   }
 
-  loadByGrupo(idgrupo: number): Observable<Subgrupo[]> {
-    return this.http.get<Subgrupo[]>(`${this.apiUrl}?grupo=${idgrupo}`);
+  loadByGrupo(idgrupo: number): Observable<GrupoDetalhe[]> {
+    return this.http.get<GrupoDetalhe[]>(`${this.apiUrl}?grupo=${idgrupo}`);
   }
 
   addGrupoDetalhe(grupoDetalhe: GrupoDetalhe): Observable<GrupoDetalhe> {
