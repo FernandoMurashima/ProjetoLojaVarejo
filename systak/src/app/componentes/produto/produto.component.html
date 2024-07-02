@@ -13,38 +13,17 @@
     <div class="banner">CADASTRO DE PRODUTO</div>
     <form (ngSubmit)="addProduto()">
       <div class="principal">
-        <div class="field-group">
-          <div class="input-item" id="descricao-box">
-            <label for="descricao">Descrição:</label>
-            <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="produto.Descricao" #descricao="ngModel" required maxlength="100">
-          </div>
-          <div class="input-item" id="desc-reduzida-box">
-            <label for="desc_reduzida">Descrição Reduzida:</label>
-            <input type="text" id="desc_reduzida" name="desc_reduzida" [(ngModel)]="produto.Desc_reduzida" #desc_reduzida="ngModel" maxlength="100">
-          </div>
-          <div class="input-item" id="tipo-box">
-            <label for="tipo">Tipo de Produto:</label>
-            <input type="text" id="tipo" name="tipo" [(ngModel)]="produto.Tipoproduto" #tipo="ngModel" maxlength="1">
-          </div>
-          <div class="input-item" id="grade-box">
-            <label for="grade">Grade:</label>
-            <select id="grade" name="grade" [(ngModel)]="produto.grade">
-              <option *ngFor="let grade of grades" [value]="grade.Idgrade">{{ grade.Descricao }}</option>
-            </select>
-          </div>
-        </div>
 
-        <div class="field-group5">
-          <div class="input-item" id="classificacao-fiscal-box">
-            <label for="classificacao_fiscal">Classificação Fiscal:</label>
-            <select id="classificacao_fiscal" name="classificacao_fiscal" [(ngModel)]="produto.classificacao_fiscal" (change)="onClassificacaoFiscalChange($event)">
-              <option *ngFor="let ncm of ncms" [value]="ncm.ncm">{{ ncm.ncm }} - {{ ncm.descricao }}</option>
-            </select>
+        <div class="field-group">
+          <div class="input-item" id="referencia-box">
+            <label for="referencia">Referência:</label>
+            <input class="input-caixa" type="text" id="referencia" name="referencia" [(ngModel)]="produto.Referencia" #referencia="ngModel" readonly>
           </div>
-          <div class="input-item" id="unidade-box">
-            <label for="unidade">Unidade:</label>
-            <select id="unidade" name="unidade" [(ngModel)]="produto.unidade">
-              <option *ngFor="let unidade of unidades" [value]="unidade.Idunidade">{{ unidade.Descricao }}</option>
+
+          <div class="input-item" id="colecao-box">
+            <label for="colecao">Coleção:</label>
+            <select id="colecao" name="colecao" [(ngModel)]="produto.colecao">
+              <option *ngFor="let colecao of colecoes" [value]="colecao.Idcolecao">{{ colecao.Descricao }}</option>
             </select>
           </div>
 
@@ -62,41 +41,72 @@
             </select>
           </div>
 
+          <div class="input-item" id="grade-box">
+            <label for="grade">Grade:</label>
+            <select id="grade" name="grade" [(ngModel)]="produto.grade">
+              <option *ngFor="let grade of grades" [value]="grade.Idgrade">{{ grade.Descricao }}</option>
+            </select>
+          </div>
+
           <div class="input-item" id="familia-box">
             <label for="familia">Família:</label>
             <select id="familia" name="familia" [(ngModel)]="produto.familia">
               <option *ngFor="let familia of familias" [value]="familia.Idfamilia">{{ familia.Descricao }}</option>
             </select>
           </div>
-        </div>
 
-        <div class="field-group3">
-          <div class="input-item" id="colecao-box">
-            <label for="colecao">Coleção:</label>
-            <select id="colecao" name="colecao" [(ngModel)]="produto.colecao">
-              <option *ngFor="let colecao of colecoes" [value]="colecao.Idcolecao">{{ colecao.Descricao }}</option>
-            </select>
+          <div class="input-item" id="tipo-box">
+            <label for="tipo">Tipo:</label>
+            <input type="text" id="tipo" name="tipo" [(ngModel)]="produto.Tipoproduto" #tipo="ngModel" maxlength="1">
           </div>
+
           <div class="input-item" id="material-box">
             <label for="material">Material:</label>
             <select id="material" name="material" [(ngModel)]="produto.Material">
               <option *ngFor="let material of materiais" [value]="material.Idmaterial">{{ material.Descricao }}</option>
             </select>
           </div>
+
+          <div class="input-item" id="unidade-box">
+            <label for="unidade">Unidade:</label>
+            <select id="unidade" name="unidade" [(ngModel)]="produto.unidade">
+              <option *ngFor="let unidade of unidades" [value]="unidade.Idunidade">{{ unidade.Descricao }}</option>
+            </select>
+          </div>
+
+          <div class="input-item" id="classificacao-fiscal-box">
+            <label for="classificacao_fiscal">Classificação Fiscal:</label>
+            <select id="classificacao_fiscal" name="classificacao_fiscal" [(ngModel)]="produto.classificacao_fiscal" (change)="onClassificacaoFiscalChange($event)">
+              <option *ngFor="let ncm of ncms" [value]="ncm.ncm">{{ ncm.ncm }} - {{ truncate(ncm.descricao, 30) }}</option>
+            </select>
+          </div>
         </div>
+
+        <div class="field-group7">
+          <div class="input-item" id="descricao-box">
+            <label for="descricao">Descrição:</label>
+            <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="produto.Descricao" #descricao="ngModel" required maxlength="100">
+          </div>
+
+          <div class="input-item" id="desc-reduzida-box">
+            <label for="desc_reduzida">Descrição Reduzida:</label>
+            <input type="text" id="desc_reduzida" name="desc_reduzida" [(ngModel)]="produto.Desc_reduzida" #desc_reduzida="ngModel" maxlength="100">
+          </div>
+        </div>
+
         <div class="field-group4">
           <div class="input-item" id="produto-foto-box">
             <label for="produto_foto">Foto do Produto:</label>
             <input type="text" id="produto_foto" name="produto_foto" [(ngModel)]="produto.produto_foto" (blur)="prefixImagePath('produto_foto')">
             <img *ngIf="produto.produto_foto" [src]="produto.produto_foto | safeUrl" alt="Foto do Produto" style="max-width: 200px; margin-top: 10px;">
           </div>
-          
+
           <div class="input-item" id="produto-foto1-box">
             <label for="produto_foto1">Foto Adicional 1:</label>
             <input type="text" id="produto_foto1" name="produto_foto1" [(ngModel)]="produto.produto_foto1" (blur)="prefixImagePath('produto_foto1')">
             <img *ngIf="produto.produto_foto1" [src]="produto.produto_foto1 | safeUrl" alt="Foto Adicional 1" style="max-width: 200px; margin-top: 10px;">
           </div>
-          
+
           <div class="input-item" id="produto-foto2-box">
             <label for="produto_foto2">Foto Adicional 2:</label>
             <input type="text" id="produto_foto2" name="produto_foto2" [(ngModel)]="produto.produto_foto2" (blur)="prefixImagePath('produto_foto2')">
@@ -106,7 +116,7 @@
 
         <div id="success-message" *ngIf="successMessage">Produto adicionado com sucesso!</div>
       </div>
-      
+
       <div class="btn01">
         <button type="submit" class="btn btn-primary">Salvar</button>
         <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
@@ -129,64 +139,91 @@
       <div class="banner">CONSULTA DE PRODUTO</div>
       <form>
         <div class="principal">
+
           <div class="field-group">
-            <div class="input-item" id="descricao-box">
-              <label for="descricao">Descrição:</label>
-              <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="produtoSelecionado.Descricao" #descricao="ngModel" disabled>
-            </div>
-            <div class="input-item" id="desc-reduzida-box">
-              <label for="desc_reduzida">Descrição Reduzida:</label>
-              <input class="input-caixa" type="text" id="desc_reduzida" name="desc_reduzida" [(ngModel)]="produtoSelecionado.Desc_reduzida" #desc_reduzida="ngModel" disabled>
+            <div class="input-item" id="referencia-box">
+              <label for="referencia">Referência:</label>
+              <input class="input-caixa" type="text" id="referencia" name="referencia" [(ngModel)]="produtoSelecionado.Referencia" #referencia="ngModel" readonly>
             </div>
 
-            <div class="input-item" id="tipo-box">
-              <label for="tipo">Tipo de Produto:</label>
-              <input type="text" id="tipo" name="tipo" [(ngModel)]="produto.Tipoproduto" #tipo="ngModel" disabled>
-            </div>
-
-            <div class="input-item" id="grade-box">
-              <label for="grade">Grade:</label>
-              <input class="input-caixa" type="text" id="grade" name="grade" [(ngModel)]="produtoSelecionado['gradeDescricao']" #grade="ngModel" disabled>
-            </div>
-          </div>
-
-          <div class="field-group2">
-            <div class="input-item" id="classificacao-fiscal-box">
-              <label for="classificacao_fiscal">Classificação Fiscal:</label>
-              <input class="input-caixa" type="text" id="classificacao_fiscal_ncm" name="classificacao_fiscal_ncm" [(ngModel)]="produtoSelecionado.classificacao_fiscal" #classificacao_fiscal_ncm="ngModel" disabled>
-            </div>
-            
-            <div class="input-item" id="unidade-box">
-              <label for="unidade">Unidade:</label>
-              <input class="input-caixa" type="text" id="unidade" name="unidade" [(ngModel)]="produtoSelecionado['unidadeDescricao']" #unidade="ngModel" disabled>
+            <div class="input-item" id="colecao-box">
+              <label for="colecao">Coleção:</label>
+              <input class="input-caixa" type="text" id="colecao" name="colecao" [(ngModel)]="produtoSelecionado['colecaoDescricao']" #colecao="ngModel" disabled>
             </div>
 
             <div class="input-item" id="grupo-box">
               <label for="grupo">Grupo:</label>
               <input class="input-caixa" type="text" id="grupo" name="grupo" [(ngModel)]="produtoSelecionado['grupoDescricao']" #grupo="ngModel" disabled>
             </div>
-           
+
             <div class="input-item" id="subgrupo-box">
               <label for="subgrupo">Subgrupo:</label>
               <input class="input-caixa" type="text" id="subgrupo" name="subgrupo" [(ngModel)]="produtoSelecionado['subgrupoDescricao']" #subgrupo="ngModel" disabled>
+            </div>
+
+            <div class="input-item" id="grade-box">
+              <label for="grade">Grade:</label>
+              <input class="input-caixa" type="text" id="grade" name="grade" [(ngModel)]="produtoSelecionado['gradeDescricao']" #grade="ngModel" disabled>
             </div>
 
             <div class="input-item" id="familia-box">
               <label for="familia">Família:</label>
               <input class="input-caixa" type="text" id="familia" name="familia" [(ngModel)]="produtoSelecionado['familiaDescricao']" #familia="ngModel" disabled>
             </div>
-          </div>
-          
-          <div class="field-group3">
-            <div class="input-item" id="colecao-box">
-              <label for="colecao">Coleção:</label>
-              <input class="input-caixa" type="text" id="colecao" name="colecao" [(ngModel)]="produtoSelecionado['colecaoDescricao']" #colecao="ngModel" disabled>
+
+            <div class="input-item" id="tipo-box">
+              <label for="tipo">Tipo:</label>
+              <input class="input-caixa" type="text" id="tipo" name="tipo" [(ngModel)]="produtoSelecionado.Tipoproduto" #tipo="ngModel" disabled>
             </div>
+
             <div class="input-item" id="material-box">
               <label for="material">Material:</label>
               <input class="input-caixa" type="text" id="material" name="material" [(ngModel)]="produtoSelecionado['materialDescricao']" #material="ngModel" disabled>
             </div>
+
+            <div class="input-item" id="unidade-box">
+              <label for="unidade">Unidade:</label>
+              <input class="input-caixa" type="text" id="unidade" name="unidade" [(ngModel)]="produtoSelecionado['unidadeDescricao']" #unidade="ngModel" disabled>
+            </div>
+
+            <div class="input-item" id="classificacao-fiscal-box">
+              <label for="classificacao_fiscal">Classificação Fiscal:</label>
+              <input class="input-caixa" type="text" id="classificacao_fiscal_ncm" name="classificacao_fiscal_ncm" [(ngModel)]="produtoSelecionado.classificacao_fiscal" #classificacao_fiscal_ncm="ngModel" disabled>
+            </div>
           </div>
+
+          <div class="field-group7">
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="produtoSelecionado.Descricao" #descricao="ngModel" disabled>
+            </div>
+
+            <div class="input-item" id="desc-reduzida-box">
+              <label for="desc_reduzida">Descrição Reduzida:</label>
+              <input class="input-caixa" type="text" id="desc_reduzida" name="desc_reduzida" [(ngModel)]="produtoSelecionado.Desc_reduzida" #desc_reduzida="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="field-group4">
+            <div class="input-item" id="produto-foto-box">
+              <label for="produto_foto">Foto do Produto:</label>
+              <input class="input-caixa" type="text" id="produto_foto" name="produto_foto" [(ngModel)]="produtoSelecionado.produto_foto" #produto_foto="ngModel" disabled>
+              <img *ngIf="produtoSelecionado.produto_foto" [src]="produtoSelecionado.produto_foto | safeUrl" alt="Foto do Produto" style="max-width: 200px; margin-top: 10px;">
+            </div>
+
+            <div class="input-item" id="produto-foto1-box">
+              <label for="produto_foto1">Foto Adicional 1:</label>
+              <input class="input-caixa" type="text" id="produto_foto1" name="produto_foto1" [(ngModel)]="produtoSelecionado.produto_foto1" #produto_foto1="ngModel" disabled>
+              <img *ngIf="produtoSelecionado.produto_foto1" [src]="produtoSelecionado.produto_foto1 | safeUrl" alt="Foto Adicional 1" style="max-width: 200px; margin-top: 10px;">
+            </div>
+
+            <div class="input-item" id="produto-foto2-box">
+              <label for="produto_foto2">Foto Adicional 2:</label>
+              <input class="input-caixa" type="text" id="produto_foto2" name="produto_foto2" [(ngModel)]="produtoSelecionado.produto_foto2" #produto_foto2="ngModel" disabled>
+              <img *ngIf="produtoSelecionado.produto_foto2" [src]="produtoSelecionado.produto_foto2 | safeUrl" alt="Foto Adicional 2" style="max-width: 200px; margin-top: 10px;">
+            </div>
+          </div>
+
           <div class="btn01">
             <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
           </div>
@@ -211,44 +248,18 @@
       <form (ngSubmit)="updateProduto()">
         <div class="principal">
           <div class="field-group">
-            <div class="input-item" id="descricao-box">
-              <label for="descricao">Descrição:</label>
-              <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="produto.Descricao" #descricao="ngModel" required maxlength="100">
-            </div>
-            <div class="input-item" id="desc-reduzida-box">
-              <label for="desc_reduzida">Descrição Reduzida:</label>
-              <input class="input-caixa" type="text" id="desc_reduzida" name="desc_reduzida" [(ngModel)]="produto.Desc_reduzida" #desc_reduzida="ngModel" maxlength="100">
+            <div class="input-item" id="referencia-box">
+              <label for="referencia">Referência:</label>
+              <input class="input-caixa" type="text" id="referencia" name="referencia" [(ngModel)]="produto.Referencia" #referencia="ngModel" readonly>
             </div>
 
-            <div class="input-item" id="tipo-box">
-              <label for="tipo">Tipo de Produto:</label>
-              <input type="text" id="tipo" name="tipo" [(ngModel)]="produto.Tipoproduto" #tipo="ngModel" maxlength="1">
-            </div>
-
-            <div class="input-item" id="grade-box">
-              <label for="grade">Grade:</label>
-              <select id="grade" name="grade" [(ngModel)]="produto.grade">
-                <option *ngFor="let grade of grades" [value]="grade.Idgrade">{{ grade.Descricao }}</option>
+            <div class="input-item" id="colecao-box">
+              <label for="colecao">Coleção:</label>
+              <select id="colecao" name="colecao" [(ngModel)]="produto.colecao">
+                <option *ngFor="let colecao of colecoes" [value]="colecao.Idcolecao">{{ colecao.Descricao }}</option>
               </select>
             </div>
 
-          </div>
-          
-          <div class="field-group2">
-            <div class="input-item" id="classificacao-fiscal-box">
-              <label for="classificacao_fiscal">Classificação Fiscal:</label>
-              <select id="classificacao_fiscal" name="classificacao_fiscal" [(ngModel)]="produto.classificacao_fiscal" (change)="onClassificacaoFiscalChange($event)">
-                <option *ngFor="let ncm of ncms" [value]="ncm.ncm">{{ ncm.ncm }} - {{ ncm.descricao }}</option>
-              </select>
-              <input *ngIf="action === 'editar'" class="input-caixa" type="text" [value]="produto.classificacao_fiscal" disabled>
-            </div>
-            <div class="input-item" id="unidade-box">
-              <label for="unidade">Unidade:</label>
-              <select id="unidade" name="unidade" [(ngModel)]="produto.unidade">
-                <option *ngFor="let unidade of unidades" [value]="unidade.Idunidade">{{ unidade.Descricao }}</option>
-              </select>
-            </div>
-            
             <div class="input-item" id="grupo-box">
               <label for="grupo">Grupo:</label>
               <select id="grupo" name="grupo" [(ngModel)]="produto.grupo" (change)="onGrupoChange($event)">
@@ -263,31 +274,82 @@
               </select>
             </div>
 
+            <div class="input-item" id="grade-box">
+              <label for="grade">Grade:</label>
+              <select id="grade" name="grade" [(ngModel)]="produto.grade">
+                <option *ngFor="let grade of grades" [value]="grade.Idgrade">{{ grade.Descricao }}</option>
+              </select>
+            </div>
+
             <div class="input-item" id="familia-box">
               <label for="familia">Família:</label>
               <select id="familia" name="familia" [(ngModel)]="produto.familia">
                 <option *ngFor="let familia of familias" [value]="familia.Idfamilia">{{ familia.Descricao }}</option>
               </select>
             </div>
-          </div>
-          
-          <div class="field-group3">
-            <div class="input-item" id="colecao-box">
-              <label for="colecao">Coleção:</label>
-              <select id="colecao" name="colecao" [(ngModel)]="produto.colecao">
-                <option *ngFor="let colecao of colecoes" [value]="colecao.Idcolecao">{{ colecao.Descricao }}</option>
-              </select>
+
+            <div class="input-item" id="tipo-box">
+              <label for="tipo">Tipo:</label>
+              <input type="text" id="tipo" name="tipo" [(ngModel)]="produto.Tipoproduto" #tipo="ngModel" maxlength="1">
             </div>
+
             <div class="input-item" id="material-box">
               <label for="material">Material:</label>
               <select id="material" name="material" [(ngModel)]="produto.Material">
                 <option *ngFor="let material of materiais" [value]="material.Idmaterial">{{ material.Descricao }}</option>
               </select>
             </div>
+
+            <div class="input-item" id="unidade-box">
+              <label for="unidade">Unidade:</label>
+              <select id="unidade" name="unidade" [(ngModel)]="produto.unidade">
+                <option *ngFor="let unidade of unidades" [value]="unidade.Idunidade">{{ unidade.Descricao }}</option>
+              </select>
+            </div>
+
+            <div class="input-item" id="classificacao-fiscal-box">
+              <label for="classificacao_fiscal">Classificação Fiscal:</label>
+              <select id="classificacao_fiscal" name="classificacao_fiscal" [(ngModel)]="produto.classificacao_fiscal" (change)="onClassificacaoFiscalChange($event)">
+                <option *ngFor="let ncm of ncms" [value]="ncm.ncm">{{ ncm.ncm }} - {{ truncate(ncm.descricao, 30) }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-group7">
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="produto.Descricao" #descricao="ngModel" required maxlength="100">
+            </div>
+
+            <div class="input-item" id="desc-reduzida-box">
+              <label for="desc_reduzida">Descrição Reduzida:</label>
+              <input type="text" id="desc_reduzida" name="desc_reduzida" [(ngModel)]="produto.Desc_reduzida" #desc_reduzida="ngModel" maxlength="100">
+            </div>
+          </div>
+
+          <div class="field-group4">
+            <div class="input-item" id="produto-foto-box">
+              <label for="produto_foto">Foto do Produto:</label>
+              <input type="text" id="produto_foto" name="produto_foto" [(ngModel)]="produto.produto_foto" (blur)="prefixImagePath('produto_foto')">
+              <img *ngIf="produto.produto_foto" [src]="produto.produto_foto | safeUrl" alt="Foto do Produto" style="max-width: 200px; margin-top: 10px;">
+            </div>
+
+            <div class="input-item" id="produto-foto1-box">
+              <label for="produto_foto1">Foto Adicional 1:</label>
+              <input type="text" id="produto_foto1" name="produto_foto1" [(ngModel)]="produto.produto_foto1" (blur)="prefixImagePath('produto_foto1')">
+              <img *ngIf="produto.produto_foto1" [src]="produto.produto_foto1 | safeUrl" alt="Foto Adicional 1" style="max-width: 200px; margin-top: 10px;">
+            </div>
+
+            <div class="input-item" id="produto-foto2-box">
+              <label for="produto_foto2">Foto Adicional 2:</label>
+              <input type="text" id="produto_foto2" name="produto_foto2" [(ngModel)]="produto.produto_foto2" (blur)="prefixImagePath('produto_foto2')">
+              <img *ngIf="produto.produto_foto2" [src]="produto.produto_foto2 | safeUrl" alt="Foto Adicional 2" style="max-width: 200px; margin-top: 10px;">
+            </div>
           </div>
 
           <div id="success-message" *ngIf="successMessage">Produto atualizado com sucesso!</div>
         </div>
+
         <div class="btn01">
           <button type="submit" class="btn btn-primary">Salvar</button>
           <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>

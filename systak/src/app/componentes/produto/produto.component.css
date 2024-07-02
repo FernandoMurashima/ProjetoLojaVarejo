@@ -19,9 +19,8 @@ form {
 
 /* Estilização principal */
 .principal {
-    /* border: 2px solid; */
-    padding: 5px;
-    margin-top: 5px;
+   
+    
     width: 100%; /* Ocupar 100% da largura do contêiner pai */
     box-sizing: border-box; /* Incluir padding e borda na largura total */
 }
@@ -34,6 +33,7 @@ form {
 .field-group333,
 .field-group4,
 .field-group44,
+.field-group7,
 .field-group5 {
     display: grid;
     grid-template-columns: repeat(10, 1fr); /* 10 colunas */
@@ -52,6 +52,7 @@ form {
     padding: 4px 8px; /* Ajusta o padding para diminuir a altura */
     font-size: 14px; /* Opcional: Ajusta o tamanho da fonte */
     box-sizing: border-box; /* Inclui padding e borda na largura total */
+    height: 26px;
 }
 
 /* Estilização dos botões */
@@ -78,10 +79,10 @@ form {
 /* Estilização do banner principal */
 .banner {
     text-align: center;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
     /* border: 2px solid; */
-    padding: 5px;
+ 
     width: 98.7vw; /* Ocupar 100% da largura do contêiner */
     margin: 0; /* Remover margens externas */
 }
@@ -138,20 +139,20 @@ form {
     margin-left: 200px;
 }
 
-#descricao-box            { grid-row: 1; grid-column: 1; width: 800px; }
-#desc-reduzida-box        { grid-row: 1; grid-column: 2; width: 550px; }
-#tipo-box                 { grid-row: 1; grid-column: 3; width: 200px; }
-#grade-box                { grid-row: 1; grid-column: 4; width: 250px; }
+#referencia-box           { grid-row: 1; grid-column: 1;  width: 100px; }
+#colecao-box              { grid-row: 1; grid-column: 2;  width: 190px; }
+#grupo-box                { grid-row: 1; grid-column: 3;  width: 150px; }
+#subgrupo-box             { grid-row: 1; grid-column: 4;  width: 150px; }
+#grade-box                { grid-row: 1; grid-column: 5;  width: 190px; }
+#familia-box              { grid-row: 1; grid-column: 6;  width: 150px; }
+#tipo-box                 { grid-row: 1; grid-column: 7;  width: 31px;  }
+#material-box             { grid-row: 1; grid-column: 8;  width: 250px; }
+#unidade-box              { grid-row: 1; grid-column: 9;  width: 250px; }
+#classificacao-fiscal-box { grid-row: 1; grid-column: 10; width: 250px; }
 
-#classificacao-fiscal-box { grid-row: 2; grid-column: 1; width: 350px; }
-#unidade-box              { grid-row: 2; grid-column: 2; width: 350px; }
-#grupo-box                { grid-row: 2; grid-column: 3; width: 350px; }
-#subgrupo-box             { grid-row: 2; grid-column: 4; width: 350px; }
-#familia-box              { grid-row: 2; grid-column: 5; width: 350px; }
+#descricao-box            { grid-row: 2; grid-column: 1; width: 800px; }
+#desc-reduzida-box        { grid-row: 2; grid-column: 2; width: 550px; }
 
-#colecao-box              { grid-row: 3; grid-column: 1; width: 350px; }
-#material-box             { grid-row: 3; grid-column: 2; width: 350px; }
-
-#produto-foto-box         { grid-row: 4; grid-column: 1; width: 350px; }
-#produto-foto1-box        { grid-row: 4; grid-column: 2; width: 350px; }
-#produto-foto2-box        { grid-row: 4; grid-column: 3; width: 350px; }
+#produto-foto-box         { grid-row: 3; grid-column: 1; width: 350px; }
+#produto-foto1-box        { grid-row: 3; grid-column: 2; width: 350px; }
+#produto-foto2-box        { grid-row: 3; grid-column: 3; width: 350px; }

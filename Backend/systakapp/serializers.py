@@ -5,7 +5,8 @@ from .models import (
     Nat_Lancamento, ContaBancaria, Produto, ProdutoDetalhe, Tabelapreco, Estoque,
     Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos, Inventario,
     InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem,
-    PedidoCompra, PedidoCompraItem, Grupo, Unidade, Material, Familia, Colecao, Grade, Ncm, Subgrupo, GrupoDetalhe
+    PedidoCompra, PedidoCompraItem, Grupo, Unidade, Material, Familia, Colecao, Grade, Ncm, Subgrupo, GrupoDetalhe,
+    Codigos
 )
 
 class UserSerializer(serializers.ModelSerializer):
@@ -200,4 +201,9 @@ class GrupoDetalheSerializer(serializers.ModelSerializer):
 class SubGrupoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subgrupo
-        fields = '__all__'        
+        fields = '__all__'       
+
+class CodigosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Codigos
+        fields = '__all__'      

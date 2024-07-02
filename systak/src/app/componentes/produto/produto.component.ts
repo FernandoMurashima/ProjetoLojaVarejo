@@ -78,7 +78,8 @@ export class ProdutoComponent implements OnInit {
       produto_foto1: '',
       produto_foto2: '',
       Material: '',
-      data_cadastro: new Date()
+      data_cadastro: new Date(),
+      Referencia: ''
     };
   }
 
@@ -312,6 +313,14 @@ export class ProdutoComponent implements OnInit {
           this.errorMessage = 'Erro ao excluir produto. Por favor, tente novamente.';
         }
       });
+    }
+  }
+
+  truncate(text: string, limit: number): string {
+    if (text.length > limit) {
+      return text.substring(0, limit) + '...';
+    } else {
+      return text;
     }
   }
 }

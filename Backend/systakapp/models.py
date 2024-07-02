@@ -174,8 +174,10 @@ class Material(models.Model):
 class Colecao(models.Model):
     Idcolecao = models.AutoField(primary_key=True)
     Descricao = models.CharField(max_length=100)
-    Codigo = models.CharField(max_length=10, null=True, blank=True)    
-    Status = models.CharField(max_length=10, null=True, blank=True) 
+    Codigo = models.CharField(max_length=2, null=True, blank=True)
+    Estacao = models.CharField(max_length=2, null=True, blank=True)
+    Status = models.CharField(max_length=10, null=True, blank=True)
+    Contador = models.IntegerField(null=True, blank=True, default=0)
     data_cadastro = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -526,3 +528,11 @@ class GrupoDetalhe(models.Model):
     idsubgrupo = models.ForeignKey(Subgrupo, on_delete=models.CASCADE)
     def __str__(self):
         return self.Descricao  
+    
+class Codigos(models.Model):
+    Idcodigo = models.AutoField(primary_key=True)
+    variavel = models.CharField(max_length=15)
+    valor = models.IntegerField()
+    contador = models.IntegerField()
+    def __str__(self):
+         return f'{self.variavel}: {self.valor}'

@@ -44,6 +44,7 @@ router.register(r'ncms', views.NcmViewSet)
 router.register(r'grupos', views.GrupoViewSet)
 router.register(r'grupodetalhes', views.GrupoDetalheViewSet)
 router.register(r'subgrupos', views.SubGrupoViewSet)
+router.register(r'codigos', views.CodigosViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

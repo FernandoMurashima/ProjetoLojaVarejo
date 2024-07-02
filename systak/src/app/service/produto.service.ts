@@ -20,6 +20,7 @@ export interface Produto {
   produto_foto2?: string;
   Material?: string;
   data_cadastro: Date;
+  Referencia: string;
   [key: string]: any; // Adicionando esta linha para permitir indexação dinâmica
 }
 

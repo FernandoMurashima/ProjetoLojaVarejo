@@ -16,7 +16,8 @@ from .serializers import (
     MovimentacaoProdutosSerializer, InventarioSerializer, InventarioItemSerializer,
     ReceberSerializer, ReceberItensSerializer, PagarSerializer, PagarItemSerializer,
     CompraSerializer, CompraItemSerializer, PedidoCompraSerializer, PedidoCompraItemSerializer, LojaSerializer, GrupoSerializer,
-    UnidadeSerializer, MaterialSerializer, FamiliaSerializer, ColecaoSerializer,GradeSerializer, NcmSerializer, SubGrupoSerializer,GrupoDetalheSerializer
+    UnidadeSerializer, MaterialSerializer, FamiliaSerializer, ColecaoSerializer,GradeSerializer, NcmSerializer, SubGrupoSerializer,
+    GrupoDetalheSerializer, CodigosSerializer
     )
 
 from .models import (
@@ -24,7 +25,8 @@ from .models import (
     Nat_Lancamento, ContaBancaria, Produto, ProdutoDetalhe, Tabelapreco, Estoque,
     Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos, Inventario,
     InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem,Grade,
-    PedidoCompra, PedidoCompraItem, Grupo, Unidade, Material, Familia, Colecao, Ncm, Subgrupo, GrupoDetalhe
+    PedidoCompra, PedidoCompraItem, Grupo, Unidade, Material, Familia, Colecao, Ncm, Subgrupo, 
+    GrupoDetalhe, Codigos
 )
 
 import logging
@@ -243,6 +245,9 @@ class SubGrupoViewSet(viewsets.ModelViewSet):
     serializer_class = SubGrupoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+class CodigosViewSet(viewsets.ModelViewSet):
+    queryset = Codigos.objects.all()
+    serializer_class = CodigosSerializer
 
 @api_view(['POST'])
 def add_grupo_detalhe(request):
