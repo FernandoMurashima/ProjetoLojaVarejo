@@ -17,21 +17,35 @@
         <div class="field-group">
           <div class="input-item" id="referencia-box">
             <label for="referencia">Referência:</label>
-            <input class="input-caixa" type="text" id="referencia" name="referencia" [(ngModel)]="produto.Referencia" #referencia="ngModel" readonly>
+            <input class="input-caixa" type="text" id="referencia" name="referencia" [(ngModel)]="produto.referencia" #referencia="ngModel" readonly>
           </div>
 
           <div class="input-item" id="colecao-box">
             <label for="colecao">Coleção:</label>
-            <select id="colecao" name="colecao" [(ngModel)]="produto.colecao">
+ <!--            <select id="colecao" name="colecao" [(ngModel)]="produto.colecao">
+              <option *ngFor="let colecao of colecoes" [value]="colecao.Idcolecao">{{ colecao.Descricao }}</option>
+            </select> -->
+
+            <select id="colecao" name="colecao" [(ngModel)]="produto.colecao" (change)="onColecaoChange($event)">
               <option *ngFor="let colecao of colecoes" [value]="colecao.Idcolecao">{{ colecao.Descricao }}</option>
             </select>
+
+
           </div>
 
           <div class="input-item" id="grupo-box">
             <label for="grupo">Grupo:</label>
+            
+            <!-- <select id="grupo" name="grupo" [(ngModel)]="produto.grupo" (change)="onGrupoChange($event)">
+              <option *ngFor="let grupo of grupos" [value]="grupo.Idgrupo">{{ grupo.Descricao }}</option>
+            </select> -->
+
             <select id="grupo" name="grupo" [(ngModel)]="produto.grupo" (change)="onGrupoChange($event)">
               <option *ngFor="let grupo of grupos" [value]="grupo.Idgrupo">{{ grupo.Descricao }}</option>
             </select>
+
+
+
           </div>
 
           <div class="input-item" id="subgrupo-box">
@@ -143,7 +157,7 @@
           <div class="field-group">
             <div class="input-item" id="referencia-box">
               <label for="referencia">Referência:</label>
-              <input class="input-caixa" type="text" id="referencia" name="referencia" [(ngModel)]="produtoSelecionado.Referencia" #referencia="ngModel" readonly>
+              <input class="input-caixa" type="text" id="referencia" name="referencia" [(ngModel)]="produtoSelecionado.referencia" #referencia="ngModel" readonly>
             </div>
 
             <div class="input-item" id="colecao-box">
@@ -250,7 +264,7 @@
           <div class="field-group">
             <div class="input-item" id="referencia-box">
               <label for="referencia">Referência:</label>
-              <input class="input-caixa" type="text" id="referencia" name="referencia" [(ngModel)]="produto.Referencia" #referencia="ngModel" readonly>
+              <input class="input-caixa" type="text" id="referencia" name="referencia" [(ngModel)]="produto.referencia" #referencia="ngModel" readonly>
             </div>
 
             <div class="input-item" id="colecao-box">

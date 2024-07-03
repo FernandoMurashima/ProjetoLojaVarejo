@@ -2,12 +2,13 @@ from django.contrib.auth import get_user_model
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from django.http import JsonResponse
 from django.http import HttpResponse
+from django.db.models import F
 from .serializers import (
     UserSerializer, ClienteSerializer, FornecedorSerializer, VendedorSerializer,
     FuncionariosSerializer, TamanhoSerializer, CorSerializer, NaturezaLancamentoSerializer,
@@ -16,15 +17,15 @@ from .serializers import (
     MovimentacaoProdutosSerializer, InventarioSerializer, InventarioItemSerializer,
     ReceberSerializer, ReceberItensSerializer, PagarSerializer, PagarItemSerializer,
     CompraSerializer, CompraItemSerializer, PedidoCompraSerializer, PedidoCompraItemSerializer, LojaSerializer, GrupoSerializer,
-    UnidadeSerializer, MaterialSerializer, FamiliaSerializer, ColecaoSerializer,GradeSerializer, NcmSerializer, SubGrupoSerializer,
+    UnidadeSerializer, MaterialSerializer, FamiliaSerializer, ColecaoSerializer, GradeSerializer, NcmSerializer, SubGrupoSerializer,
     GrupoDetalheSerializer, CodigosSerializer
-    )
+)
 
 from .models import (
     User, Loja, Cliente, Fornecedor, Vendedor, Funcionarios, Tamanho, Cor,
     Nat_Lancamento, ContaBancaria, Produto, ProdutoDetalhe, Tabelapreco, Estoque,
     Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos, Inventario,
-    InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem,Grade,
+    InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem, Grade,
     PedidoCompra, PedidoCompraItem, Grupo, Unidade, Material, Familia, Colecao, Ncm, Subgrupo, 
     GrupoDetalhe, Codigos
 )
@@ -57,7 +58,6 @@ class ColecaoViewSet(viewsets.ModelViewSet):
     queryset = Colecao.objects.all()
     serializer_class = ColecaoSerializer
     permission_classes = [permissions.IsAuthenticated]
-
 
 class LojaViewSet(viewsets.ModelViewSet):
     queryset = Loja.objects.all()
@@ -126,6 +126,12 @@ class ProdutoViewSet(viewsets.ModelViewSet):
     queryset = Produto.objects.all()
     serializer_class = ProdutoSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    @action(detail=False, methods=['get'], url_path='check_unique_reference/(?P<referencia>[^/.]+)')
+    def check_unique_reference(self, request, referencia=None):
+        exists = Produto.objects.filter(referencia=referencia).exists()
+        return Response({'isUnique': not exists})
+    
 
 class ProdutoDetalheViewSet(viewsets.ModelViewSet):
     queryset = ProdutoDetalhe.objects.all()
@@ -229,7 +235,6 @@ class NcmViewSet(viewsets.ModelViewSet):
     queryset = Ncm.objects.all()
     serializer_class = NcmSerializer
 
-
 class GrupoViewSet(viewsets.ModelViewSet):
     queryset = Grupo.objects.all()
     serializer_class = GrupoSerializer
@@ -260,3 +265,26 @@ def add_grupo_detalhe(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_codigo_grupo(request, grupo_id):
+    try:
+        grupo = Grupo.objects.get(Idgrupo=grupo_id)
+        return JsonResponse({"codigo": grupo.Codigo})
+    except Grupo.DoesNotExist:
+        return JsonResponse({"error": "Grupo não encontrado"}, status=404)
+
+@api_view(['POST'])
+def update_contador(request, colecao_id):
+    try:
+        colecao = Colecao.objects.get(Idcolecao=colecao_id)
+        contador = request.data.get('contador', 1)
+        colecao.Contador = F('Contador') + contador
+        colecao.save()
+        colecao.refresh_from_db()  # Certifique-se de obter o valor atualizado do banco de dados
+        return JsonResponse({"success": True, "novo_contador": colecao.Contador})
+    except Colecao.DoesNotExist:
+        return JsonResponse({"error": "Coleção não encontrada"}, status=404)
+
+
+

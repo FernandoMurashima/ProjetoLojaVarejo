@@ -79,7 +79,7 @@ export class ProdutoComponent implements OnInit {
       produto_foto2: '',
       Material: '',
       data_cadastro: new Date(),
-      Referencia: ''
+      referencia: ''
     };
   }
 
@@ -118,6 +118,8 @@ export class ProdutoComponent implements OnInit {
 
   populateProdutoDescriptions() {
     this.produtos.forEach(produto => {
+      produto['grupoDescricao'] = this.grupos.find(grupo => grupo.Idgrupo.toString() === produto.grupo)?.Descricao || '';
+      produto['subgrupoDescricao'] = this.subgrupos.find(subgrupo => subgrupo.Idsubgrupo.toString() === produto.subgrupo)?.Descricao || '';
       produto['gradeDescricao'] = this.grades.find(grade => grade.Idgrade.toString() === produto.grade)?.Descricao || '';
       produto['unidadeDescricao'] = this.unidades.find(unidade => unidade.Idunidade.toString() === produto.unidade)?.Descricao || '';
       produto['colecaoDescricao'] = this.colecoes.find(colecao => colecao.Idcolecao.toString() === produto.colecao)?.Descricao || '';
@@ -239,11 +241,18 @@ export class ProdutoComponent implements OnInit {
           return isIncluded;
         });
         console.log('Subgrupos filtrados:', this.subgruposFiltrados);
+        this.generateReference();
       },
       error: (error: any) => {
         console.error('Erro ao carregar subgrupos do grupo', error);
       }
     });
+  }
+
+  onColecaoChange(event: Event) {
+    const selectedId = +(event.target as HTMLSelectElement).value;
+    console.log('Coleção selecionada ID:', selectedId);
+    this.generateReference();
   }
 
   onFotoChange(field: string, event: Event) {
@@ -264,22 +273,76 @@ export class ProdutoComponent implements OnInit {
     this.produto.classificacao_fiscal = selectedNcm;
   }
 
-  addProduto() {
-    if (window.confirm('Confirma a inclusão do novo produto?')) {
-      const produtoParaEnviar = { ...this.produto };
-      delete produtoParaEnviar.Idproduto; // Remova o Idproduto antes de enviar
+  async generateReference() {
+    if (!this.produto.colecao || !this.produto.grupo) {
+      console.error('Coleção ou grupo não selecionado');
+      return;
+    }
 
-      console.log("Dados do produto para envio:", produtoParaEnviar);
-      this.produtoService.addProduto(produtoParaEnviar).subscribe({
-        next: (data: Produto) => {
-          this.successMessage = 'Produto adicionado com sucesso!';
-          this.resetAction();
-        },
-        error: (error: any) => {
-          console.error('Erro ao cadastrar produto:', error);
-          this.errorMessage = 'Erro ao cadastrar produto. Por favor, tente novamente.';
-        }
-      });
+    const colecaoId = Number(this.produto.colecao);
+    const grupoId = Number(this.produto.grupo);
+
+    try {
+      const colecao = await this.colecaoService.get(colecaoId).toPromise();
+      const grupo = await this.grupoService.get(grupoId).toPromise();
+
+      if (!colecao || !grupo) {
+        console.error('Coleção ou grupo não encontrado');
+        return;
+      }
+
+      const codigoColecao = colecao.Codigo;
+      const estacaoColecao = colecao.Estacao;
+      let contador = colecao.Contador + 1;
+      const contadorStr = String(contador).padStart(3, '0');
+      const referencia = `${codigoColecao}-${estacaoColecao}-${grupo.Codigo}${contadorStr}`;
+
+      const isUnique = await this.produtoService.checkUniqueReference(referencia).toPromise();
+      if (isUnique) {
+        this.produto.referencia = referencia;
+        console.log('Referência Gerada:', this.produto.referencia);
+      } else {
+        throw new Error('Referência não é única');
+      }
+    } catch (error) {
+      console.error('Erro ao gerar referência:', error);
+    }
+  }
+
+  async addProduto() {
+    try {
+      await this.generateReference();
+      if (window.confirm('Confirma a inclusão do novo produto?')) {
+        const produtoParaEnviar = { ...this.produto };
+        delete produtoParaEnviar.Idproduto; // Remova o Idproduto antes de enviar
+
+        console.log("Dados do produto para envio:", produtoParaEnviar);
+        this.produtoService.addProduto(produtoParaEnviar).subscribe({
+          next: async (data: Produto) => {
+            this.successMessage = 'Produto adicionado com sucesso!';
+            await this.updateContador();
+            this.resetAction();
+          },
+          error: (error: any) => {
+            console.error('Erro ao cadastrar produto:', error);
+            this.errorMessage = 'Erro ao cadastrar produto. Por favor, tente novamente.';
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao preparar a inclusão do produto:', error);
+    }
+  }
+
+  async updateContador() {
+    try {
+      if (this.produto.colecao) {
+        const colecaoId = Number(this.produto.colecao);
+        await this.produtoService.updateContador(colecaoId).toPromise();
+        console.log('Contador da coleção atualizado.');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar o contador da coleção:', error);
     }
   }
 

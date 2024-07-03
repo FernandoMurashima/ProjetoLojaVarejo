@@ -7,6 +7,7 @@ from systakapp import views
 
 router = routers.DefaultRouter()
 
+# Registrando os ViewSets
 router.register(r'users', views.UserViewSet)
 router.register(r'clientes', views.ClienteViewSet)
 router.register(r'fornecedores', views.FornecedorViewSet)
@@ -52,6 +53,9 @@ urlpatterns = [
     path('api-token-auth/', auth_views.obtain_auth_token),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path('', include(router.urls)),
+    path('grupos/<int:grupo_id>/codigo/', views.get_codigo_grupo, name='get_codigo_grupo'),
+    path('colecoes/<int:colecao_id>/update_contador/', views.update_contador, name='update_contador'),
+    path('produtos/check_unique_reference/<str:referencia>/', views.ProdutoViewSet.as_view({'get': 'check_unique_reference'}), name='check_unique_reference'),
 ]
 
-
+    

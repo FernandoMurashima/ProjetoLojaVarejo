@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { map } from 'rxjs/operators';
 
 export interface Grupo {
   Idgrupo: number;
@@ -39,5 +40,11 @@ export class GrupoService {
 
   deleteGrupo(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}${id}/`);
+  }
+
+  getCodigo(id: number): Observable<string> {  // Atualizar o tipo de retorno conforme necessário
+    return this.http.get<{ codigo: string }>(`${this.apiUrl}${id}/codigo/`).pipe(
+      map(response => response.codigo)
+    );
   }
 }

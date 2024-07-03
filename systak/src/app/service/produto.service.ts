@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface Produto {
@@ -20,8 +21,8 @@ export interface Produto {
   produto_foto2?: string;
   Material?: string;
   data_cadastro: Date;
-  Referencia: string;
-  [key: string]: any; // Adicionando esta linha para permitir indexação dinâmica
+  referencia: string;
+  [key: string]: any;
 }
 
 @Injectable({
@@ -50,5 +51,17 @@ export class ProdutoService {
 
   deleteProduto(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}${id}/`);
+  }
+
+  checkUniqueReference(referencia: string): Observable<boolean> {
+    return this.http.get<{ isUnique: boolean }>(`${this.apiUrl}check_unique_reference/${referencia}`).pipe(
+      map((response: { isUnique: boolean }) => response.isUnique)
+    );
+  }
+
+  updateContador(colecaoId: number): Observable<any> {
+    const url = `${environment.apiURL}/colecoes/${colecaoId}/update_contador/`;
+    console.log(`Sending request to: ${url}`);
+    return this.http.post<any>(url, { contador: 1 });
   }
 }

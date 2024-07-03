@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ColecaoService, Colecao } from '../../service/colecao.service';
-import { Router } from '@angular/router';
+
+export type ColecaoCreate = Omit<Colecao, 'Idcolecao'>; // Adicionando a definição de ColecaoCreate
 
 @Component({
   selector: 'app-colecao',
@@ -10,13 +11,12 @@ import { Router } from '@angular/router';
 export class ColecaoComponent implements OnInit {
   colecao: Colecao = this.createEmptyColecao();
   colecoes: Colecao[] = [];
-  colecaoSelecionada?: Colecao;
-  action: string = '';
-
+  colecaoSelecionada?: Colecao; // Adicionando a propriedade
+  action: string = ''; // Adicionando a propriedade
   successMessage: string = '';
   errorMessage: string = '';
 
-  constructor(private colecaoService: ColecaoService, private router: Router) {}
+  constructor(private colecaoService: ColecaoService) {}
 
   ngOnInit(): void {
     this.loadColecoes();
@@ -27,6 +27,8 @@ export class ColecaoComponent implements OnInit {
       Idcolecao: 0,
       Descricao: '',
       Codigo: '',
+      Estacao: '', // Adicione esta linha
+      Contador: 0, // Adicione esta linha
       Status: '',
       data_cadastro: new Date()
     };
@@ -34,97 +36,88 @@ export class ColecaoComponent implements OnInit {
 
   setAction(action: string) {
     this.action = action;
-    if (action === 'consultar' || action === 'editar' || action === 'excluir') {
-      this.loadColecoes();
-    }
+    this.colecaoSelecionada = undefined;
+    this.colecao = this.createEmptyColecao();
   }
 
   resetAction() {
     this.action = '';
-    this.colecao = this.createEmptyColecao();
     this.colecaoSelecionada = undefined;
-    this.successMessage = '';
-    this.errorMessage = '';
+    this.colecao = this.createEmptyColecao();
   }
 
   goToIndex() {
-    this.router.navigate(['/home']);
+    // Adicione a navegação para a página inicial ou ajuste conforme necessário
+    console.log('Voltar para o índice');
   }
 
   loadColecoes() {
     this.colecaoService.load().subscribe({
-      next: (data) => {
+      next: (data: Colecao[]) => {
         this.colecoes = data;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Erro ao carregar coleções', error);
       }
     });
   }
 
   addColecao() {
-    if (window.confirm('Confirma a inclusão da nova coleção?')) {
-      const colecaoParaEnviar = {
-        Descricao: this.colecao.Descricao,
-        Codigo: this.colecao.Codigo,
-        Status: this.colecao.Status,
-        data_cadastro: this.colecao.data_cadastro
-      };
+    const colecaoParaEnviar = {
+      ...this.colecao,
+      Idcolecao: undefined // Remova o Idcolecao antes de enviar
+    } as ColecaoCreate;
 
-      this.colecaoService.addColecao(colecaoParaEnviar).subscribe({
-        next: (data) => {
-          this.successMessage = 'Coleção adicionada com sucesso!';
-          this.resetAction();
-        },
-        error: (error) => {
-          console.error('Erro ao cadastrar Coleção:', error);
-          this.errorMessage = 'Erro ao cadastrar Coleção. Por favor, tente novamente.';
-        }
-      });
-    }
+    this.colecaoService.addColecao(colecaoParaEnviar).subscribe({
+      next: (data: Colecao) => {
+        this.successMessage = 'Coleção adicionada com sucesso!';
+        this.loadColecoes();
+        this.colecao = this.createEmptyColecao();
+      },
+      error: (error: any) => {
+        console.error('Erro ao adicionar coleção', error);
+        this.errorMessage = 'Erro ao adicionar coleção. Por favor, tente novamente.';
+      }
+    });
+  }
+
+  updateColecao() {
+    if (!this.colecao.Idcolecao) return;
+
+    this.colecaoService.updateColecao(this.colecao.Idcolecao, this.colecao).subscribe({
+      next: (data: Colecao) => {
+        this.successMessage = 'Coleção atualizada com sucesso!';
+        this.loadColecoes();
+      },
+      error: (error: any) => {
+        console.error('Erro ao atualizar coleção', error);
+        this.errorMessage = 'Erro ao atualizar coleção. Por favor, tente novamente.';
+      }
+    });
+  }
+
+  deleteColecao() {
+    if (!this.colecao.Idcolecao) return;
+
+    this.colecaoService.deleteColecao(this.colecao.Idcolecao).subscribe({
+      next: (data: any) => {
+        this.successMessage = 'Coleção excluída com sucesso!';
+        this.loadColecoes();
+        this.colecao = this.createEmptyColecao();
+      },
+      error: (error: any) => {
+        console.error('Erro ao excluir coleção', error);
+        this.errorMessage = 'Erro ao excluir coleção. Por favor, tente novamente.';
+      }
+    });
   }
 
   onColecaoChange(event: Event) {
     const selectedId = (event.target as HTMLSelectElement).value;
-    this.colecaoSelecionada = this.colecoes.find(p => p.Idcolecao === +selectedId) ?? undefined;
+    this.colecaoSelecionada = this.colecoes.find(c => c.Idcolecao === +selectedId);
 
     if (this.colecaoSelecionada) {
       this.colecao = { ...this.colecaoSelecionada };
-    }
-  }
-
-  updateColecao() {
-    if (window.confirm('Confirma a alteração da coleção?')) {
-      if (!this.colecaoSelecionada) return;
-
-      const colecaoParaEnviar = {
-        ...this.colecao
-      };
-      this.colecaoService.updateColecao(this.colecaoSelecionada.Idcolecao, colecaoParaEnviar).subscribe({
-        next: (data) => {
-          this.successMessage = 'Coleção atualizada com sucesso!';
-          this.resetAction();
-        },
-        error: (error) => {
-          this.errorMessage = 'Erro ao atualizar Coleção. Por favor, tente novamente.';
-        }
-      });
-    }
-  }
-
-  deleteColecao() {
-    if (window.confirm('Confirma a exclusão da coleção?')) {
-      if (!this.colecaoSelecionada) return;
-
-      this.colecaoService.deleteColecao(this.colecaoSelecionada.Idcolecao).subscribe({
-        next: (data) => {
-          this.successMessage = 'Coleção excluída com sucesso!';
-          this.resetAction();
-        },
-        error: (error) => {
-          this.errorMessage = 'Erro ao excluir Coleção. Por favor, tente novamente.';
-        }
-      });
     }
   }
 }
