@@ -253,11 +253,12 @@ class Produto(models.Model):
 class ProdutoDetalhe(models.Model):
     Idprodutodetalhe = models.AutoField(primary_key=True)
     CodigodeBarra = models.CharField(max_length=20, unique=True)
-    Codigoproduto = models.CharField(max_length=6, default='000000', unique=True)
+    Codigoproduto = models.CharField(max_length=11, default='00.00.00000')
     data_cadastro = models.DateTimeField(default=timezone.now)
     Idproduto = models.ForeignKey(Produto, on_delete=models.CASCADE)    
     Idtamanho = models.ForeignKey(Tamanho, on_delete=models.CASCADE)
     Idcor = models.ForeignKey(Cor, on_delete=models.CASCADE)
+    Item = models.IntegerField(null=True, blank=True, default=0)
     
 
     def __str__(self):

@@ -25,6 +25,14 @@ export interface Produto {
   [key: string]: any;
 }
 
+export interface ProdutoDetalhe {
+  Idprodutodetalhe?: number;
+  CodigodeBarra: string;
+  Idcor: number;
+  Idtamanho: number;
+  Idproduto: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -63,5 +71,9 @@ export class ProdutoService {
     const url = `${environment.apiURL}/colecoes/${colecaoId}/update_contador/`;
     console.log(`Sending request to: ${url}`);
     return this.http.post<any>(url, { contador: 1 });
+  }
+
+  addProdutoDetalhe(produtoDetalhe: ProdutoDetalhe): Observable<ProdutoDetalhe> {
+    return this.http.post<ProdutoDetalhe>(`${this.apiUrl}detalhes/`, produtoDetalhe);
   }
 }

@@ -40,4 +40,8 @@ export class TamanhoService {
   deleteTamanho(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}${id}/`);
   }
+
+  loadByGrade(idGrade: number): Observable<Tamanho[]> {
+    return this.http.get<Tamanho[]>(`${this.apiUrl}?grade=${idGrade}`);
+  }
 }

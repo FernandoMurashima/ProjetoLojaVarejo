@@ -27,6 +27,7 @@ form {
 
 /* Estilização dos grupos de campos */
 .field-group,
+.produto-detalhe,
 .field-group2,
 .field-group22,
 .field-group3,
@@ -156,3 +157,8 @@ form {
 #produto-foto-box         { grid-row: 3; grid-column: 1; width: 350px; }
 #produto-foto1-box        { grid-row: 3; grid-column: 2; width: 350px; }
 #produto-foto2-box        { grid-row: 3; grid-column: 3; width: 350px; }
+
+#codigo_barra             { grid-row: 4; grid-column: 1; width: 150px; }
+#cor                      { grid-row: 4; grid-column: 2; width: 150px; }
+#tamanho                  { grid-row: 4; grid-column: 3; width:  50px; }
+#botaodetalhe             { grid-row: 5; grid-column: 1; width: 100px; }

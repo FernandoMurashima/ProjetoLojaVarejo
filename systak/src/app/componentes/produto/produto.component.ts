@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProdutoService, Produto } from '../../service/produto.service';
+import { ProdutoService, Produto, ProdutoDetalhe } from '../../service/produto.service';
 import { GrupoService, Grupo } from '../../service/grupo.service';
 import { SubgrupoService, Subgrupo } from '../../service/subgrupo.service';
 import { GrupoDetalheService, GrupoDetalhe } from '../../service/grupodetalhe.service';
@@ -9,6 +9,8 @@ import { ColecaoService, Colecao } from '../../service/colecao.service';
 import { MaterialService, Material } from '../../service/material.service';
 import { FamiliaService, Familia } from '../../service/familia.service';
 import { NcmService, Ncm } from '../../service/ncm.service';
+import { CorService, Cor } from '../../service/cor.service';
+import { TamanhoService, Tamanho } from '../../service/tamanho.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -18,6 +20,7 @@ import { Router } from '@angular/router';
 })
 export class ProdutoComponent implements OnInit {
   produto: Produto = this.createEmptyProduto();
+  produtoDetalhe: ProdutoDetalhe = this.createEmptyProdutoDetalhe();
   produtos: Produto[] = [];
   grupos: Grupo[] = [];
   subgrupos: Subgrupo[] = [];
@@ -28,8 +31,12 @@ export class ProdutoComponent implements OnInit {
   materiais: Material[] = [];
   familias: Familia[] = [];
   ncms: Ncm[] = [];
+  cores: Cor[] = [];
+  tamanhos: Tamanho[] = [];
+  combinacoes: any[] = [];
   produtoSelecionado?: Produto;
   action: string = '';
+  selectedCor: string = '';
 
   successMessage: string = '';
   errorMessage: string = '';
@@ -47,6 +54,8 @@ export class ProdutoComponent implements OnInit {
     private familiaService: FamiliaService,
     private ncmService: NcmService,
     private grupoDetalheService: GrupoDetalheService,
+    private corService: CorService,
+    private tamanhoService: TamanhoService,
     private router: Router
   ) {}
 
@@ -60,6 +69,8 @@ export class ProdutoComponent implements OnInit {
     this.loadNcms();
     this.loadGrupos();
     this.loadSubgrupos();
+    this.loadCores();
+    this.loadTamanhos();
   }
 
   createEmptyProduto(): Produto {
@@ -83,6 +94,15 @@ export class ProdutoComponent implements OnInit {
     };
   }
 
+  createEmptyProdutoDetalhe(): ProdutoDetalhe {
+    return {
+      CodigodeBarra: '',
+      Idcor: 0,
+      Idtamanho: 0,
+      Idproduto: 0
+    };
+  }
+
   setAction(action: string) {
     console.log('Ação definida:', action);
     this.action = action;
@@ -98,6 +118,8 @@ export class ProdutoComponent implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
     this.subgruposFiltrados = [];
+    this.combinacoes = [];
+    this.selectedCor = '';
   }
 
   goToIndex() {
@@ -219,6 +241,28 @@ export class ProdutoComponent implements OnInit {
     });
   }
 
+  loadCores() {
+    this.corService.load().subscribe({
+      next: (data: Cor[]) => {
+        this.cores = data;
+      },
+      error: (error: any) => {
+        console.error('Erro ao carregar cores', error);
+      }
+    });
+  }
+
+  loadTamanhos() {
+    this.tamanhoService.load().subscribe({
+      next: (data: Tamanho[]) => {
+        this.tamanhos = data;
+      },
+      error: (error: any) => {
+        console.error('Erro ao carregar tamanhos', error);
+      }
+    });
+  }
+
   onProdutoChange(event: Event) {
     const selectedId = (event.target as HTMLSelectElement).value;
     this.produtoSelecionado = this.produtos.find(p => p.Idproduto === +selectedId) ?? undefined;
@@ -321,7 +365,7 @@ export class ProdutoComponent implements OnInit {
           next: async (data: Produto) => {
             this.successMessage = 'Produto adicionado com sucesso!';
             await this.updateContador();
-            this.resetAction();
+            this.setAction('adicionarCor');
           },
           error: (error: any) => {
             console.error('Erro ao cadastrar produto:', error);
@@ -343,6 +387,51 @@ export class ProdutoComponent implements OnInit {
       }
     } catch (error) {
       console.error('Erro ao atualizar o contador da coleção:', error);
+    }
+  }
+
+  listarCombinacoes() {
+    if (!this.selectedCor || !this.produto.grade) {
+      console.error('Cor ou grade não selecionada');
+      return;
+    }
+
+    console.log('Cor selecionada:', this.selectedCor);
+    console.log('Grade selecionada:', this.produto.grade);
+
+    const cor = this.cores.find(c => c.Idcor.toString() === this.selectedCor);
+    if (!cor) {
+      console.error('Cor selecionada não encontrada');
+      return;
+    }
+
+    this.tamanhoService.loadByGrade(Number(this.produto.grade)).subscribe({
+      next: (tamanhos) => {
+        if (!tamanhos) {
+          console.error('Nenhum tamanho encontrado para a grade selecionada');
+          return;
+        }
+
+        this.combinacoes = tamanhos
+          .filter(tamanho => tamanho.idgrade === Number(this.produto.grade))
+          .map(tamanho => ({
+            cor,
+            tamanho
+          }));
+
+        console.log('Combinações geradas:', this.combinacoes);
+      },
+      error: (error: any) => {
+        console.error('Erro ao carregar tamanhos para a grade', error);
+      }
+    });
+  }
+
+  truncate(text: string, limit: number): string {
+    if (text.length > limit) {
+      return text.substring(0, limit) + '...';
+    } else {
+      return text;
     }
   }
 
@@ -376,14 +465,6 @@ export class ProdutoComponent implements OnInit {
           this.errorMessage = 'Erro ao excluir produto. Por favor, tente novamente.';
         }
       });
-    }
-  }
-
-  truncate(text: string, limit: number): string {
-    if (text.length > limit) {
-      return text.substring(0, limit) + '...';
-    } else {
-      return text;
     }
   }
 }
