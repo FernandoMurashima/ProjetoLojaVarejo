@@ -56,6 +56,6 @@ urlpatterns = [
     path('grupos/<int:grupo_id>/codigo/', views.get_codigo_grupo, name='get_codigo_grupo'),
     path('colecoes/<int:colecao_id>/update_contador/', views.update_contador, name='update_contador'),
     path('produtos/check_unique_reference/<str:referencia>/', views.ProdutoViewSet.as_view({'get': 'check_unique_reference'}), name='check_unique_reference'),
+    path('codigos/empresa/', views.get_empresa_codigo, name='get_empresa_codigo'),
+    path('codigos/empresa/increment/', views.increment_empresa_codigo, name='increment_empresa_codigo'),
 ]
-
-    

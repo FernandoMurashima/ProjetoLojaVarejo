@@ -123,41 +123,35 @@
     </form>
   </div>
 
-  <!-- Adicionar Cor -->
-  <div *ngIf="action === 'adicionarCor'">
-    <div class="banner">ADICIONAR COR AO PRODUTO</div>
-    <form (ngSubmit)="listarCombinacoes()">
-      <div class="principal">
-        <div class="input-item">
-          <label for="cor">Selecione a Cor:</label>
-          <select id="cor" name="cor" [(ngModel)]="selectedCor">
-            <option *ngFor="let cor of cores" [value]="cor.Idcor">{{ cor.Descricao }}</option>
-          </select>
-        </div>
-        <div class="btn01">
-          <button type="submit" class="btn btn-primary">Listar Combinações</button>
-          <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
-        </div>
+  <!-- Adicionar Cor e Tamanhos -->
+<div *ngIf="action === 'adicionarCor'">
+  <div class="banner">ADICIONAR COR E TAMANHOS</div>
+  <form (ngSubmit)="listarCombinacoes()">
+    <div class="field-group">
+      <div class="input-item" id="cor-box">
+        <label for="cor">Cor:</label>
+
+        <select id="cor" name="cor" [(ngModel)]="selectedCor" (change)="onCorChange($event)">
+          <option *ngFor="let cor of cores" [value]="cor.Idcor">{{ cor.Descricao }}</option>
+        </select>
+        
+      
       </div>
-    </form>
-    <div *ngIf="combinacoes.length > 0">
-      <div class="banner">COMBINAÇÕES DE COR E TAMANHO</div>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Cor</th>
-            <th>Tamanho</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let combinacao of combinacoes">
-            <td>{{ combinacao.cor.Descricao }}</td>
-            <td>{{ combinacao.tamanho.Tamanho }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <button type="submit" class="btn btn-primary">Gerar Combinações</button>
     </div>
+  </form>
+  <div *ngIf="combinacoes.length > 0">
+    <h3>Combinações Geradas:</h3>
+    <ul>
+      <li *ngFor="let combinacao of combinacoes">
+        Cor: {{ combinacao.cor.Descricao }}, Tamanho: {{ combinacao.tamanho.Tamanho }}, Código de Barras: {{ combinacao.codigoDeBarras }}
+      </li>
+    </ul>
   </div>
+</div>
+
+
+
   <!-- Consulta de Produto -->
   <div *ngIf="action === 'consultar'">
     <div *ngIf="!produtoSelecionado">

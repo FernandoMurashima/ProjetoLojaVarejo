@@ -11,6 +11,7 @@ import { FamiliaService, Familia } from '../../service/familia.service';
 import { NcmService, Ncm } from '../../service/ncm.service';
 import { CorService, Cor } from '../../service/cor.service';
 import { TamanhoService, Tamanho } from '../../service/tamanho.service';
+import { CodigoService } from '../../service/codigo.service'; // Importa o serviço de código
 import { Router } from '@angular/router';
 
 @Component({
@@ -20,7 +21,6 @@ import { Router } from '@angular/router';
 })
 export class ProdutoComponent implements OnInit {
   produto: Produto = this.createEmptyProduto();
-  produtoDetalhe: ProdutoDetalhe = this.createEmptyProdutoDetalhe();
   produtos: Produto[] = [];
   grupos: Grupo[] = [];
   subgrupos: Subgrupo[] = [];
@@ -33,10 +33,11 @@ export class ProdutoComponent implements OnInit {
   ncms: Ncm[] = [];
   cores: Cor[] = [];
   tamanhos: Tamanho[] = [];
-  combinacoes: any[] = [];
+  detalhes: ProdutoDetalhe[] = [];
   produtoSelecionado?: Produto;
   action: string = '';
-  selectedCor: string = '';
+  selectedCor?: number;
+  combinacoes: { cor: Cor, tamanho: Tamanho, codigoDeBarras: string }[] = [];
 
   successMessage: string = '';
   errorMessage: string = '';
@@ -56,6 +57,7 @@ export class ProdutoComponent implements OnInit {
     private grupoDetalheService: GrupoDetalheService,
     private corService: CorService,
     private tamanhoService: TamanhoService,
+    private codigoService: CodigoService, // Adiciona o serviço de código
     private router: Router
   ) {}
 
@@ -94,15 +96,6 @@ export class ProdutoComponent implements OnInit {
     };
   }
 
-  createEmptyProdutoDetalhe(): ProdutoDetalhe {
-    return {
-      CodigodeBarra: '',
-      Idcor: 0,
-      Idtamanho: 0,
-      Idproduto: 0
-    };
-  }
-
   setAction(action: string) {
     console.log('Ação definida:', action);
     this.action = action;
@@ -118,8 +111,9 @@ export class ProdutoComponent implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
     this.subgruposFiltrados = [];
+    this.detalhes = [];
     this.combinacoes = [];
-    this.selectedCor = '';
+    this.selectedCor = undefined;
   }
 
   goToIndex() {
@@ -365,7 +359,8 @@ export class ProdutoComponent implements OnInit {
           next: async (data: Produto) => {
             this.successMessage = 'Produto adicionado com sucesso!';
             await this.updateContador();
-            this.setAction('adicionarCor');
+            this.produtoSelecionado = data; // Seleciona o produto recém-adicionado
+            this.setAction('adicionarCor'); // Mudança para ação de adicionar cor
           },
           error: (error: any) => {
             console.error('Erro ao cadastrar produto:', error);
@@ -387,51 +382,6 @@ export class ProdutoComponent implements OnInit {
       }
     } catch (error) {
       console.error('Erro ao atualizar o contador da coleção:', error);
-    }
-  }
-
-  listarCombinacoes() {
-    if (!this.selectedCor || !this.produto.grade) {
-      console.error('Cor ou grade não selecionada');
-      return;
-    }
-
-    console.log('Cor selecionada:', this.selectedCor);
-    console.log('Grade selecionada:', this.produto.grade);
-
-    const cor = this.cores.find(c => c.Idcor.toString() === this.selectedCor);
-    if (!cor) {
-      console.error('Cor selecionada não encontrada');
-      return;
-    }
-
-    this.tamanhoService.loadByGrade(Number(this.produto.grade)).subscribe({
-      next: (tamanhos) => {
-        if (!tamanhos) {
-          console.error('Nenhum tamanho encontrado para a grade selecionada');
-          return;
-        }
-
-        this.combinacoes = tamanhos
-          .filter(tamanho => tamanho.idgrade === Number(this.produto.grade))
-          .map(tamanho => ({
-            cor,
-            tamanho
-          }));
-
-        console.log('Combinações geradas:', this.combinacoes);
-      },
-      error: (error: any) => {
-        console.error('Erro ao carregar tamanhos para a grade', error);
-      }
-    });
-  }
-
-  truncate(text: string, limit: number): string {
-    if (text.length > limit) {
-      return text.substring(0, limit) + '...';
-    } else {
-      return text;
     }
   }
 
@@ -467,4 +417,108 @@ export class ProdutoComponent implements OnInit {
       });
     }
   }
+
+  truncate(text: string, limit: number): string {
+    if (text.length > limit) {
+      return text.substring(0, limit) + '...';
+    } else {
+      return text;
+    }
+  }
+
+  onCorChange(event: Event) {
+    const selectedId = +(event.target as HTMLSelectElement).value;
+    this.selectedCor = selectedId;
+    console.log('Cor selecionada ID:', this.selectedCor);
+  }
+
+  listarCombinacoes() {
+    if (!this.selectedCor || !this.produto.grade) {
+      console.error('Cor ou grade não selecionada');
+      return;
+    }
+
+    const cor = this.cores.find(cor => cor.Idcor === this.selectedCor);
+    const tamanhos = this.tamanhos?.filter(tamanho => tamanho.idgrade === +(this.produto.grade ?? 0));
+
+    if (!cor || tamanhos?.length === 0) {
+      console.error('Cor selecionada não encontrada ou sem tamanhos associados');
+      return;
+    }
+
+    Promise.all(tamanhos.map(async tamanho => {
+      const codigoDeBarras = await this.gerarCodigoDeBarrasParaProduto();
+      return {
+        cor,
+        tamanho,
+        codigoDeBarras
+      };
+    })).then(combinacoes => {
+      this.combinacoes = combinacoes;
+      console.log('Combinações geradas:', this.combinacoes);
+      this.salvarCombinacoes(); // Chamar método para salvar as combinações
+    }).catch(error => {
+      console.error('Erro ao gerar combinações:', error);
+    });
+  }
+
+  async salvarCombinacoes() {
+    console.log('Iniciando salvarCombinacoes');
+    try {
+      const produtoId = this.produtoSelecionado?.Idproduto;
+      const referenciaProduto = this.produto.referencia;
+      console.log('produtoId:', produtoId);
+      console.log('referenciaProduto:', referenciaProduto);
+      if (!produtoId || !referenciaProduto) {
+        throw new Error('Produto não selecionado ou referência do produto não encontrada.');
+      }
+  
+      for (const combinacao of this.combinacoes) {
+        console.log('Salvando combinação:', combinacao);
+        const produtoDetalhe: ProdutoDetalhe = {
+          CodigodeBarra: combinacao.codigoDeBarras,
+          Codigoproduto: referenciaProduto,
+          Idproduto: produtoId,
+          Idtamanho: combinacao.tamanho.Idtamanho,
+          Idcor: combinacao.cor.Idcor,
+          Item: 0
+        };
+  
+        await this.produtoService.addProdutoDetalhe(produtoDetalhe).toPromise();
+      }
+      console.log('Combinações salvas com sucesso.');
+      this.successMessage = 'Combinações salvas com sucesso!';
+    } catch (error) {
+      console.error('Erro ao salvar combinações:', error);
+      this.errorMessage = 'Erro ao salvar combinações. Por favor, tente novamente.';
+    }
+  }
+
+  async gerarCodigoDeBarrasParaProduto(): Promise<string> {
+    const prefixoPais = '789';
+    const prefixoEmpresa = '1234';
+
+    try {
+      const empresaCodigoResponse = await this.codigoService.incrementEmpresaCodigo().toPromise();
+      const numeroProduto = String(empresaCodigoResponse.novo_valor).padStart(4, '0');
+      const codigoParcial = `${prefixoPais}${prefixoEmpresa}${numeroProduto}`;
+
+      const digitoVerificador = this.calcularDigitoVerificador(codigoParcial);
+      return `${codigoParcial}${digitoVerificador}`;
+    } catch (error) {
+      console.error('Erro ao gerar código de barras:', error);
+      return '';
+    }
+  }
+
+  calcularDigitoVerificador(codigo: string): string {
+    let soma = 0;
+    for (let i = 0; i < codigo.length; i++) {
+      const num = parseInt(codigo[i], 10);
+      soma += (i % 2 === 0) ? num * 1 : num * 3;
+    }
+    const resto = soma % 10;
+    return resto === 0 ? '0' : (10 - resto).toString();
+  }
+  
 }

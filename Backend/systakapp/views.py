@@ -2,11 +2,12 @@ from django.contrib.auth import get_user_model
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import api_view, action, permission_classes
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.db.models import F
 from .serializers import (
@@ -131,7 +132,6 @@ class ProdutoViewSet(viewsets.ModelViewSet):
     def check_unique_reference(self, request, referencia=None):
         exists = Produto.objects.filter(referencia=referencia).exists()
         return Response({'isUnique': not exists})
-    
 
 class ProdutoDetalheViewSet(viewsets.ModelViewSet):
     queryset = ProdutoDetalhe.objects.all()
@@ -286,5 +286,23 @@ def update_contador(request, colecao_id):
     except Colecao.DoesNotExist:
         return JsonResponse({"error": "Coleção não encontrada"}, status=404)
 
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def get_empresa_codigo(request):
+    try:
+        codigo = Codigos.objects.get(variavel='EMPRESA')
+        return JsonResponse({"valor": codigo.valor})
+    except Codigos.DoesNotExist:
+        return JsonResponse({"error": "Código da empresa não encontrado"}, status=404)
 
-
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def increment_empresa_codigo(request):
+    try:
+        codigo = Codigos.objects.get(variavel='EMPRESA')
+        codigo.valor = F('valor') + 1
+        codigo.save()
+        codigo.refresh_from_db()
+        return JsonResponse({"success": True, "novo_valor": codigo.valor})
+    except Codigos.DoesNotExist:
+        return JsonResponse({"error": "Código da empresa não encontrado"}, status=404)

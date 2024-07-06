@@ -28,9 +28,12 @@ export interface Produto {
 export interface ProdutoDetalhe {
   Idprodutodetalhe?: number;
   CodigodeBarra: string;
-  Idcor: number;
-  Idtamanho: number;
+  Codigoproduto: string;
+  data_cadastro?: Date;
   Idproduto: number;
+  Idtamanho: number;
+  Idcor: number;
+  Item?: number;
 }
 
 @Injectable({
@@ -74,6 +77,6 @@ export class ProdutoService {
   }
 
   addProdutoDetalhe(produtoDetalhe: ProdutoDetalhe): Observable<ProdutoDetalhe> {
-    return this.http.post<ProdutoDetalhe>(`${this.apiUrl}detalhes/`, produtoDetalhe);
+    return this.http.post<ProdutoDetalhe>(`${environment.apiURL}/produtodetalhes/`, produtoDetalhe);
   }
 }

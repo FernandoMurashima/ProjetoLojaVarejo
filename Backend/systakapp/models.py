@@ -144,6 +144,7 @@ class Tamanho(models.Model):
     Idtamanho = models.AutoField(primary_key=True)
     idgrade = models.ForeignKey(Grade, on_delete=models.CASCADE)
     Tamanho = models.CharField(max_length=10)
+    Descricao = models.CharField(max_length=100, default="Tamanho")
     Status = models.CharField(max_length=10, null=True, blank=True)
     data_cadastro = models.DateTimeField(default=timezone.now)
 
@@ -262,7 +263,7 @@ class ProdutoDetalhe(models.Model):
     
 
     def __str__(self):
-        return f'{self.Idproduto} - {self.CodigodeBarra}'
+        return f'{self.CodigodeBarra} - {self.Codigoproduto}'
 
 class Tabelapreco(models.Model):
     Idprodutotabela = models.AutoField(primary_key=True)
@@ -532,8 +533,8 @@ class GrupoDetalhe(models.Model):
     
 class Codigos(models.Model):
     Idcodigo = models.AutoField(primary_key=True)
-    variavel = models.CharField(max_length=15)
-    valor = models.IntegerField()
-    contador = models.IntegerField()
+    variavel = models.CharField(max_length=7)
+    valor = models.CharField(max_length=15)
+    
     def __str__(self):
          return f'{self.variavel}: {self.valor}'
