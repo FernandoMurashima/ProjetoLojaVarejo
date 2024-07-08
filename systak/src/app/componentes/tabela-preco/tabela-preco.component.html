@@ -1,0 +1,170 @@
+<div class="container mt-3">
+  <div class="op01" *ngIf="!action">
+    <div class="banner1">Tabelas de Preço</div>
+    <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Nova Tabela</button>
+    <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar Tabelas</button>
+    <button class="btn btn-dark action-button" (click)="setAction('editar')">Editar Tabela</button>
+    <button class="btn btn-dark action-button" (click)="setAction('excluir')">Excluir Tabela</button>
+    <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+  </div>
+
+  <!-- Inicio do cadastro -->
+  <div *ngIf="action === 'cadastrar'">
+    <div class="banner">CADASTRO DE TABELA DE PREÇO</div>
+    <form #tabelaPrecoForm="ngForm" (ngSubmit)="addTabelaPreco()">
+      <div class="principal">
+        <div class="field-group">
+          <div class="input-item" id="nome-tabela-box">
+            <label for="nome-tabela">Nome da Tabela:</label>
+            <input type="text" id="nome-tabela" name="nomeTabela" [(ngModel)]="tabelaPreco.NomeTabela" #nomeTabela="ngModel" required maxlength="100">
+          </div>
+          <div class="input-item" id="data-inicio-box">
+            <label for="data-inicio">Data Início:</label>
+            <input type="date" id="data-inicio" name="dataInicio" [(ngModel)]="tabelaPreco.DataInicio" #dataInicio="ngModel" required>
+          </div>
+          <div class="input-item" id="data-fim-box">
+            <label for="data-fim">Data Fim:</label>
+            <input type="date" id="data-fim" name="dataFim" [(ngModel)]="tabelaPreco.DataFim" #dataFim="ngModel" required>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="input-item" id="promocao-box">
+            <label for="promocao">Promoção:</label>
+            <select id="promocao" name="promocao" [(ngModel)]="tabelaPreco.Promocao" #promocao="ngModel" required>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="success-message" *ngIf="successMessage">Tabela de preço adicionada com sucesso!</div>
+      </div>
+
+      <div class="btn01">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+  <!-- Fim do cadastro -->
+
+  <!-- Inicio do consultar -->
+  <div *ngIf="action === 'consultar'">
+    <div *ngIf="!tabelaPrecoSelecionada">
+      <label for="tabelaPreco">Selecione uma Tabela</label>
+      <select id="tabelaPreco" (change)="onTabelaChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione uma tabela</option>
+        <option *ngFor="let tabela of tabelasPreco" [value]="tabela.Idtabela">{{ tabela.NomeTabela }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="tabelaPrecoSelecionada">
+      <div class="banner">CONSULTA DE TABELA DE PREÇO</div>
+      <form>
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="nome-tabela-box">
+              <label for="nome-tabela">Nome da Tabela:</label>
+              <input type="text" id="nome-tabela" name="nomeTabela" [(ngModel)]="tabelaPrecoSelecionada.NomeTabela" #nomeTabela="ngModel" disabled>
+            </div>
+            <div class="input-item" id="data-inicio-box">
+              <label for="data-inicio">Data Início:</label>
+              <input type="date" id="data-inicio" name="dataInicio" [(ngModel)]="tabelaPrecoSelecionada.DataInicio" #dataInicio="ngModel" disabled>
+            </div>
+            <div class="input-item" id="data-fim-box">
+              <label for="data-fim">Data Fim:</label>
+              <input type="date" id="data-fim" name="dataFim" [(ngModel)]="tabelaPrecoSelecionada.DataFim" #dataFim="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="input-item" id="promocao-box">
+              <label for="promocao">Promoção:</label>
+              <input type="text" id="promocao" name="promocao" [(ngModel)]="tabelaPrecoSelecionada.Promocao" #promocao="ngModel" disabled>
+            </div>
+          </div>
+
+          <div class="btn01">
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Fim do consultar -->
+
+  <!-- Inicio do Editar -->
+  <div *ngIf="action === 'editar'">
+    <div *ngIf="!tabelaPrecoSelecionada">
+      <label for="tabelaPreco">Selecione uma Tabela</label>
+      <select id="tabelaPreco" (change)="onTabelaChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione uma tabela</option>
+        <option *ngFor="let tabela of tabelasPreco" [value]="tabela.Idtabela">{{ tabela.NomeTabela }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+
+    <div *ngIf="tabelaPrecoSelecionada">
+      <div class="banner">ALTERAÇÃO DE TABELA DE PREÇO</div>
+      <form #tabelaPrecoForm="ngForm" (ngSubmit)="updateTabelaPreco()">
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="nome-tabela-box">
+              <label for="nome-tabela">Nome da Tabela:</label>
+              <input type="text" id="nome-tabela" name="nomeTabela" [(ngModel)]="tabelaPreco.NomeTabela" #nomeTabela="ngModel" required maxlength="100">
+            </div>
+            <div class="input-item" id="data-inicio-box">
+              <label for="data-inicio">Data Início:</label>
+              <input type="date" id="data-inicio" name="dataInicio" [(ngModel)]="tabelaPreco.DataInicio" #dataInicio="ngModel" required>
+            </div>
+            <div class="input-item" id="data-fim-box">
+              <label for="data-fim">Data Fim:</label>
+              <input type="date" id="data-fim" name="dataFim" [(ngModel)]="tabelaPreco.DataFim" #dataFim="ngModel" required>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="input-item" id="promocao-box">
+              <label for="promocao">Promoção:</label>
+              <select id="promocao" name="promocao" [(ngModel)]="tabelaPreco.Promocao" #promocao="ngModel" required>
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="success-message" *ngIf="successMessage">Tabela de preço atualizada com sucesso!</div>
+
+          <div class="btn01">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Fim do Editar -->
+
+  <!-- Inicio do Excluir -->
+  <div *ngIf="action === 'excluir'">
+    <h2>Excluir Tabela de Preço</h2>
+    <div *ngIf="tabelaPrecoSelecionada">
+      <p>Tem certeza que deseja excluir a tabela de preço {{ tabelaPrecoSelecionada.NomeTabela }}?</p>
+      <button type="button" class="btn btn-danger" (click)="deleteTabelaPreco()">Excluir</button>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+    </div>
+    <div *ngIf="!tabelaPrecoSelecionada">
+      <label for="tabelaPreco">Selecione uma Tabela</label>
+      <select id="tabelaPreco" (change)="onTabelaChange($event)" class="form-control">
+        <option value="" disabled selected>Selecione uma tabela</option>
+        <option *ngFor="let tabela of tabelasPreco" [value]="tabela.Idtabela">{{ tabela.NomeTabela }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+    </div>
+  </div>
+  <!-- Fim do Excluir -->
+
+</div>
+

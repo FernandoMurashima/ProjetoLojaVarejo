@@ -19,7 +19,7 @@ from .serializers import (
     ReceberSerializer, ReceberItensSerializer, PagarSerializer, PagarItemSerializer,
     CompraSerializer, CompraItemSerializer, PedidoCompraSerializer, PedidoCompraItemSerializer, LojaSerializer, GrupoSerializer,
     UnidadeSerializer, MaterialSerializer, FamiliaSerializer, ColecaoSerializer, GradeSerializer, NcmSerializer, SubGrupoSerializer,
-    GrupoDetalheSerializer, CodigosSerializer
+    GrupoDetalheSerializer, CodigosSerializer, TabelaPrecoItemSerializer
 )
 
 from .models import (
@@ -28,7 +28,7 @@ from .models import (
     Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos, Inventario,
     InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem, Grade,
     PedidoCompra, PedidoCompraItem, Grupo, Unidade, Material, Familia, Colecao, Ncm, Subgrupo, 
-    GrupoDetalhe, Codigos
+    GrupoDetalhe, Codigos, TabelaPrecoItem
 )
 
 import logging
@@ -142,6 +142,15 @@ class TabelaprecoViewSet(viewsets.ModelViewSet):
     queryset = Tabelapreco.objects.all()
     serializer_class = TabelaprecoSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class TabelaPrecoItemViewSet(viewsets.ModelViewSet):
+    queryset = TabelaPrecoItem.objects.all()
+    serializer_class = TabelaPrecoItemSerializer
+
+
+
+
 
 class EstoqueViewSet(viewsets.ModelViewSet):
     queryset = Estoque.objects.all()

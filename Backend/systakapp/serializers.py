@@ -6,7 +6,7 @@ from .models import (
     Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos, Inventario,
     InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem,
     PedidoCompra, PedidoCompraItem, Grupo, Unidade, Material, Familia, Colecao, Grade, Ncm, Subgrupo, GrupoDetalhe,
-    Codigos
+    Codigos, TabelaPrecoItem
 )
 
 class UserSerializer(serializers.ModelSerializer):
@@ -76,6 +76,11 @@ class ProdutoDetalheSerializer(serializers.ModelSerializer):
 class TabelaprecoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tabelapreco
+        fields = '__all__'
+
+class TabelaPrecoItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TabelaPrecoItem
         fields = '__all__'
 
 class EstoqueSerializer(serializers.ModelSerializer):

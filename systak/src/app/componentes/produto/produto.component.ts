@@ -38,6 +38,7 @@ export class ProdutoComponent implements OnInit {
   action: string = '';
   selectedCor?: number;
   combinacoes: { cor: Cor, tamanho: Tamanho, codigoDeBarras: string }[] = [];
+  coresAdicionadas: Set<number> = new Set(); // Controle de cores adicionadas
 
   successMessage: string = '';
   errorMessage: string = '';
@@ -114,6 +115,7 @@ export class ProdutoComponent implements OnInit {
     this.detalhes = [];
     this.combinacoes = [];
     this.selectedCor = undefined;
+    this.coresAdicionadas.clear(); // Limpar o controle de cores adicionadas
   }
 
   goToIndex() {
@@ -438,6 +440,12 @@ export class ProdutoComponent implements OnInit {
       return;
     }
 
+    if (this.coresAdicionadas.has(this.selectedCor)) {
+      console.error('Esta cor já foi adicionada.');
+      this.errorMessage = 'Esta cor já foi adicionada. Por favor, selecione outra cor.';
+      return;
+    }
+
     const cor = this.cores.find(cor => cor.Idcor === this.selectedCor);
     const tamanhos = this.tamanhos?.filter(tamanho => tamanho.idgrade === +(this.produto.grade ?? 0));
 
@@ -488,6 +496,7 @@ export class ProdutoComponent implements OnInit {
       }
       console.log('Combinações salvas com sucesso.');
       this.successMessage = 'Combinações salvas com sucesso!';
+      this.coresAdicionadas.add(this.selectedCor!); // Adicionar a cor adicionada ao controle
     } catch (error) {
       console.error('Erro ao salvar combinações:', error);
       this.errorMessage = 'Erro ao salvar combinações. Por favor, tente novamente.';
@@ -521,4 +530,14 @@ export class ProdutoComponent implements OnInit {
     return resto === 0 ? '0' : (10 - resto).toString();
   }
   
+  adicionarOutraCor() {
+    this.selectedCor = undefined; // Reseta a cor selecionada
+    this.combinacoes = []; // Reseta as combinações
+    this.setAction('adicionarCor');
+  }
+
+  finalizar() {
+    this.resetAction();
+    alert('Processo finalizado com sucesso!');
+  }
 }

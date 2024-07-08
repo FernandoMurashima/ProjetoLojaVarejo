@@ -266,19 +266,25 @@ class ProdutoDetalhe(models.Model):
         return f'{self.CodigodeBarra} - {self.Codigoproduto}'
 
 class Tabelapreco(models.Model):
-    Idprodutotabela = models.AutoField(primary_key=True)
-    CodigodeBarra = models.CharField(max_length=20)
-    preco = models.DecimalField(max_digits=18, decimal_places=2)
-    Data = models.DateField()
-    Promocao = models.CharField(max_length=1)
-    validade = models.DateField()
+    Idtabela = models.AutoField(primary_key=True)
+    NomeTabela = models.CharField(max_length=100,default='Tabela')
+    DataInicio = models.DateField()
+    Promocao = models.CharField(max_length=3)
+    DataFim = models.DateField()
     data_cadastro = models.DateTimeField(default=timezone.now)
-    Idprodutodetalhe = models.ForeignKey(ProdutoDetalhe, on_delete=models.CASCADE)
-    Idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f'Tabela {self.idtabela} - {self.datainicio} to {self.datafim}'
+
+class TabelaPrecoItem(models.Model):
+    Idtabelaitem = models.AutoField(primary_key=True)
+    codigoproduto = models.CharField(max_length=11)
+    codigodebarra = models.CharField(max_length=20)
+    preco = models.DecimalField(max_digits=18, decimal_places=2)
+    idtabela = models.ForeignKey(Tabelapreco, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.Idprodutodetalhe} - {self.preco}'
-
+        return f'Item {self.idtabelaitem} - Produto {self.codigoproduto}'
 class Estoque(models.Model):
     Idestoque = models.AutoField(primary_key=True)
     Idprodutodetalhe = models.ForeignKey(ProdutoDetalhe, on_delete=models.CASCADE)

@@ -28,9 +28,13 @@
         <li class="nav-item">
           <a class="nav-link" routerLink="/financeiro">Financeiro</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/venda">Venda</a>
-        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="vendaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Vendas
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="vendaDropdown">
+            <li><a class="dropdown-item" routerLink="/vendas/tabela-preco">Tabela de Preço</a></li>
+          </ul>
 
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="estoqueDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

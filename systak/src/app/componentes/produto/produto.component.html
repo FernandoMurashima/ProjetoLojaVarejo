@@ -124,33 +124,32 @@
   </div>
 
   <!-- Adicionar Cor e Tamanhos -->
-<div *ngIf="action === 'adicionarCor'">
-  <div class="banner">ADICIONAR COR E TAMANHOS</div>
-  <form (ngSubmit)="listarCombinacoes()">
-    <div class="field-group">
-      <div class="input-item" id="cor-box">
-        <label for="cor">Cor:</label>
-
-        <select id="cor" name="cor" [(ngModel)]="selectedCor" (change)="onCorChange($event)">
-          <option *ngFor="let cor of cores" [value]="cor.Idcor">{{ cor.Descricao }}</option>
-        </select>
-        
-      
+  <div *ngIf="action === 'adicionarCor'">
+    <div class="banner">ADICIONAR COR E TAMANHOS</div>
+    <form (ngSubmit)="listarCombinacoes()">
+      <div class="field-group">
+        <div class="input-item" id="cor-box">
+          <label for="cor">Cor:</label>
+          <select id="cor" name="cor" [(ngModel)]="selectedCor" (change)="onCorChange($event)">
+            <option *ngFor="let cor of cores" [value]="cor.Idcor">{{ cor.Descricao }}</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Gerar Combinações</button>
       </div>
-      <button type="submit" class="btn btn-primary">Gerar Combinações</button>
+    </form>
+    <div *ngIf="combinacoes.length > 0">
+      <h3>Combinações Geradas:</h3>
+      <ul>
+        <li *ngFor="let combinacao of combinacoes">
+          Cor: {{ combinacao.cor.Descricao }}, Tamanho: {{ combinacao.tamanho.Tamanho }}, Código de Barras: {{ combinacao.codigoDeBarras }}
+        </li>
+      </ul>
     </div>
-  </form>
-  <div *ngIf="combinacoes.length > 0">
-    <h3>Combinações Geradas:</h3>
-    <ul>
-      <li *ngFor="let combinacao of combinacoes">
-        Cor: {{ combinacao.cor.Descricao }}, Tamanho: {{ combinacao.tamanho.Tamanho }}, Código de Barras: {{ combinacao.codigoDeBarras }}
-      </li>
-    </ul>
+    <div class="btn01">
+      <button type="button" class="btn btn-primary" (click)="adicionarOutraCor()">Adicionar Outra Cor</button>
+      <button type="button" class="btn btn-primary" (click)="finalizar()">Finalizar</button>
+    </div>
   </div>
-</div>
-
-
 
   <!-- Consulta de Produto -->
   <div *ngIf="action === 'consultar'">

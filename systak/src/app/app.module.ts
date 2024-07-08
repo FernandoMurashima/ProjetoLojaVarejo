@@ -46,6 +46,7 @@ import { GrupoService } from './service/grupo.service';
 import { SubgrupoService } from './service/subgrupo.service';
 import { TiposDeSubgrupoService } from './service/tiposdesubgrupo.service';
 import { GrupoDetalheComponent } from './componentes/grupodetalhe/grupodetalhe.component';
+import { TabelaPrecoComponent } from './componentes/tabela-preco/tabela-preco.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import { GrupoDetalheComponent } from './componentes/grupodetalhe/grupodetalhe.c
     PdvComponent,
     GrupoComponent,
     SubgrupoComponent,
-    GrupoDetalheComponent
+    GrupoDetalheComponent,
+    TabelaPrecoComponent
   ],
   
   imports: [

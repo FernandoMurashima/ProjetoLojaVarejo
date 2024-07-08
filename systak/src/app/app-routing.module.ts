@@ -23,6 +23,7 @@ import { NcmComponent } from './componentes/ncm/ncm.component';
 import { GrupoComponent } from './componentes/grupo/grupo.component';
 import { SubgrupoComponent } from './componentes/subgrupo/subgrupo.component';
 import { GrupoDetalheComponent } from './componentes/grupodetalhe/grupodetalhe.component';
+import { TabelaPrecoComponent } from './componentes/tabela-preco/tabela-preco.component';
 
 export const DEFAULT_ROUTE = '/index';
 
@@ -39,6 +40,7 @@ const routes: Routes = [
   { path: 'cadastro/users', component: UserComponent, canActivate: [AuthGuardService] },
   { path: 'financeiro', component: HomeComponent },
   { path: 'venda', component: HomeComponent },
+  { path: 'vendas/tabela-preco', canActivate: [AuthGuardService], component: TabelaPrecoComponent },
   { path: 'estoque', component: HomeComponent },
   { path: 'relatorios', component: HomeComponent },
   { path: 'configuradores/natureza-lancamentos', component: NatLancamentoComponent, canActivate: [AuthGuardService] },
