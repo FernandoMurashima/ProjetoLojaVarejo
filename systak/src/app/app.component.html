@@ -2,103 +2,80 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <!-- <a class="navbar-brand" href="#">Systak</a> -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav mr-auto">
         <li class="nav-item">
           <a class="nav-link" routerLink="/home">Home</a>
         </li>
 
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Cadastro
           </a>
-          <ul class="dropdown-menu" aria-labelledby="cadastroDropdown">
-            <li><a class="dropdown-item" routerLink="/cadastro/clientes">Clientes</a></li>
-            <li><a class="dropdown-item" routerLink="/cadastro/fornecedores">Fornecedores</a></li>
-            <li><a class="dropdown-item" routerLink="/cadastro/funcionarios">Funcionários</a></li>
-            <li><a class="dropdown-item" routerLink="/cadastro/lojas">Lojas</a></li>
-            
-            <li><a class="dropdown-item" routerLink="/cadastro/users">Usuarios</a></li>
-          </ul>
+          <div class="dropdown-menu" aria-labelledby="cadastroDropdown">
+            <a class="dropdown-item" routerLink="/cadastro/clientes">Clientes</a>
+            <a class="dropdown-item" routerLink="/cadastro/fornecedores">Fornecedores</a>
+            <a class="dropdown-item" routerLink="/cadastro/funcionarios">Funcionários</a>
+            <a class="dropdown-item" routerLink="/cadastro/lojas">Lojas</a>
+            <a class="dropdown-item" routerLink="/cadastro/users">Usuarios</a>
+          </div>
         </li>
-        
+
         <li class="nav-item">
           <a class="nav-link" routerLink="/financeiro">Financeiro</a>
         </li>
+
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="vendaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="vendaDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Vendas
           </a>
-          <ul class="dropdown-menu" aria-labelledby="vendaDropdown">
-            <li><a class="dropdown-item" routerLink="/vendas/tabela-preco">Tabela de Preço</a></li>
-          </ul>
+          <div class="dropdown-menu" aria-labelledby="vendaDropdown">
+            <a class="dropdown-item" routerLink="/vendas/tabela-preco">Tabela de Preço</a>
+          </div>
+        </li>
 
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="estoqueDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="estoqueDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Produtos
           </a>
-          <ul class="dropdown-menu" aria-labelledby="estoqueDropdown">
-
-            <li><a class="dropdown-item" routerLink="/cadastro/produtos">Produtos</a></li>
-            <li><a class="dropdown-item" routerLink="/estoque/ncm">Classifição Fiscal (NMC)</a></li>
-            <li><a class="dropdown-item" routerLink="/configuradores/familia">Familia</a></li>
-            <li><a class="dropdown-item" routerLink="/configuradores/cores">Cor</a></li>
-            <li><a class="dropdown-item" routerLink="/configuradores/grades">Grade</a></li>
-            <li><a class="dropdown-item" routerLink="/configuradores/tamanhos">Tamanho</a></li>
-            <li><a class="dropdown-item" routerLink="/configuradores/colecao">Coleção</a></li>
-            <li><a class="dropdown-item" routerLink="/configuradores/material">Material</a></li>
-            <li><a class="dropdown-item" routerLink="/configuradores/unidade">Unidade</a></li>
-            <li><a class="dropdown-item" routerLink="/estoque/grupo">Grupo</a></li>
-            <li><a class="dropdown-item" routerLink="/estoque/subgrupos">Subgrupo</a></li>
-            <li><a class="dropdown-item" routerLink="/estoque/grupodetalhe">Grupo-Detalhe</a></li>
-            
-          </ul>
+          <div class="dropdown-menu" aria-labelledby="estoqueDropdown">
+            <a class="dropdown-item" routerLink="/cadastro/produtos">Produtos</a>
+            <a class="dropdown-item" routerLink="/estoque/ncm">Classificação Fiscal (NMC)</a>
+            <a class="dropdown-item" routerLink="/configuradores/familia">Familia</a>
+            <a class="dropdown-item" routerLink="/configuradores/cores">Cor</a>
+            <a class="dropdown-item" routerLink="/configuradores/grades">Grade</a>
+            <a class="dropdown-item" routerLink="/configuradores/tamanhos">Tamanho</a>
+            <a class="dropdown-item" routerLink="/configuradores/colecao">Coleção</a>
+            <a class="dropdown-item" routerLink="/configuradores/material">Material</a>
+            <a class="dropdown-item" routerLink="/configuradores/unidade">Unidade</a>
+            <a class="dropdown-item" routerLink="/estoque/grupo">Grupo</a>
+            <a class="dropdown-item" routerLink="/estoque/subgrupos">Subgrupo</a>
+            <a class="dropdown-item" routerLink="/estoque/grupodetalhe">Grupo-Detalhe</a>
+          </div>
         </li>
-        
-
-
 
         <li class="nav-item">
           <a class="nav-link" routerLink="/relatorios">Relatórios</a>
         </li>
 
-        
-
-
-
-
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="configuradoresDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="configuradoresDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Configuradores
           </a>
-          <ul class="dropdown-menu" aria-labelledby="configuradoresDropdown">
-
-            <li><a class="dropdown-item" routerLink="/configuradores/natureza-lancamentos">Natureza</a></li>
-       
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="configuradoresDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Configuradores
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="configuradoresDropdown">
-    
-                <li><a class="dropdown-item" routerLink="/configuradores/natureza-lancamentos">Natureza</a></li>
-                <li><a class="dropdown-item" routerLink="/configuradores/cores">Cor</a></li>
-                <li><a class="dropdown-item" routerLink="/configuradores/grades">Grade</a></li>
-                <li><a class="dropdown-item" routerLink="/configuradores/tamanhos">Tamanho</a></li>
-                <li><a class="dropdown-item" routerLink="/configuradores/colecao">Coleção</a></li>
-                <li><a class="dropdown-item" routerLink="/configuradores/material">Material</a></li>
-                <li><a class="dropdown-item" routerLink="/configuradores/unidade">Unidade</a></li>
-                <li><a class="dropdown-item" routerLink="/configuradores/familia">Familia</a></li>
-                
-              </ul>
-            </li>
-            
-          </ul>
+          <div class="dropdown-menu" aria-labelledby="configuradoresDropdown">
+            <a class="dropdown-item" routerLink="/configuradores/natureza-lancamentos">Natureza</a>
+            <a class="dropdown-item" routerLink="/configuradores/cores">Cor</a>
+            <a class="dropdown-item" routerLink="/configuradores/grades">Grade</a>
+            <a class="dropdown-item" routerLink="/configuradores/tamanhos">Tamanho</a>
+            <a class="dropdown-item" routerLink="/configuradores/colecao">Coleção</a>
+            <a class="dropdown-item" routerLink="/configuradores/material">Material</a>
+            <a class="dropdown-item" routerLink="/configuradores/unidade">Unidade</a>
+            <a class="dropdown-item" routerLink="/configuradores/familia">Familia</a>
+          </div>
         </li>
-
 
         <li class="nav-item">
           <a class="nav-link" routerLink="/sair">Sair</a>
