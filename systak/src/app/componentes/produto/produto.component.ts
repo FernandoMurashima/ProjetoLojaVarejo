@@ -39,6 +39,9 @@ export class ProdutoComponent implements OnInit {
   selectedCor?: number;
   combinacoes: { cor: Cor, tamanho: Tamanho, codigoDeBarras: string }[] = [];
   coresAdicionadas: Set<number> = new Set(); // Controle de cores adicionadas
+  preco: number = 0;
+  precos: Array<{ codigoDeBarras: string, valor: number }> = [];
+
 
   successMessage: string = '';
   errorMessage: string = '';
@@ -355,14 +358,15 @@ export class ProdutoComponent implements OnInit {
       if (window.confirm('Confirma a inclusão do novo produto?')) {
         const produtoParaEnviar = { ...this.produto };
         delete produtoParaEnviar.Idproduto; // Remova o Idproduto antes de enviar
-
+  
         console.log("Dados do produto para envio:", produtoParaEnviar);
         this.produtoService.addProduto(produtoParaEnviar).subscribe({
           next: async (data: Produto) => {
-            this.successMessage = 'Produto adicionado com sucesso!';
+            this.successMessage = '';
             await this.updateContador();
             this.produtoSelecionado = data; // Seleciona o produto recém-adicionado
-            this.setAction('adicionarCor'); // Mudança para ação de adicionar cor
+            this.produto.Idproduto = data.Idproduto; // Mantém o ID do produto recém-adicionado // <-- ALTERADO
+            this.action = 'adicionarCor'; // Mudança para ação de adicionar cor // <-- ALTERADO
           },
           error: (error: any) => {
             console.error('Erro ao cadastrar produto:', error);
@@ -374,6 +378,9 @@ export class ProdutoComponent implements OnInit {
       console.error('Erro ao preparar a inclusão do produto:', error);
     }
   }
+  
+
+
 
   async updateContador() {
     try {
@@ -540,4 +547,14 @@ export class ProdutoComponent implements OnInit {
     this.resetAction();
     alert('Processo finalizado com sucesso!');
   }
+
+  vincularPrecos() {
+    // Lógica para vincular preços aos códigos de barras
+    this.combinacoes.forEach(combinacao => {
+      this.precos.push({ codigoDeBarras: combinacao.codigoDeBarras, valor: this.preco });
+    });
+  }
+
+
+
 }

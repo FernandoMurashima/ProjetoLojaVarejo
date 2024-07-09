@@ -9,7 +9,7 @@
   </div>
 
   <!-- Cadastro de Produto -->
-  <div *ngIf="action === 'cadastrar'">
+  <div *ngIf="action === 'cadastrar' || action === 'adicionarCor'">
     <div class="banner">CADASTRO DE PRODUTO</div>
     <form (ngSubmit)="addProduto()">
       <div class="principal">
@@ -111,34 +111,74 @@
             <input type="text" id="produto_foto2" name="produto_foto2" [(ngModel)]="produto.produto_foto2" (blur)="prefixImagePath('produto_foto2')">
             <img *ngIf="produto.produto_foto2" [src]="produto.produto_foto2 | safeUrl" alt="Foto Adicional 2" style="max-width: 200px; margin-top: 10px;">
           </div>
+
+          <div class="btn01" id="botao-box" *ngIf="action !== 'adicionarCor'">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+          </div>
+
         </div>
 
         <div id="success-message" *ngIf="successMessage">{{ successMessage }}</div>
       </div>
 
-      <div class="btn01">
-        <button type="submit" class="btn btn-primary">Salvar</button>
-        <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
-      </div>
+   
+
+
     </form>
   </div>
 
   <!-- Adicionar Cor e Tamanhos -->
-  <div *ngIf="action === 'adicionarCor'">
-    <div class="banner">ADICIONAR COR E TAMANHOS</div>
+ <!--  <div class="btn01" *ngIf="action === 'adicionarCor'">
+    <div class="bannercor">COR E TAMANHOS</div>
     <form (ngSubmit)="listarCombinacoes()">
-      <div class="field-group">
-        <div class="input-item" id="cor-box">
+
+      <div class="field-group99">
+        <div class="input-item99" id="cor-box">
           <label for="cor">Cor:</label>
           <select id="cor" name="cor" [(ngModel)]="selectedCor" (change)="onCorChange($event)">
             <option *ngFor="let cor of cores" [value]="cor.Idcor">{{ cor.Descricao }}</option>
           </select>
         </div>
-        <button type="submit" class="btn btn-primary">Gerar Combinações</button>
+        <div class="button-container99">
+          <button type="submit" class="btn btn-primary">Gerar Códigos</button>
+        </div>
+      </div>
+
+    </form>
+    <div class="btn01" *ngIf="combinacoes.length > 0">
+      <h3>Códigos Gerados:</h3>
+      <ul>
+        <li *ngFor="let combinacao of combinacoes">
+          Cor: {{ combinacao.cor.Descricao }}, Tamanho: {{ combinacao.tamanho.Tamanho }}, Código de Barras: {{ combinacao.codigoDeBarras }}
+        </li>
+      </ul>
+    </div>
+    <div class="btn01">
+      <button type="button" class="btn btn-primary" (click)="adicionarOutraCor()">Adicionar Outra Cor</button>
+      <button type="button" class="btn btn-primary" (click)="finalizar()">Finalizar</button>
+    </div>
+  </div> -->
+
+  <!-- Adicionar Cor e Tamanhos -->
+<div class="section-container" *ngIf="action === 'adicionarCor'">
+  <div class="left-section">
+    <div class="bannercor">COR E TAMANHOS</div>
+    <form (ngSubmit)="listarCombinacoes()">
+      <div class="field-group99">
+        <div class="input-item99" id="cor-box">
+          <label for="cor">Cor:</label>
+          <select id="cor" name="cor" [(ngModel)]="selectedCor" (change)="onCorChange($event)">
+            <option *ngFor="let cor of cores" [value]="cor.Idcor">{{ cor.Descricao }}</option>
+          </select>
+        </div>
+        <div class="button-container99">
+          <button type="submit" class="btn btn-primary">Gerar Códigos</button>
+        </div>
       </div>
     </form>
-    <div *ngIf="combinacoes.length > 0">
-      <h3>Combinações Geradas:</h3>
+    <div class="btn01" *ngIf="combinacoes.length > 0">
+      <h3>Códigos Gerados:</h3>
       <ul>
         <li *ngFor="let combinacao of combinacoes">
           Cor: {{ combinacao.cor.Descricao }}, Tamanho: {{ combinacao.tamanho.Tamanho }}, Código de Barras: {{ combinacao.codigoDeBarras }}
@@ -150,6 +190,33 @@
       <button type="button" class="btn btn-primary" (click)="finalizar()">Finalizar</button>
     </div>
   </div>
+
+  <div class="right-section">
+    <div class="bannercor">TABELA DE PREÇOS</div>
+    <form (ngSubmit)="vincularPrecos()">
+      <div class="field-group99">
+        <div class="input-item99" id="preco-box">
+          <label for="preco">Preço:</label>
+          <input type="text" id="preco" name="preco" [(ngModel)]="preco" required>
+        </div>
+        <div class="button-container99">
+          <button type="submit" class="btn btn-primary">Vincular Preço</button>
+        </div>
+      </div>
+    </form>
+    <div class="btn01" *ngIf="precos.length > 0">
+      <h3>Preços Vinculados:</h3>
+      <ul>
+        <li *ngFor="let preco of precos">
+          Código de Barras: {{ preco.codigoDeBarras }}, Preço: {{ preco.valor }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
 
   <!-- Consulta de Produto -->
   <div *ngIf="action === 'consultar'">

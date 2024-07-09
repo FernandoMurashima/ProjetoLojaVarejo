@@ -1,28 +1,65 @@
 /* Estilização do formulário */
 form {
     padding: 5px;
-    /* border: 2px solid; */
-    width: 100%; /* Ocupar 100% da largura do contêiner */
-    box-sizing: border-box; /* Incluir padding e borda na largura total */
-    margin: 0; /* Remover margens externas */
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
     margin-bottom: 5px;
 }
 
-.container mt-3{
-    /* border: 2px solid; */
+.container mt-3 {
     padding: 5px;
     margin-top: 5px;
-    width: 150%; /* Ocupar 100% da largura do contêiner pai */
-    box-sizing: border-box; /* Incluir padding e borda na largura total */
+    width: 150%;
+    box-sizing: border-box;
 }
-
 
 /* Estilização principal */
 .principal {
-   
-    
-    width: 100%; /* Ocupar 100% da largura do contêiner pai */
-    box-sizing: border-box; /* Incluir padding e borda na largura total */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.field-group99 {
+    display: flex;
+    align-items: center; 
+    gap: 10px;
+}
+
+.input-item99 {
+    display: flex;
+    flex-direction: row; /* Altera a direção para linha */
+    align-items: center; /* Alinha os itens verticalmente ao centro */
+    margin-right: 10px;
+}
+
+.input-item99 label {
+    margin-right: 10px; /* Espaço entre o label e a caixa de seleção */
+}
+
+.input-item99 select {
+    width: 100%;
+    padding: 4px 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.section-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .left-section, .right-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+.button-container99 {
+    display: flex;
+    align-items: center;
 }
 
 /* Estilização dos grupos de campos */
@@ -37,7 +74,7 @@ form {
 .field-group7,
 .field-group5 {
     display: grid;
-    grid-template-columns: repeat(10, 1fr); /* 10 colunas */
+    grid-template-columns: repeat(10, 1fr);
     gap: 10px;
 }
 
@@ -45,15 +82,22 @@ form {
 .input-item {
     display: flex;
     flex-direction: column;
+    margin-bottom: 15px;
 }
 
 /* Estilização dos inputs */
 .input-caixa, input {
-    width: 100%; /* Faz os inputs preencherem seus contêineres */
-    padding: 4px 8px; /* Ajusta o padding para diminuir a altura */
-    font-size: 14px; /* Opcional: Ajusta o tamanho da fonte */
-    box-sizing: border-box; /* Inclui padding e borda na largura total */
+    width: 100%;
+    padding: 4px 8px;
+    font-size: 14px;
+    box-sizing: border-box;
     height: 26px;
+}
+
+.input-item, .button-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
 }
 
 /* Estilização dos botões */
@@ -61,9 +105,8 @@ form {
     display: flex;
     justify-content: space-around;
     margin-top: 20px;
-    /* border: 2px solid; */
     padding: 5px;
-    margin: 10px 0; /* Remover margem à esquerda e direita */
+    margin: 10px 0;
 }
 
 /* Estilização individual dos botões */
@@ -74,7 +117,7 @@ form {
 /* Estilização do banner e botões */
 .banner,
 .buttons {
-    grid-column: 1 / -1; /* Faz com que o banner e botões ocupem todas as colunas */
+    grid-column: 1 / -1;
 }
 
 /* Estilização do banner principal */
@@ -82,10 +125,16 @@ form {
     text-align: center;
     font-size: 20px;
     font-weight: bold;
-    /* border: 2px solid; */
- 
-    width: 98.7vw; /* Ocupar 100% da largura do contêiner */
-    margin: 0; /* Remover margens externas */
+    width: 98.7vw;
+    margin: 0;
+}
+
+.bannercor {
+    text-align: left;
+    font-size: 20px;
+    font-weight: bold;
+    width: 98.7vw;
+    margin: 0;
 }
 
 /* Estilização do banner secundário */
@@ -95,42 +144,42 @@ form {
     font-weight: bold;
     border: 1px solid;
     padding: 5px;
-    width: 98.61vw;
+    width: 98vw;
     margin-left: 0;
- 
 }
 
 /* Estilização do banner principal */
 .banner-principal {
-    background-color: #343a40;  /* Dark background similar to navbar for consistency */
-    color: #ffffff;            /* White text color */
-    text-align: center;        /* Center the text */
-    padding: 10px 0;           /* Add some padding for spacing */
-    font-size: 24px;           /* Larger font size for visibility */
-    font-weight: bold;         /* Make the font bold */
-    /* border-bottom: 2px solid #666;  */
-    width: 98.7vw;
+    background-color: #343a40;
+    color: #ffffff;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 24px;
+    font-weight: bold;
+    width: 98vw;
 }
 
 /* Estilização dos botões primários */
 .btn01 .btn-primary {
-    padding: 5px;
+    padding: 5px 5px;
     margin-top: 5px;
     margin-right: 40px;
-    
+    font-size: 12px;
+    width: 150px;
+    border-radius: 5px;
+    height: 25px;
 }
 
-.btn01{
+.btn01 {
     padding: 10px;
-    border: 2px solid;
     width: 98vw;
     margin-top: 10px;
 }
 
-/* Estilização das opções */
+/* Estilização das opções - abaixo do título produto */
 .op01 {
     border: 2px solid;
-    width: 98.7vw;
+    width: 98vw;
 }
 
 /* Estilização dos botões de ação */
@@ -140,25 +189,26 @@ form {
     margin-left: 200px;
 }
 
-#referencia-box           { grid-row: 1; grid-column: 1;  width: 100px; }
-#colecao-box              { grid-row: 1; grid-column: 2;  width: 190px; }
-#grupo-box                { grid-row: 1; grid-column: 3;  width: 150px; }
-#subgrupo-box             { grid-row: 1; grid-column: 4;  width: 150px; }
-#grade-box                { grid-row: 1; grid-column: 5;  width: 190px; }
-#familia-box              { grid-row: 1; grid-column: 6;  width: 150px; }
-#tipo-box                 { grid-row: 1; grid-column: 7;  width: 31px;  }
-#material-box             { grid-row: 1; grid-column: 8;  width: 250px; }
-#unidade-box              { grid-row: 1; grid-column: 9;  width: 250px; }
+#referencia-box { grid-row: 1; grid-column: 1; width: 100px; }
+#colecao-box { grid-row: 1; grid-column: 2; width: 190px; }
+#grupo-box { grid-row: 1; grid-column: 3; width: 150px; }
+#subgrupo-box { grid-row: 1; grid-column: 4; width: 150px; }
+#grade-box { grid-row: 1; grid-column: 5; width: 190px; }
+#familia-box { grid-row: 1; grid-column: 6; width: 150px; }
+#tipo-box { grid-row: 1; grid-column: 7; width: 31px; }
+#material-box { grid-row: 1; grid-column: 8; width: 250px; }
+#unidade-box { grid-row: 1; grid-column: 9; width: 250px; }
 #classificacao-fiscal-box { grid-row: 1; grid-column: 10; width: 250px; }
 
-#descricao-box            { grid-row: 2; grid-column: 1; width: 800px; }
-#desc-reduzida-box        { grid-row: 2; grid-column: 2; width: 550px; }
+#descricao-box { grid-row: 2; grid-column: 1; width: 800px; }
+#desc-reduzida-box { grid-row: 2; grid-column: 2; width: 550px; }
 
-#produto-foto-box         { grid-row: 3; grid-column: 1; width: 350px; }
-#produto-foto1-box        { grid-row: 3; grid-column: 2; width: 350px; }
-#produto-foto2-box        { grid-row: 3; grid-column: 3; width: 350px; }
+#produto-foto-box { grid-row: 3; grid-column: 1; width: 350px; }
+#produto-foto1-box { grid-row: 3; grid-column: 2; width: 350px; }
+#produto-foto2-box { grid-row: 3; grid-column: 3; width: 350px; }
+#botao-box { grid-row: 3; grid-column: 4; }
 
-#codigo_barra             { grid-row: 4; grid-column: 1; width: 150px; }
-#cor                      { grid-row: 4; grid-column: 2; width: 150px; }
-#tamanho                  { grid-row: 4; grid-column: 3; width:  50px; }
-#botaodetalhe             { grid-row: 5; grid-column: 1; width: 100px; }
+#codigo_barra { grid-row: 4; grid-column: 1; width: 150px; }
+#cor { grid-row: 4; grid-column: 2; width: 250px; }
+#tamanho { grid-row: 4; grid-column: 3; width: 50px; }
+#botaodetalhe { grid-row: 5; grid-column: 1; width: 100px; }
