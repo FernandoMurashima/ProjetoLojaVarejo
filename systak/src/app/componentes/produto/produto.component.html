@@ -91,7 +91,27 @@
             <label for="desc_reduzida">Descrição Reduzida:</label>
             <input type="text" id="desc_reduzida" name="desc_reduzida" [(ngModel)]="produto.Desc_reduzida" #desc_reduzida="ngModel" maxlength="100">
           </div>
+        
+
+          <!-- Seção para selecionar Tabela de Preço e Preço do Produto -->
+          <div class="input-item" id="tabela-preco-box">
+            <label for="tabela_preco">Tabela de Preço:</label>
+            <select id="tabela_preco" name="tabela_preco" [(ngModel)]="produto['tabela_preco']" (change)="onTabelaPrecoChange($event)">
+              <option *ngFor="let tabela of tabelasPreco" [value]="tabela.Idtabela">{{ tabela.NomeTabela }}</option>
+            </select>
+          </div>
+
+          <div class="input-item" id="preco-box">
+            <label for="preco">Preço:</label>
+            <input type="text" id="preco" name="preco" [(ngModel)]="produto['preco']" required>
+          </div>
+          <!-- Fim da Seção -->
         </div>
+
+
+
+
+
 
         <div class="field-group4">
           <div class="input-item" id="produto-foto-box">

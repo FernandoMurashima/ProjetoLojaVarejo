@@ -11,7 +11,9 @@ import { FamiliaService, Familia } from '../../service/familia.service';
 import { NcmService, Ncm } from '../../service/ncm.service';
 import { CorService, Cor } from '../../service/cor.service';
 import { TamanhoService, Tamanho } from '../../service/tamanho.service';
-import { CodigoService } from '../../service/codigo.service'; // Importa o serviço de código
+import { TabelaPrecoService, TabelaPreco } from '../../service/tabela-preco.service';
+import { TabelaPrecoItemService, TabelaPrecoItem } from '../../service/tabela-precoitem.service';
+import { CodigoService } from '../../service/codigo.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -33,15 +35,15 @@ export class ProdutoComponent implements OnInit {
   ncms: Ncm[] = [];
   cores: Cor[] = [];
   tamanhos: Tamanho[] = [];
+  tabelasPreco: TabelaPreco[] = [];
   detalhes: ProdutoDetalhe[] = [];
   produtoSelecionado?: Produto;
   action: string = '';
   selectedCor?: number;
   combinacoes: { cor: Cor, tamanho: Tamanho, codigoDeBarras: string }[] = [];
-  coresAdicionadas: Set<number> = new Set(); // Controle de cores adicionadas
+  coresAdicionadas: Set<number> = new Set();
   preco: number = 0;
   precos: Array<{ codigoDeBarras: string, valor: number }> = [];
-
 
   successMessage: string = '';
   errorMessage: string = '';
@@ -61,7 +63,9 @@ export class ProdutoComponent implements OnInit {
     private grupoDetalheService: GrupoDetalheService,
     private corService: CorService,
     private tamanhoService: TamanhoService,
-    private codigoService: CodigoService, // Adiciona o serviço de código
+    private tabelaPrecoService: TabelaPrecoService,
+    private tabelaPrecoItemService: TabelaPrecoItemService,
+    private codigoService: CodigoService,
     private router: Router
   ) {}
 
@@ -77,6 +81,7 @@ export class ProdutoComponent implements OnInit {
     this.loadSubgrupos();
     this.loadCores();
     this.loadTamanhos();
+    this.loadTabelasPreco();
   }
 
   createEmptyProduto(): Produto {
@@ -96,7 +101,9 @@ export class ProdutoComponent implements OnInit {
       produto_foto2: '',
       Material: '',
       data_cadastro: new Date(),
-      referencia: ''
+      referencia: '',
+      tabela_preco: '',
+      preco: 0
     };
   }
 
@@ -118,7 +125,7 @@ export class ProdutoComponent implements OnInit {
     this.detalhes = [];
     this.combinacoes = [];
     this.selectedCor = undefined;
-    this.coresAdicionadas.clear(); // Limpar o controle de cores adicionadas
+    this.coresAdicionadas.clear();
   }
 
   goToIndex() {
@@ -262,6 +269,17 @@ export class ProdutoComponent implements OnInit {
     });
   }
 
+  loadTabelasPreco() {
+    this.tabelaPrecoService.load().subscribe({
+      next: (data: TabelaPreco[]) => {
+        this.tabelasPreco = data;
+      },
+      error: (error: any) => {
+        console.error('Erro ao carregar tabelas de preço', error);
+      }
+    });
+  }
+
   onProdutoChange(event: Event) {
     const selectedId = (event.target as HTMLSelectElement).value;
     this.produtoSelecionado = this.produtos.find(p => p.Idproduto === +selectedId) ?? undefined;
@@ -316,6 +334,12 @@ export class ProdutoComponent implements OnInit {
     this.produto.classificacao_fiscal = selectedNcm;
   }
 
+  onTabelaPrecoChange(event: Event) {
+    const selectedId = +(event.target as HTMLSelectElement).value;
+    this.produto['tabela_preco'] = selectedId;
+    console.log('Tabela de Preço selecionada ID:', this.produto['tabela_preco']);
+  }
+
   async generateReference() {
     if (!this.produto.colecao || !this.produto.grupo) {
       console.error('Coleção ou grupo não selecionado');
@@ -357,16 +381,16 @@ export class ProdutoComponent implements OnInit {
       await this.generateReference();
       if (window.confirm('Confirma a inclusão do novo produto?')) {
         const produtoParaEnviar = { ...this.produto };
-        delete produtoParaEnviar.Idproduto; // Remova o Idproduto antes de enviar
+        delete produtoParaEnviar.Idproduto;
   
         console.log("Dados do produto para envio:", produtoParaEnviar);
         this.produtoService.addProduto(produtoParaEnviar).subscribe({
           next: async (data: Produto) => {
             this.successMessage = '';
             await this.updateContador();
-            this.produtoSelecionado = data; // Seleciona o produto recém-adicionado
-            this.produto.Idproduto = data.Idproduto; // Mantém o ID do produto recém-adicionado // <-- ALTERADO
-            this.action = 'adicionarCor'; // Mudança para ação de adicionar cor // <-- ALTERADO
+            this.produtoSelecionado = data;
+            this.produto.Idproduto = data.Idproduto;
+            this.action = 'adicionarCor';
           },
           error: (error: any) => {
             console.error('Erro ao cadastrar produto:', error);
@@ -378,9 +402,6 @@ export class ProdutoComponent implements OnInit {
       console.error('Erro ao preparar a inclusão do produto:', error);
     }
   }
-  
-
-
 
   async updateContador() {
     try {
@@ -500,13 +521,22 @@ export class ProdutoComponent implements OnInit {
         };
   
         await this.produtoService.addProdutoDetalhe(produtoDetalhe).toPromise();
+
+        const tabelaPrecoItem: TabelaPrecoItem = {
+          codigoproduto: referenciaProduto,
+          codigodebarra: combinacao.codigoDeBarras,
+          preco: this.produto['preco'],
+          idtabela: this.produto['tabela_preco']
+        };
+
+        await this.tabelaPrecoItemService.addTabelaPrecoItem(tabelaPrecoItem).toPromise();
       }
-      console.log('Combinações salvas com sucesso.');
-      this.successMessage = 'Combinações salvas com sucesso!';
-      this.coresAdicionadas.add(this.selectedCor!); // Adicionar a cor adicionada ao controle
+      console.log('Combinações e preços salvos com sucesso.');
+      this.successMessage = 'Combinações e preços salvos com sucesso!';
+      this.coresAdicionadas.add(this.selectedCor!);
     } catch (error) {
-      console.error('Erro ao salvar combinações:', error);
-      this.errorMessage = 'Erro ao salvar combinações. Por favor, tente novamente.';
+      console.error('Erro ao salvar combinações e preços:', error);
+      this.errorMessage = 'Erro ao salvar combinações e preços. Por favor, tente novamente.';
     }
   }
 
@@ -536,10 +566,10 @@ export class ProdutoComponent implements OnInit {
     const resto = soma % 10;
     return resto === 0 ? '0' : (10 - resto).toString();
   }
-  
+
   adicionarOutraCor() {
-    this.selectedCor = undefined; // Reseta a cor selecionada
-    this.combinacoes = []; // Reseta as combinações
+    this.selectedCor = undefined;
+    this.combinacoes = [];
     this.setAction('adicionarCor');
   }
 
@@ -549,12 +579,8 @@ export class ProdutoComponent implements OnInit {
   }
 
   vincularPrecos() {
-    // Lógica para vincular preços aos códigos de barras
     this.combinacoes.forEach(combinacao => {
-      this.precos.push({ codigoDeBarras: combinacao.codigoDeBarras, valor: this.preco });
+      this.precos.push({ codigoDeBarras: combinacao.codigoDeBarras, valor: this.produto['preco'] });
     });
   }
-
-
-
 }

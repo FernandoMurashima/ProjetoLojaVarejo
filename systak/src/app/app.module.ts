@@ -47,6 +47,7 @@ import { SubgrupoService } from './service/subgrupo.service';
 import { TiposDeSubgrupoService } from './service/tiposdesubgrupo.service';
 import { GrupoDetalheComponent } from './componentes/grupodetalhe/grupodetalhe.component';
 import { TabelaPrecoComponent } from './componentes/tabela-preco/tabela-preco.component';
+import { TabelaPrecoItem, TabelaPrecoItemService } from './service/tabela-precoitem.service';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,6 @@ import { TabelaPrecoComponent } from './componentes/tabela-preco/tabela-preco.co
     LojaComponent,
     UserComponent,
     NatLancamentoComponent,
-    ProdutoComponent,
     CepMaskDirective,
     ColecaoComponent,
     MaterialComponent,
@@ -79,7 +79,9 @@ import { TabelaPrecoComponent } from './componentes/tabela-preco/tabela-preco.co
     GrupoComponent,
     SubgrupoComponent,
     GrupoDetalheComponent,
-    TabelaPrecoComponent
+    TabelaPrecoComponent,      
+    ProdutoComponent,
+    
   ],
   
   imports: [
@@ -99,6 +101,7 @@ import { TabelaPrecoComponent } from './componentes/tabela-preco/tabela-preco.co
     GrupoService,
     SubgrupoService,
     TiposDeSubgrupoService,
+    TabelaPrecoItemService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

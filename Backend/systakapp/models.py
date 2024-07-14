@@ -261,6 +261,7 @@ class ProdutoDetalhe(models.Model):
     Idcor = models.ForeignKey(Cor, on_delete=models.CASCADE)
     Item = models.IntegerField(null=True, blank=True, default=0)
     
+    
 
     def __str__(self):
         return f'{self.CodigodeBarra} - {self.Codigoproduto}'
@@ -274,7 +275,7 @@ class Tabelapreco(models.Model):
     data_cadastro = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
-        return f'Tabela {self.idtabela} - {self.datainicio} to {self.datafim}'
+        return f'{self.NomeTabela} ({self.Idtabela})'
 
 class TabelaPrecoItem(models.Model):
     Idtabelaitem = models.AutoField(primary_key=True)
@@ -283,8 +284,9 @@ class TabelaPrecoItem(models.Model):
     preco = models.DecimalField(max_digits=18, decimal_places=2)
     idtabela = models.ForeignKey(Tabelapreco, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f'Item {self.idtabelaitem} - Produto {self.codigoproduto}'
+def __str__(self):
+        return f'Item {self.Idtabelaitem} - Produto {self.codigoproduto} - Tabela {self.idtabela.NomeTabela}'
+
 class Estoque(models.Model):
     Idestoque = models.AutoField(primary_key=True)
     Idprodutodetalhe = models.ForeignKey(ProdutoDetalhe, on_delete=models.CASCADE)
@@ -293,6 +295,7 @@ class Estoque(models.Model):
     Estoque = models.IntegerField(null=True, blank=True)
     reserva = models.IntegerField(null=True, blank=True)
     valorestoque = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True)
+    
 
     def __str__(self):
         return f'{self.Idprodutodetalhe} - {self.Estoque}'
