@@ -289,16 +289,17 @@ def __str__(self):
 
 class Estoque(models.Model):
     Idestoque = models.AutoField(primary_key=True)
-    Idprodutodetalhe = models.ForeignKey(ProdutoDetalhe, on_delete=models.CASCADE)
     CodigodeBarra = models.CharField(max_length=20)
+    codigoproduto = models.CharField(max_length=11, default='00.00.00000')
     Idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
     Estoque = models.IntegerField(null=True, blank=True)
     reserva = models.IntegerField(null=True, blank=True)
     valorestoque = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True)
     
+    
 
     def __str__(self):
-        return f'{self.Idprodutodetalhe} - {self.Estoque}'
+        return f'{self.CodigodeBarra} - {self.Estoque}'
 
 class Venda(models.Model):
     Idvenda = models.AutoField(primary_key=True)

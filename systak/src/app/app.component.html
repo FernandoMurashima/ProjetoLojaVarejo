@@ -1,7 +1,6 @@
 <div class="banner">SYSTAK - SISTEMA DE GESTÃO</div>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <!-- <a class="navbar-brand" href="#">Systak</a> -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -43,17 +42,34 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="estoqueDropdown">
             <a class="dropdown-item" routerLink="/cadastro/produtos">Produtos</a>
-            <a class="dropdown-item" routerLink="/estoque/ncm">Classificação Fiscal (NMC)</a>
-            <a class="dropdown-item" routerLink="/configuradores/familia">Familia</a>
-            <a class="dropdown-item" routerLink="/configuradores/cores">Cor</a>
-            <a class="dropdown-item" routerLink="/configuradores/grades">Grade</a>
-            <a class="dropdown-item" routerLink="/configuradores/tamanhos">Tamanho</a>
-            <a class="dropdown-item" routerLink="/configuradores/colecao">Coleção</a>
-            <a class="dropdown-item" routerLink="/configuradores/material">Material</a>
-            <a class="dropdown-item" routerLink="/configuradores/unidade">Unidade</a>
-            <a class="dropdown-item" routerLink="/estoque/grupo">Grupo</a>
-            <a class="dropdown-item" routerLink="/estoque/subgrupos">Subgrupo</a>
-            <a class="dropdown-item" routerLink="/estoque/grupodetalhe">Grupo-Detalhe</a>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-submenu">
+              <a class="dropdown-item dropdown-toggle" href="#">Classificação</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" routerLink="/configuradores/familia">Familia</a>
+                <a class="dropdown-item" routerLink="/estoque/grupo">Grupo</a>
+                <a class="dropdown-item" routerLink="/estoque/subgrupos">Subgrupo</a>
+                <a class="dropdown-item" routerLink="/estoque/grupodetalhe">Grupo-Detalhe</a>
+              </div>
+            </div>
+            <div class="dropdown-submenu">
+              <a class="dropdown-item dropdown-toggle" href="#">Características</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" routerLink="/configuradores/colecao">Coleção</a>
+                <a class="dropdown-item" routerLink="/configuradores/cores">Cor</a>
+                <a class="dropdown-item" routerLink="/configuradores/grades">Grade</a>
+                <a class="dropdown-item" routerLink="/configuradores/tamanhos">Tamanho</a>
+                <a class="dropdown-item" routerLink="/configuradores/unidade">Unidade</a>
+                <a class="dropdown-item" routerLink="/configuradores/material">Material</a>
+              </div>
+            </div>
+            <div class="dropdown-submenu">
+              <a class="dropdown-item dropdown-toggle" href="#">Operacional</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" routerLink="/estoque/remarcacao">Remarcação</a>
+                <a class="dropdown-item" routerLink="/estoque/estoque-inicial">Iniciar Estoque</a>
+              </div>
+            </div>
           </div>
         </li>
 
@@ -67,13 +83,9 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="configuradoresDropdown">
             <a class="dropdown-item" routerLink="/configuradores/natureza-lancamentos">Natureza</a>
-            <a class="dropdown-item" routerLink="/configuradores/cores">Cor</a>
-            <a class="dropdown-item" routerLink="/configuradores/grades">Grade</a>
-            <a class="dropdown-item" routerLink="/configuradores/tamanhos">Tamanho</a>
-            <a class="dropdown-item" routerLink="/configuradores/colecao">Coleção</a>
-            <a class="dropdown-item" routerLink="/configuradores/material">Material</a>
-            <a class="dropdown-item" routerLink="/configuradores/unidade">Unidade</a>
-            <a class="dropdown-item" routerLink="/configuradores/familia">Familia</a>
+            
+            
+            
           </div>
         </li>
 

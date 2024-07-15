@@ -14,6 +14,8 @@ import { TamanhoService, Tamanho } from '../../service/tamanho.service';
 import { TabelaPrecoService, TabelaPreco } from '../../service/tabela-preco.service';
 import { TabelaPrecoItemService, TabelaPrecoItem } from '../../service/tabela-precoitem.service';
 import { CodigoService } from '../../service/codigo.service';
+import { LojaService, Loja } from '../../service/loja.service';
+import { EstoqueService } from '../../service/estoque.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -44,6 +46,7 @@ export class ProdutoComponent implements OnInit {
   coresAdicionadas: Set<number> = new Set();
   preco: number = 0;
   precos: Array<{ codigoDeBarras: string, valor: number }> = [];
+  lojas: Loja[] = [];
 
   successMessage: string = '';
   errorMessage: string = '';
@@ -66,10 +69,13 @@ export class ProdutoComponent implements OnInit {
     private tabelaPrecoService: TabelaPrecoService,
     private tabelaPrecoItemService: TabelaPrecoItemService,
     private codigoService: CodigoService,
+    private lojaService: LojaService,
+    private estoqueService: EstoqueService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.loadLojas();
     this.loadProdutos();
     this.loadGrades();
     this.loadUnidades();
@@ -280,6 +286,17 @@ export class ProdutoComponent implements OnInit {
     });
   }
 
+  loadLojas() {
+    this.lojaService.load().subscribe({
+      next: (data: Loja[]) => {
+        this.lojas = data;
+      },
+      error: (error: any) => {
+        console.error('Erro ao carregar lojas', error);
+      }
+    });
+  }
+
   onProdutoChange(event: Event) {
     const selectedId = (event.target as HTMLSelectElement).value;
     this.produtoSelecionado = this.produtos.find(p => p.Idproduto === +selectedId) ?? undefined;
@@ -382,7 +399,7 @@ export class ProdutoComponent implements OnInit {
       if (window.confirm('Confirma a inclusão do novo produto?')) {
         const produtoParaEnviar = { ...this.produto };
         delete produtoParaEnviar.Idproduto;
-  
+
         console.log("Dados do produto para envio:", produtoParaEnviar);
         this.produtoService.addProduto(produtoParaEnviar).subscribe({
           next: async (data: Produto) => {
@@ -530,13 +547,26 @@ export class ProdutoComponent implements OnInit {
         };
 
         await this.tabelaPrecoItemService.addTabelaPrecoItem(tabelaPrecoItem).toPromise();
+
+        // Gerar estoque para cada loja
+        for (const loja of this.lojas) {
+          const estoque = {
+            CodigodeBarra: combinacao.codigoDeBarras,
+            codigoproduto: referenciaProduto,
+            Idloja: loja.Idloja, // Corrigido para usar Idloja
+            Estoque: 0,
+            reserva: 0,
+            valorestoque: 0
+          };
+          await this.estoqueService.addEstoque(estoque).toPromise();
+        }
       }
-      console.log('Combinações e preços salvos com sucesso.');
-      this.successMessage = 'Combinações e preços salvos com sucesso!';
+      console.log('Combinações, preços e estoque salvos com sucesso.');
+      this.successMessage = 'Combinações, preços e estoque salvos com sucesso!';
       this.coresAdicionadas.add(this.selectedCor!);
     } catch (error) {
-      console.error('Erro ao salvar combinações e preços:', error);
-      this.errorMessage = 'Erro ao salvar combinações e preços. Por favor, tente novamente.';
+      console.error('Erro ao salvar combinações, preços e estoque:', error);
+      this.errorMessage = 'Erro ao salvar combinações, preços e estoque. Por favor, tente novamente.';
     }
   }
 

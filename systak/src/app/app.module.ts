@@ -48,6 +48,9 @@ import { TiposDeSubgrupoService } from './service/tiposdesubgrupo.service';
 import { GrupoDetalheComponent } from './componentes/grupodetalhe/grupodetalhe.component';
 import { TabelaPrecoComponent } from './componentes/tabela-preco/tabela-preco.component';
 import { TabelaPrecoItem, TabelaPrecoItemService } from './service/tabela-precoitem.service';
+import { EstoqueService } from './service/estoque.service';
+import { LojaService } from './service/loja.service';
+
 
 @NgModule({
   declarations: [
@@ -102,6 +105,8 @@ import { TabelaPrecoItem, TabelaPrecoItemService } from './service/tabela-precoi
     SubgrupoService,
     TiposDeSubgrupoService,
     TabelaPrecoItemService,
+    EstoqueService,
+    LojaService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
