@@ -1,0 +1,32 @@
+<div class="container mt-3">
+  <div class="row">
+    <div class="col">
+      <h2>Iniciar Estoque</h2>
+      <form (ngSubmit)="iniciarEstoque()">
+        <div class="form-group">
+          <label for="referencia">Referência</label>
+          <input type="text" id="referencia" [(ngModel)]="referencia" name="referencia" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="tabelaPreco">Tabela de Preço</label>
+          <select id="tabelaPreco" [(ngModel)]="tabelaPreco" name="tabelaPreco" class="form-control" required>
+            <option *ngFor="let tabela of tabelasPreco" [value]="tabela.Idtabela">{{ tabela.NomeTabela }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="preco">Preço</label>
+          <input type="number" id="preco" [(ngModel)]="preco" name="preco" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Iniciar Estoque</button>
+        <button type="button" class="btn btn-secondary" (click)="voltar()">Voltar</button> <!-- Botão Voltar -->
+      </form>
+      <div *ngIf="successMessage" class="alert alert-success mt-3">
+        {{ successMessage }}
+      </div>
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+        {{ errorMessage }}
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -10,6 +10,8 @@ from django.utils import timezone
 class User(AbstractUser):
     class Type(models.TextChoices):
         REGULAR = 'Regular', _('Regular')
+        CAIXA = 'Caixa', _('Caixa') 
+        GERENTE = 'Gerente', _('Gerente')
         ADMIN = 'Admin', _('Admin')
 
     type = models.CharField(max_length=10, choices=Type.choices, default=Type.REGULAR)

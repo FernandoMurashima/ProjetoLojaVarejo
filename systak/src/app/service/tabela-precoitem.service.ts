@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators'; // Importar 'map'
 import { environment } from '../../environments/environment';
 
 export interface TabelaPrecoItem {
@@ -21,5 +22,11 @@ export class TabelaPrecoItemService {
 
   addTabelaPrecoItem(tabelaPrecoItem: TabelaPrecoItem): Observable<TabelaPrecoItem> {
     return this.http.post<TabelaPrecoItem>(this.apiUrl, tabelaPrecoItem);
+  }
+
+  exists(codigodebarra: string, codigoproduto: string, idtabela: number): Observable<boolean> {
+    return this.http.get<{ exists: boolean }>(`${this.apiUrl}exists/${codigodebarra}/${codigoproduto}/${idtabela}/`).pipe(
+      map((response: { exists: boolean }) => response.exists)
+    );
   }
 }

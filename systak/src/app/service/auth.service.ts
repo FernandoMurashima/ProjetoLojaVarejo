@@ -8,6 +8,12 @@ interface AuthData {
   token: string;
 }
 
+interface User {
+  id: number;
+  username: string;
+  type: string; // Adicionando o campo type ao modelo de usuário
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,14 +21,19 @@ export class AuthService {
   private token: string | null;
   private tokenKey = 'authToken';
   private authStatus = new BehaviorSubject<boolean>(this.hasToken());
+  private user: User | null = null; // Adicionando um campo para armazenar os dados do usuário
 
   constructor(private http: HttpClient) {
     this.token = sessionStorage.getItem(this.tokenKey);
+    if (this.token) {
+      this.loadUserData().subscribe();
+    }
   }
 
   logout() {
     sessionStorage.removeItem(this.tokenKey);
     this.token = null;
+    this.user = null;
     this.authStatus.next(false);
     console.log('Usuário deslogado');
   }
@@ -45,7 +56,7 @@ export class AuthService {
     const data = { username, password };
     return this.http.post<AuthData>(url, data).pipe(map((response) => {
       this.setToken(response.token);
-      return;
+      return this.loadUserData(); // Carregar dados do usuário após autenticação
     }));
   }
 
@@ -59,5 +70,22 @@ export class AuthService {
   private hasToken(): boolean {
     return !!sessionStorage.getItem(this.tokenKey);
   }
-}
 
+  private loadUserData(): Observable<User> {
+    const url = `${environment.apiURL}/users/me/`; // Ajustado para o endpoint correto
+    return this.http.get<User>(url).pipe(map((user) => {
+      this.user = user;
+      console.log('Dados do usuário carregados:', this.user); // Log para verificar os dados do usuário
+      return user;
+    }));
+  }
+
+  public getUser(): User | null {
+    console.log('Obtendo usuário:', this.user); // Log para verificar o usuário retornado
+    return this.user;
+  }
+
+  public refreshUserData(): Observable<User> {
+    return this.loadUserData(); // Método público para carregar dados do usuário
+  }
+}

@@ -1,1 +1,78 @@
-<p>pdv works!</p>
+<div class="container">
+  <div class="header">
+    <h1>PDV - Ponto de Venda</h1>
+  </div>
+
+  <div class="header2">
+    
+    <div class="selectors">
+      <button (click)="checkAuthorization()">Iniciar Venda</button>
+      <div class="selector">
+        <label for="loja-select">Loja:</label>
+        <select id="loja-select" [(ngModel)]="selectedLoja" (change)="onLojaChange()">
+          <option *ngFor="let loja of lojas" [value]="loja.Idloja">{{ loja.nome_loja }}</option>
+        </select>
+      </div>
+      <div class="selector">
+        <label for="vendedor-code">Vendedor:</label>
+        <select id="vendedor-code" [(ngModel)]="selectedVendedor">
+          <option *ngFor="let vendedor of vendedores" [value]="vendedor.Idfuncionario">{{ vendedor.apelido }}</option>
+        </select>
+      </div>
+      <div class="selector">
+        <label for="cliente-code">Cliente:</label>
+        <input type="text" id="cliente-code" placeholder="Digite o Código ou Nome do Cliente" [(ngModel)]="clienteInput" (keyup)="buscarCliente($event)">
+        <div *ngIf="clientes.length">
+          <ul>
+            <li *ngFor="let cliente of clientes" (click)="selectCliente(cliente)">
+              {{ cliente.Idcliente }} - {{ cliente.Nome_cliente }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main" *ngIf="isAuthorized; else unauthorizedMessage">
+    <div class="sidebar">
+      <div class="product-image-container">
+        <p>Produto camisa de manga</p>
+        <img src="https://via.placeholder.com/150" alt="Foto do Produto" id="product-image">
+      </div>
+      <div class="menu-container">
+        <h2>Opções</h2>
+        <ul>
+          <li>Iniciar Venda</li>
+          <li>Pagamento</li>
+          <li>Fechar</li>
+        </ul>
+      </div>
+    </div>
+    <div class="content">
+      <div class="product-display">
+        <h2>Produto Digitado</h2>
+        <div class="product-info">
+          <div id="product-item-number">Item: 1</div>
+          <div id="product-code-display">Código: 12345</div>
+          <div id="product-description-display">Descrição: Produto Exemplo</div>
+          <div id="product-qty-display">Qtd: 1</div>
+          <div id="product-price-display">Preço: R$ 10,00</div>
+          <div id="product-total-display">Total: R$ 10,00</div>
+        </div>
+      </div>
+      <div class="purchase-summary">
+        <div>
+          <h2>Total da Compra</h2>
+        </div>
+        <div>
+          <h2>R$ 0,00</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #unauthorizedMessage>
+    <div class="footer">
+      <p>Usuário não autorizado</p>
+    </div>
+  </ng-template>
+</div>

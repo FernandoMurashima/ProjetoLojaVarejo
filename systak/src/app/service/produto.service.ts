@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map } from 'rxjs/operators'; // Importar 'map'
 import { environment } from '../../environments/environment';
 
 export interface Produto {
@@ -78,5 +78,9 @@ export class ProdutoService {
 
   addProdutoDetalhe(produtoDetalhe: ProdutoDetalhe): Observable<ProdutoDetalhe> {
     return this.http.post<ProdutoDetalhe>(`${environment.apiURL}/produtodetalhes/`, produtoDetalhe);
+  }
+
+  getDetalhesByReferencia(referencia: string): Observable<ProdutoDetalhe[]> {
+    return this.http.get<ProdutoDetalhe[]>(`${environment.apiURL}/produtos/detalhes/${referencia}/`);
   }
 }

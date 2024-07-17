@@ -1,0 +1,10 @@
+INFO 2024-07-17 18:40:56,250 autoreload Watching for file changes with StatReloader
+INFO 2024-07-17 18:40:56,319 urls Rota users/me/ registrada corretamente
+WARNING 2024-07-17 18:40:59,636 log Not Found: /users/me/
+INFO 2024-07-17 18:43:01,752 autoreload C:\Users\ferna\LojaVarejo\Backend\systakback\urls.py changed, reloading.
+INFO 2024-07-17 18:43:02,135 autoreload Watching for file changes with StatReloader
+INFO 2024-07-17 18:43:02,223 urls Rota users/me/ registrada corretamente
+INFO 2024-07-17 18:44:01,638 views get_user_data foi chamada
+INFO 2024-07-17 18:44:01,638 views Usuário autenticado: murashima
+INFO 2024-07-17 18:45:28,988 views get_user_data foi chamada
+INFO 2024-07-17 18:45:28,988 views Usuário autenticado: murashima

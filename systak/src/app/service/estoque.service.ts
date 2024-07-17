@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators'; // Importar 'map'
 import { environment } from '../../environments/environment';
 
 export interface Estoque {
@@ -39,5 +40,11 @@ export class EstoqueService {
 
   deleteEstoque(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}${id}/`);
+  }
+
+  exists(codigodebarra: string, codigoproduto: string, idloja: number): Observable<boolean> {
+    return this.http.get<{ exists: boolean }>(`${this.apiUrl}exists/${codigodebarra}/${codigoproduto}/${idloja}/`).pipe(
+      map((response: { exists: boolean }) => response.exists)
+    );
   }
 }

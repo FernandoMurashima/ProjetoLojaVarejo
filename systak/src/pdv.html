@@ -28,8 +28,18 @@
             background-color: #4CAF50;
             color: white;
             text-align: center;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #ddd;
+            height: 30px;
+            font-size: 10px;
+        }
+        .header2 {
+            background-color: #cacc37;
+            color: white;
+            text-align: center;
             padding: 10px;
             border-bottom: 2px solid #ddd;
+            height: 50px;
         }
         .main {
             display: flex;
@@ -135,6 +145,15 @@
         <div class="header">
             <h1>PDV - Ponto de Venda</h1>
         </div>
+
+        <div class="header2">
+            <label for="cliente-code">Cliente:</label>
+            <input type="text" id="cliente-code" placeholder="Digite o Codigo do Cliente">
+            <label for="vendedor-code">Vendedor:</label>
+            <input type="text" id="vendedor-code" placeholder="Digite o Codigo do Vendedor">
+        </div>
+
+
         <div class="main">
             <div class="sidebar">
                 <div class="product-image-container">
@@ -142,11 +161,11 @@
                     <img src="https://via.placeholder.com/150" alt="Foto do Produto" id="product-image">
                 </div>
                 <div class="menu-container">
-                    <h2>Menu</h2>
+                    <h2>Opções</h2>
                     <ul>
-                        <li>Opção 1</li>
-                        <li>Opção 2</li>
-                        <li>Opção 3</li>
+                        <li>Iniciar Venda</li>
+                        <li>Pagamento</li>
+                        <li>Fechar</li>
                     </ul>
                 </div>
             </div>
@@ -177,7 +196,7 @@
             </div>
         </div>
         <div class="footer">
-            <p>&copy; 2024 PDV</p>
+            <p>&copy; 2024 - Systak - Sistema de Gestão</p>
         </div>
     </div>
 </body>

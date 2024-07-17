@@ -36,27 +36,27 @@ export interface UserCreate {
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = `${environment.apiURL}/users/`;
+  private apiUrl = `${environment.apiURL}/`;  // Certifique-se de que esta URL corresponde ao padrão do seu backend
 
   constructor(private http: HttpClient) {}
 
   load(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl);
+    return this.http.get<User[]>(this.apiUrl + 'users/');
   }
 
   get(id: number): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}${id}/`);
+    return this.http.get<User>(`${this.apiUrl}users/${id}/`);
   }
 
   addUser(user: UserCreate): Observable<User> {
-    return this.http.post<User>(this.apiUrl, user);
+    return this.http.post<User>(`${this.apiUrl}create-user/`, user);  // Certifique-se de que este é um POST
   }
 
   updateUser(id: number, user: User): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}${id}/`, user);
+    return this.http.put<User>(`${this.apiUrl}users/${id}/`, user);
   }
 
   deleteUser(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}${id}/`);
+    return this.http.delete(`${this.apiUrl}users/${id}/`);
   }
 }

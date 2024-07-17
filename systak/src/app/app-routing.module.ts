@@ -24,6 +24,8 @@ import { GrupoComponent } from './componentes/grupo/grupo.component';
 import { SubgrupoComponent } from './componentes/subgrupo/subgrupo.component';
 import { GrupoDetalheComponent } from './componentes/grupodetalhe/grupodetalhe.component';
 import { TabelaPrecoComponent } from './componentes/tabela-preco/tabela-preco.component';
+import { EstoqueInicialComponent } from './componentes/estoque-inicial/estoque-inicial.component';
+import { PdvComponent } from './componentes/pdv/pdv.component';
 
 export const DEFAULT_ROUTE = '/index';
 
@@ -56,7 +58,8 @@ const routes: Routes = [
   { path: 'estoque/subgrupos', component: SubgrupoComponent, canActivate: [AuthGuardService] },
   { path: 'estoque/grupodetalhe', component: GrupoDetalheComponent, canActivate: [AuthGuardService] },
   { path: 'cadastro/produtos', component: ProdutoComponent, canActivate: [AuthGuardService] },
-  
+  { path: 'estoque-inicial', component: EstoqueInicialComponent, canActivate: [AuthGuardService] },
+  { path: 'vendas/pdv', component: PdvComponent, canActivate: [AuthGuardService]},  
   { path: 'sair', component: LoginComponent }
 ];
 

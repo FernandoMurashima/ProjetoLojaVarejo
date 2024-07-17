@@ -1,14 +1,17 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, action, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
+
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.db.models import F
 from .serializers import (
     UserSerializer, ClienteSerializer, FornecedorSerializer, VendedorSerializer,
@@ -39,6 +42,19 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_data(request):
+        logger.info("get_user_data foi chamada")  # Log para verificar a chamada da função
+        user = request.user
+        logger.info(f"Usuário autenticado: {user.username}")  # Log para verificar o usuário autenticado
+        user_data = {
+            'id': user.id,
+            'username': user.username,
+            'type': user.type,  # Certifique-se de que o campo 'type' está disponível no modelo User
+        }
+        return Response(user_data)
 
 class UnidadeViewSet(viewsets.ModelViewSet):
     queryset = Unidade.objects.all()
@@ -147,10 +163,6 @@ class TabelaprecoViewSet(viewsets.ModelViewSet):
 class TabelaPrecoItemViewSet(viewsets.ModelViewSet):
     queryset = TabelaPrecoItem.objects.all()
     serializer_class = TabelaPrecoItemSerializer
-
-
-
-
 
 class EstoqueViewSet(viewsets.ModelViewSet):
     queryset = Estoque.objects.all()
@@ -315,3 +327,47 @@ def increment_empresa_codigo(request):
         return JsonResponse({"success": True, "novo_valor": codigo.valor})
     except Codigos.DoesNotExist:
         return JsonResponse({"error": "Código da empresa não encontrado"}, status=404)
+
+def get_produto_detalhes_by_referencia(request, referencia):
+    try:
+        detalhes = ProdutoDetalhe.objects.filter(Codigoproduto=referencia)
+        if not detalhes.exists():
+            raise Http404("Detalhes do produto não encontrados")
+        detalhes_list = list(detalhes.values())
+        return JsonResponse(detalhes_list, safe=False)
+    except ProdutoDetalhe.DoesNotExist:
+        raise Http404("Detalhes do produto não encontrados")
+    
+def check_tabelaprecoitem_exists(request, codigodebarra, codigoproduto, idtabela):
+    exists = TabelaPrecoItem.objects.filter(codigodebarra=codigodebarra, codigoproduto=codigoproduto, idtabela_id=idtabela).exists()
+    return JsonResponse({'exists': exists})
+
+def check_estoque_exists(request, codigodebarra, codigoproduto, idloja):
+    exists = Estoque.objects.filter(CodigodeBarra=codigodebarra, codigoproduto=codigoproduto, Idloja_id=idloja).exists()
+    return JsonResponse({'exists': exists})
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def create_user(request):
+    data = request.data
+    username = data.get('username')
+    password = data.get('password')
+    email = data.get('email')
+
+    if not username or not password or not email:
+        return JsonResponse({'error': 'Missing fields'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if User.objects.filter(username=username).exists():
+        return JsonResponse({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = User(
+        username=username,
+        email=email,
+        password=make_password(password)  # Hashing the password
+    )
+    user.save()
+
+    return JsonResponse({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
+
+
