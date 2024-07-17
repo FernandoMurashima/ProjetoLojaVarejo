@@ -8,3 +8,7 @@ INFO 2024-07-17 18:44:01,638 views get_user_data foi chamada
 INFO 2024-07-17 18:44:01,638 views Usuário autenticado: murashima
 INFO 2024-07-17 18:45:28,988 views get_user_data foi chamada
 INFO 2024-07-17 18:45:28,988 views Usuário autenticado: murashima
+INFO 2024-07-17 18:54:17,454 views get_user_data foi chamada
+INFO 2024-07-17 18:54:17,454 views Usuário autenticado: fernando
+INFO 2024-07-17 18:54:33,137 views get_user_data foi chamada
+INFO 2024-07-17 18:54:33,138 views Usuário autenticado: takeshi
