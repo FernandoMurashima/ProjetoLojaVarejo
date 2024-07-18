@@ -12,3 +12,5 @@ INFO 2024-07-17 18:54:17,454 views get_user_data foi chamada
 INFO 2024-07-17 18:54:17,454 views Usuário autenticado: fernando
 INFO 2024-07-17 18:54:33,137 views get_user_data foi chamada
 INFO 2024-07-17 18:54:33,138 views Usuário autenticado: takeshi
+INFO 2024-07-18 11:06:00,073 autoreload Watching for file changes with StatReloader
+INFO 2024-07-18 11:06:00,204 urls Rota users/me/ registrada corretamente

@@ -1,8 +1,4 @@
-
-
-
 .header {
-  
   background-color: #4CAF50;
   color: white;
   text-align: center;
@@ -39,6 +35,18 @@
 .selector {
   display: flex;
   align-items: center;
+}
+
+.selector2 {
+  display: flex;
+  align-items: center;
+  width: 400px; /* Garante que ocupe 100% da largura */
+}
+
+.selector2 select {
+  flex: 1;
+  padding: 5px;
+  font-size: 16px;  /* Ajuste o tamanho da fonte conforme necessário */
 }
 
 .selector label {
@@ -161,4 +169,11 @@
   padding: 10px;
   border-top: 2px solid #ddd;
   width: 96.8vw;  /* Garante que ocupe 100% da largura */
+}
+
+.cliente-select {
+  flex: 1;
+  padding: 5px;
+  font-size: 16px; /* Ajuste o tamanho da fonte conforme necessário */
+  width: 100%; /* Garante que ocupe 100% da largura */
 }

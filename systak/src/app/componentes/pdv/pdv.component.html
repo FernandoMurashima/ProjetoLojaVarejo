@@ -4,32 +4,38 @@
   </div>
 
   <div class="header2">
-    
     <div class="selectors">
-      <button (click)="checkAuthorization()">Iniciar Venda</button>
+      <!-- Botão Voltar ao Menu Anterior -->
+      <button (click)="voltarAoMenuAnterior()" [disabled]="botaoVoltarDesativado">Voltar ao Menu Anterior</button>
+
+      <!-- Botão Iniciar Venda -->
+      <button (click)="iniciarVenda()">Iniciar Venda</button>
+
       <div class="selector">
         <label for="loja-select">Loja:</label>
-        <select id="loja-select" [(ngModel)]="selectedLoja" (change)="onLojaChange()">
+        <select id="loja-select" [(ngModel)]="selectedLoja" (change)="onLojaChange()" [disabled]="!vendaIniciada">
           <option *ngFor="let loja of lojas" [value]="loja.Idloja">{{ loja.nome_loja }}</option>
         </select>
       </div>
       <div class="selector">
         <label for="vendedor-code">Vendedor:</label>
-        <select id="vendedor-code" [(ngModel)]="selectedVendedor">
+        <select id="vendedor-code" [(ngModel)]="selectedVendedor" [disabled]="!vendaIniciada">
           <option *ngFor="let vendedor of vendedores" [value]="vendedor.Idfuncionario">{{ vendedor.apelido }}</option>
         </select>
       </div>
-      <div class="selector">
+      <div class="selector2">
         <label for="cliente-code">Cliente:</label>
-        <input type="text" id="cliente-code" placeholder="Digite o Código ou Nome do Cliente" [(ngModel)]="clienteInput" (keyup)="buscarCliente($event)">
+        <input type="text" id="cliente-code" class="cliente-select" placeholder="Digite o Código ou Nome do Cliente" [(ngModel)]="clienteInput" (keyup)="buscarCliente($event)" [disabled]="!vendaIniciada">
         <div *ngIf="clientes.length">
           <ul>
             <li *ngFor="let cliente of clientes" (click)="selectCliente(cliente)">
-              {{ cliente.Idcliente }} - {{ cliente.Nome_cliente }}
+              {{ cliente.Nome_cliente }}
             </li>
           </ul>
         </div>
       </div>
+      <!-- Botão Cancelar Venda -->
+      <button *ngIf="vendaIniciada" (click)="cancelarVenda()" class="cancelar-venda">Cancelar Venda</button>
     </div>
   </div>
 

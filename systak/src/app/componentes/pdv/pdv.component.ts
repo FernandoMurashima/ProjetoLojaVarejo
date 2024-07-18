@@ -3,7 +3,7 @@ import { LojaService, Loja } from '../../service/loja.service';
 import { ClienteService, Cliente } from '../../service/cliente.service';
 import { FuncionarioService, Funcionario } from '../../service/funcionario.service';
 import { AuthService } from '../../service/auth.service';
-import { Router } from '@angular/router';  // Certifique-se de importar o Router
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pdv',
@@ -17,15 +17,18 @@ export class PdvComponent implements OnInit {
   clienteInput: string = '';
   clientes: Cliente[] = [];
   selectedVendedor: number | null = null;
+  selectedCliente: number | null = null;
   vendedores: Funcionario[] = [];
   user: any;
+  vendaIniciada: boolean = false;
+  botaoVoltarDesativado: boolean = false; // Nova propriedade para controlar o estado do botão
 
   constructor(
     private lojaService: LojaService,
     private clienteService: ClienteService,
     private funcionarioService: FuncionarioService,
     private authService: AuthService,
-    private router: Router  // Certifique-se de injetar o Router
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -34,8 +37,8 @@ export class PdvComponent implements OnInit {
       if (isAuthenticated) {
         this.authService.refreshUserData().subscribe(user => {
           this.user = user;
-          console.log('Usuário autenticado:', this.user);  // Adiciona log para verificar o usuário autenticado
-          this.checkAuthorization();  // Verificar a autorização aqui após carregar o usuário
+          console.log('Usuário autenticado:', this.user);
+          this.checkAuthorization();
         });
       } else {
         console.log('Usuário não está autenticado');
@@ -46,24 +49,24 @@ export class PdvComponent implements OnInit {
   loadLojas() {
     this.lojaService.load().subscribe(data => {
       this.lojas = data;
-      console.log('Lojas carregadas:', this.lojas);  // Adiciona log para verificar as lojas carregadas
+      console.log('Lojas carregadas:', this.lojas);
     });
   }
 
   loadVendedores() {
     if (this.selectedLoja !== null) {
-      console.log('Tentando carregar vendedores para a loja selecionada:', this.selectedLoja);  // Adiciona log para verificar a loja selecionada
+      console.log('Tentando carregar vendedores para a loja selecionada:', this.selectedLoja);
       this.funcionarioService.load().subscribe(data => {
-        console.log('Dados de funcionários recebidos:', data);  // Adiciona log para verificar os dados recebidos
-        const lojaSelecionada = Number(this.selectedLoja);  // Garantindo que selectedLoja seja um número
+        console.log('Dados de funcionários recebidos:', data);
+        const lojaSelecionada = Number(this.selectedLoja);
         const filteredVendedores = data.filter(funcionario => {
-          const funcionarioLoja = Number(funcionario.idloja);  // Garantindo que funcionario.idloja seja um número
+          const funcionarioLoja = Number(funcionario.idloja);
           console.log(`Verificando funcionário ${funcionario.nomefuncionario} com categoria ${funcionario.categoria} e idloja ${funcionarioLoja}`);
           return funcionarioLoja === lojaSelecionada && funcionario.categoria === 'vendedor';
         });
-        console.log('Vendedores filtrados:', filteredVendedores);  // Adiciona log para verificar os vendedores filtrados
+        console.log('Vendedores filtrados:', filteredVendedores);
         this.vendedores = filteredVendedores;
-        console.log('Vendedores carregados para a loja selecionada:', this.vendedores);  // Adiciona log para verificar os vendedores carregados
+        console.log('Vendedores carregados para a loja selecionada:', this.vendedores);
       });
     } else {
       this.vendedores = [];
@@ -72,26 +75,26 @@ export class PdvComponent implements OnInit {
   }
 
   onLojaChange() {
-    console.log('Loja selecionada:', this.selectedLoja);  // Adiciona log para verificar a loja selecionada
-    this.loadVendedores();  // Carregar os vendedores quando a loja é selecionada
+    console.log('Loja selecionada:', this.selectedLoja);
+    this.loadVendedores();
   }
 
   checkAuthorization() {
     if (this.user) {
-      console.log('Tipo de usuário:', this.user.type);  // Adiciona log para verificar o tipo de usuário
+      console.log('Tipo de usuário:', this.user.type);
       if (this.user.type !== 'Regular') {
         this.isAuthorized = true;
         console.log('Usuário autorizado para usar o PDV');
       } else {
         this.isAuthorized = false;
         alert('Usuário não autorizado');
-        this.router.navigate(['/login']);  // Redireciona para a página de login
+        this.router.navigate(['/login']);
         console.log('Usuário não autorizado para usar o PDV');
       }
     } else {
       this.isAuthorized = false;
       alert('Erro ao verificar autorização do usuário');
-      this.router.navigate(['/login']);  // Redireciona para a página de login
+      this.router.navigate(['/login']);
       console.log('Erro: usuário não encontrado');
     }
   }
@@ -104,17 +107,38 @@ export class PdvComponent implements OnInit {
           cliente.Idcliente.toString().includes(input) || 
           cliente.Nome_cliente.toLowerCase().startsWith(input.toLowerCase())
         );
-        console.log('Clientes encontrados:', this.clientes);  // Adiciona log para verificar os clientes encontrados
+        console.log('Clientes encontrados:', this.clientes);
       });
     } else {
       this.clientes = [];
-      console.log('Nenhum cliente encontrado');  // Adiciona log para verificar quando nenhum cliente é encontrado
+      console.log('Nenhum cliente encontrado');
     }
   }
 
   selectCliente(cliente: Cliente) {
     this.clienteInput = `${cliente.Idcliente} - ${cliente.Nome_cliente}`;
+    this.selectedCliente = cliente.Idcliente;
     this.clientes = [];
-    console.log('Cliente selecionado:', cliente);  // Adiciona log para verificar o cliente selecionado
+    console.log('Cliente selecionado:', cliente);
+  }
+
+  iniciarVenda() {
+    this.vendaIniciada = true;
+    this.botaoVoltarDesativado = true; // Desativa o botão "Voltar ao Menu"
+  }
+
+  cancelarVenda() {
+    this.vendaIniciada = false;
+    this.botaoVoltarDesativado = false; // Reativa o botão "Voltar ao Menu"
+    this.selectedLoja = null;
+    this.selectedCliente = null;
+    this.selectedVendedor = null;
+    this.clienteInput = '';
+  }
+
+  voltarAoMenuAnterior() {
+    if (!this.botaoVoltarDesativado) {
+      this.router.navigate(['/home']);
+    }
   }
 }
