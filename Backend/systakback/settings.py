@@ -152,7 +152,7 @@ STATIC_URL = 'static/'
 
 APPEND_SLASH = True
 
-LOGGING = {
+""" LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
@@ -187,4 +187,4 @@ LOGGING = {
         'level': 'DEBUG',
         'propagate': False,
     },
-}
+} """

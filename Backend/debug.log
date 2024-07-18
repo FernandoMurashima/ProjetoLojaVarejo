@@ -60,3 +60,4 @@ INFO 2024-07-18 12:39:02,543 views get_user_data foi chamada
 INFO 2024-07-18 12:39:02,544 views Usuário autenticado: fernando
 INFO 2024-07-18 15:23:50,785 views get_user_data foi chamada
 INFO 2024-07-18 15:23:50,785 views Usuário autenticado: fernando
+INFO 2024-07-18 16:02:02,068 autoreload C:\Users\ferna\LojaVarejo\Backend\systakback\settings.py changed, reloading.
