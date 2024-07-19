@@ -42,16 +42,10 @@
   <div class="main" *ngIf="isAuthorized; else unauthorizedMessage">
     <div class="sidebar">
       <div class="product-image-container">
-        <p>Produto camisa de manga</p>
-        <img src="https://via.placeholder.com/150" alt="Foto do Produto" id="product-image">
+        <img [src]="produtoFoto" alt="Foto do Produto" id="product-image">
       </div>
       <div class="menu-container">
-        <h2>Opções</h2>
-        <ul>
-          <li>Pagamento</li>
-          <li>Descontos</li>
-          <li>Envio do Cupom</li>
-        </ul>
+        <button (click)="finalizarVenda()" [disabled]="produtos.length === 0">Finalizar Venda</button>
       </div>
     </div>
     <div class="content">
@@ -67,6 +61,8 @@
           <div>Item</div>
           <div>Código</div>
           <div>Descrição</div>
+          <div>Cor</div>
+          <div>Tamanho</div>
           <div>Qtd</div>
           <div>Preço</div>
           <div>Total</div>
@@ -76,6 +72,8 @@
             <div>{{ produto.id }}</div>
             <div>{{ produto.codigo }}</div>
             <div>{{ produto.descricao }}</div>
+            <div>{{ produto.cor }}</div>
+            <div>{{ produto.tamanho }}</div>
             <div>{{ produto.quantidade }}</div>
             <div>R$ {{ produto.preco }}</div>
             <div>R$ {{ produto.total }}</div>
@@ -91,7 +89,36 @@
         </div>
       </div>
     </div>
+
+    <!-- Tela de pagamento -->
+    <div *ngIf="exibirPagamento" class="pagamento">
+      <h2>Pagamento</h2>
+      <div class="form-group">
+        <label for="totalVenda">Total da Venda:</label>
+        <input type="text" id="totalVenda" [value]="totalCompra | currency:'BRL'" disabled>
+      </div>
+      <div class="form-group">
+        <label for="desconto">Desconto (%):</label>
+        <input type="number" id="desconto" [(ngModel)]="desconto" (input)="atualizarTotalComDesconto()" min="0" max="100" step="0.01" placeholder="Digite o desconto (%)">
+      </div>
+      <div class="form-group">
+        <label for="totalComDesconto">Total com Desconto:</label>
+        <input type="text" id="totalComDesconto" [value]="totalComDesconto | currency:'BRL'" disabled>
+      </div>
+      <div class="form-group">
+        <label for="formaPagamento">Forma de Pagamento:</label>
+        <select id="formaPagamento" [(ngModel)]="formaPagamento">
+          <option value="PIX">PIX</option>
+          <option value="DEBITO">Débito</option>
+          <option value="CREDITO_A_VISTA">Crédito à Vista</option>
+          <option value="CREDITO_PARCELADO">Crédito Parcelado</option>
+          <option value="DINHEIRO">Dinheiro</option>
+        </select>
+      </div>
+      <button (click)="confirmarPagamento()">Confirmar Pagamento</button>
+    </div>
   </div>
+
   <ng-template #unauthorizedMessage>
     <div class="footer">
       <p>Usuário não autorizado</p>

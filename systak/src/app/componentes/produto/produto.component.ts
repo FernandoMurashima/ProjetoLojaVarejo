@@ -341,9 +341,10 @@ export class ProdutoComponent implements OnInit {
   }
 
   prefixImagePath(field: string) {
-    if (this.produto[field] && !this.produto[field].startsWith(this.imageBasePath)) {
-      this.produto[field] = `${this.imageBasePath}${this.produto[field]}`;
+    if (this.produto[field] && !this.produto[field].startsWith('assets/Imagens/')) {
+      this.produto[field] = `assets/Imagens/${this.produto[field]}`;
     }
+    console.log('Caminho da imagem:', this.produto[field]); // Adicione um console.log para verificar o caminho
   }
 
   onClassificacaoFiscalChange(event: Event) {
