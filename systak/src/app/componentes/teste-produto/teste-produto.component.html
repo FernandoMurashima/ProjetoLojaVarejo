@@ -1,0 +1,16 @@
+<div>
+  <h2>Teste Produto</h2>
+  <p>Código de Barra: {{ codigoBarra }}</p>
+  <button (click)="testBuscarPorCodigoBarra()">Buscar ProdutoDetalhe</button>
+  <div *ngIf="produtoDetalhe">
+    <h3>Detalhes do Produto</h3>
+    <ul>
+      <li>
+        {{ produtoDetalhe.CodigodeBarra }} - {{ produtoDetalhe.Codigoproduto }} - ID Produto: {{ produtoDetalhe.Idproduto }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+

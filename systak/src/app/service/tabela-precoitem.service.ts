@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators'; // Importar 'map'
+import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface TabelaPrecoItem {
@@ -28,5 +28,9 @@ export class TabelaPrecoItemService {
     return this.http.get<{ exists: boolean }>(`${this.apiUrl}exists/${codigodebarra}/${codigoproduto}/${idtabela}/`).pipe(
       map((response: { exists: boolean }) => response.exists)
     );
+  }
+
+  getPreco(codigodebarra: string): Observable<TabelaPrecoItem> {
+    return this.http.get<TabelaPrecoItem>(`${this.apiUrl}preco/${codigodebarra}/`);
   }
 }

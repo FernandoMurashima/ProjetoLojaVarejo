@@ -51,6 +51,7 @@ import { TabelaPrecoItem, TabelaPrecoItemService } from './service/tabela-precoi
 import { EstoqueService } from './service/estoque.service';
 import { LojaService } from './service/loja.service';
 import { EstoqueInicialComponent } from './componentes/estoque-inicial/estoque-inicial.component';
+import { TesteProdutoComponent } from './componentes/teste-produto/teste-produto.component';
 
 
 @NgModule({
@@ -84,7 +85,7 @@ import { EstoqueInicialComponent } from './componentes/estoque-inicial/estoque-i
     SubgrupoComponent,
     GrupoDetalheComponent,
     TabelaPrecoComponent,      
-    ProdutoComponent, EstoqueInicialComponent,
+    ProdutoComponent, EstoqueInicialComponent, TesteProdutoComponent,
     
   ],
   

@@ -48,22 +48,38 @@
       <div class="menu-container">
         <h2>Opções</h2>
         <ul>
-          <li>Iniciar Venda</li>
           <li>Pagamento</li>
-          <li>Fechar</li>
+          <li>Descontos</li>
+          <li>Envio do Cupom</li>
         </ul>
       </div>
     </div>
     <div class="content">
+      <div class="product-input">
+        <label for="product-code">Código de Barras:</label>
+        <input type="text" id="product-code" [(ngModel)]="productCode" [disabled]="!vendaIniciada">
+        <label for="product-qty">Quantidade:</label>
+        <input type="number" id="product-qty" [(ngModel)]="productQty" min="1" [disabled]="!vendaIniciada">
+        <button (click)="adicionarProduto()" [disabled]="!vendaIniciada">Adicionar Produto</button>
+      </div>
       <div class="product-display">
-        <h2>Produto Digitado</h2>
-        <div class="product-info">
-          <div id="product-item-number">Item: 1</div>
-          <div id="product-code-display">Código: 12345</div>
-          <div id="product-description-display">Descrição: Produto Exemplo</div>
-          <div id="product-qty-display">Qtd: 1</div>
-          <div id="product-price-display">Preço: R$ 10,00</div>
-          <div id="product-total-display">Total: R$ 10,00</div>
+        <div class="product-info-header">
+          <div>Item</div>
+          <div>Código</div>
+          <div>Descrição</div>
+          <div>Qtd</div>
+          <div>Preço</div>
+          <div>Total</div>
+        </div>
+        <div *ngFor="let produto of produtos">
+          <div class="product-info">
+            <div>{{ produto.id }}</div>
+            <div>{{ produto.codigo }}</div>
+            <div>{{ produto.descricao }}</div>
+            <div>{{ produto.quantidade }}</div>
+            <div>R$ {{ produto.preco }}</div>
+            <div>R$ {{ produto.total }}</div>
+          </div>
         </div>
       </div>
       <div class="purchase-summary">
@@ -71,7 +87,7 @@
           <h2>Total da Compra</h2>
         </div>
         <div>
-          <h2>R$ 0,00</h2>
+          <h2>R$ {{ totalCompra }}</h2>
         </div>
       </div>
     </div>

@@ -2,8 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { LojaService, Loja } from '../../service/loja.service';
 import { ClienteService, Cliente } from '../../service/cliente.service';
 import { FuncionarioService, Funcionario } from '../../service/funcionario.service';
+import { ProdutoService, ProdutoDetalhe } from '../../service/produto.service';
+import { TabelaPrecoItemService } from '../../service/tabela-precoitem.service';
 import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
+
+export interface Produto {
+  id: number;
+  codigo: string;
+  descricao: string;
+  quantidade: number;
+  preco: number;
+  total: number;
+}
 
 @Component({
   selector: 'app-pdv',
@@ -22,11 +33,17 @@ export class PdvComponent implements OnInit {
   user: any;
   vendaIniciada: boolean = false;
   botaoVoltarDesativado: boolean = false; // Nova propriedade para controlar o estado do botão
+  productCode: string = '';
+  productQty: number = 1;
+  produtos: Produto[] = [];
+  totalCompra: number = 0;
 
   constructor(
     private lojaService: LojaService,
     private clienteService: ClienteService,
     private funcionarioService: FuncionarioService,
+    private produtoService: ProdutoService,
+    private tabelaPrecoItemService: TabelaPrecoItemService,
     private authService: AuthService,
     private router: Router
   ) {}
@@ -134,11 +151,55 @@ export class PdvComponent implements OnInit {
     this.selectedCliente = null;
     this.selectedVendedor = null;
     this.clienteInput = '';
+    this.productCode = '';
+    this.productQty = 1;
+    this.produtos = [];
+    this.totalCompra = 0;
   }
 
   voltarAoMenuAnterior() {
     if (!this.botaoVoltarDesativado) {
       this.router.navigate(['/home']);
     }
+  
+  }
+
+  adicionarProduto() {
+    const codigoBarra = this.productCode;
+    console.log('Adicionando produto com código de barra:', codigoBarra);
+  
+    this.produtoService.buscarPorCodigoBarra(codigoBarra).subscribe(produtoDetalhe => {
+      if (produtoDetalhe) {
+        console.log('Produto encontrado no ProdutoDetalhe:', produtoDetalhe);
+  
+        this.produtoService.getProdutoDescricaoPorId(produtoDetalhe.Idproduto).subscribe(produtoCompleto => {
+          this.tabelaPrecoItemService.getPreco(codigoBarra).subscribe(precoItem => {
+            if (precoItem) {
+              console.log('Preço do produto encontrado na TabelaPrecoItem:', precoItem);
+              const novoProduto: Produto = {
+                id: this.produtos.length + 1,
+                codigo: produtoDetalhe.CodigodeBarra,
+                descricao: produtoCompleto.Desc_reduzida,
+                quantidade: this.productQty,
+                preco: (precoItem.preco),
+                total: this.productQty * (precoItem.preco)
+              };
+  
+              this.produtos.push(novoProduto);
+              this.totalCompra += novoProduto.total;
+              console.log('Produto adicionado à lista:', novoProduto);
+  
+              // Limpar os campos de entrada
+              this.productCode = '';
+              this.productQty = 1;
+            } else {
+              console.log('Preço não encontrado na TabelaPrecoItem');
+            }
+          });
+        });
+      } else {
+        console.log('Produto não encontrado no ProdutoDetalhe');
+      }
+    });
   }
 }

@@ -61,3 +61,43 @@ INFO 2024-07-18 12:39:02,544 views Usuário autenticado: fernando
 INFO 2024-07-18 15:23:50,785 views get_user_data foi chamada
 INFO 2024-07-18 15:23:50,785 views Usuário autenticado: fernando
 INFO 2024-07-18 16:02:02,068 autoreload C:\Users\ferna\LojaVarejo\Backend\systakback\settings.py changed, reloading.
+INFO 2024-07-18 20:02:49,506 autoreload Watching for file changes with StatReloader
+INFO 2024-07-18 20:02:49,601 urls Rota users/me/ registrada corretamente
+INFO 2024-07-18 20:03:08,258 autoreload C:\Users\ferna\LojaVarejo\Backend\systakapp\views.py changed, reloading.
+INFO 2024-07-18 20:03:08,684 autoreload Watching for file changes with StatReloader
+INFO 2024-07-18 20:03:08,782 urls Rota users/me/ registrada corretamente
+DEBUG 2024-07-18 20:03:14,564 core Successfully imported extension module "markdown.extensions.toc".
+DEBUG 2024-07-18 20:03:14,564 core Successfully loaded extension "markdown.extensions.toc.TocExtension".
+WARNING 2024-07-18 20:03:14,591 log Not Found: /produtodetalhes/789123401454/
+WARNING 2024-07-18 20:04:42,484 log Unauthorized: /produtodetalhes/admin/
+DEBUG 2024-07-18 20:04:42,718 core Successfully imported extension module "markdown.extensions.toc".
+DEBUG 2024-07-18 20:04:42,718 core Successfully loaded extension "markdown.extensions.toc.TocExtension".
+WARNING 2024-07-18 20:04:42,723 log Not Found: /produtodetalhes/admin/
+DEBUG 2024-07-18 20:06:10,430 core Successfully imported extension module "markdown.extensions.toc".
+DEBUG 2024-07-18 20:06:10,431 core Successfully loaded extension "markdown.extensions.toc.TocExtension".
+DEBUG 2024-07-18 20:06:25,891 core Successfully imported extension module "markdown.extensions.toc".
+DEBUG 2024-07-18 20:06:25,892 core Successfully loaded extension "markdown.extensions.toc.TocExtension".
+DEBUG 2024-07-18 20:06:43,814 core Successfully imported extension module "markdown.extensions.toc".
+DEBUG 2024-07-18 20:06:43,815 core Successfully loaded extension "markdown.extensions.toc.TocExtension".
+WARNING 2024-07-18 20:06:43,824 log Not Found: /produtodetalhes/789123401010/
+INFO 2024-07-18 20:12:04,847 autoreload C:\Users\ferna\LojaVarejo\Backend\systakapp\views.py changed, reloading.
+INFO 2024-07-18 20:12:05,232 autoreload Watching for file changes with StatReloader
+INFO 2024-07-18 20:12:05,347 urls Rota users/me/ registrada corretamente
+INFO 2024-07-18 20:12:21,314 autoreload Watching for file changes with StatReloader
+INFO 2024-07-18 20:12:21,400 urls Rota users/me/ registrada corretamente
+DEBUG 2024-07-18 20:12:31,914 core Successfully imported extension module "markdown.extensions.toc".
+DEBUG 2024-07-18 20:12:31,914 core Successfully loaded extension "markdown.extensions.toc.TocExtension".
+WARNING 2024-07-18 20:12:31,931 log Not Found: /produtodetalhes/789123401010/
+INFO 2024-07-18 20:15:56,587 autoreload C:\Users\ferna\LojaVarejo\Backend\systakapp\views.py changed, reloading.
+INFO 2024-07-18 20:15:56,943 autoreload Watching for file changes with StatReloader
+INFO 2024-07-18 20:15:57,047 urls Rota users/me/ registrada corretamente
+DEBUG 2024-07-18 20:16:06,031 core Successfully imported extension module "markdown.extensions.toc".
+DEBUG 2024-07-18 20:16:06,031 core Successfully loaded extension "markdown.extensions.toc.TocExtension".
+WARNING 2024-07-18 20:16:06,051 log Not Found: /produtodetalhes/789123401010/
+INFO 2024-07-18 20:17:14,347 autoreload C:\Users\ferna\LojaVarejo\Backend\systakapp\views.py changed, reloading.
+INFO 2024-07-18 20:17:14,729 autoreload Watching for file changes with StatReloader
+INFO 2024-07-18 20:17:14,814 urls Rota users/me/ registrada corretamente
+DEBUG 2024-07-18 20:17:34,864 core Successfully imported extension module "markdown.extensions.toc".
+DEBUG 2024-07-18 20:17:34,864 core Successfully loaded extension "markdown.extensions.toc.TocExtension".
+WARNING 2024-07-18 20:17:34,896 log Not Found: /produtodetalhes/789123401010/
+INFO 2024-07-18 20:19:10,195 autoreload C:\Users\ferna\LojaVarejo\Backend\systakback\settings.py changed, reloading.

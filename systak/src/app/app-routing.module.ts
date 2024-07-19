@@ -26,11 +26,14 @@ import { GrupoDetalheComponent } from './componentes/grupodetalhe/grupodetalhe.c
 import { TabelaPrecoComponent } from './componentes/tabela-preco/tabela-preco.component';
 import { EstoqueInicialComponent } from './componentes/estoque-inicial/estoque-inicial.component';
 import { PdvComponent } from './componentes/pdv/pdv.component';
+import { TesteProdutoComponent } from './componentes/teste-produto/teste-produto.component';
 
 export const DEFAULT_ROUTE = '/index';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: '', redirectTo: '/teste-produto', pathMatch: 'full' },
+  { path: 'configuradores/teste-produto', component: TesteProdutoComponent,canActivate: [AuthGuardService] },
   { path: 'index', component: IndexComponent },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent },
@@ -61,6 +64,7 @@ const routes: Routes = [
   { path: 'estoque-inicial', component: EstoqueInicialComponent, canActivate: [AuthGuardService] },
   { path: 'vendas/pdv', component: PdvComponent, canActivate: [AuthGuardService]},  
   { path: 'sair', component: LoginComponent }
+  
 ];
 
 @NgModule({

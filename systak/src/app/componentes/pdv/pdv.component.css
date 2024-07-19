@@ -108,10 +108,6 @@
   width: 80%;  /* Garante que ocupe o restante da largura */
 }
 
-.product-input {
-  margin-bottom: 20px;
-}
-
 .product-display {
   flex: 1;
   background-color: #fff;
@@ -121,7 +117,6 @@
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
-  align-items: center;
   width: 83.5vw;  /* Garante que ocupe 100% da largura */
 }
 
@@ -130,25 +125,18 @@
   margin-bottom: 10px;
 }
 
-.product-info {
+.product-info-header, .product-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr 1fr 1fr 1fr;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
+  text-align: left;
   margin-bottom: 10px;
 }
 
-.product-info div {
-  flex: 1;
-  padding: 0 10px;
-  text-align: center;
-}
-
-.product-info div:first-child {
-  text-align: left;
-}
-
-.product-info div:last-child {
-  text-align: right;
+.product-info-header {
+  font-weight: bold;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
 }
 
 .purchase-summary {
@@ -176,4 +164,38 @@
   padding: 5px;
   font-size: 16px; /* Ajuste o tamanho da fonte conforme necessário */
   width: 100%; /* Garante que ocupe 100% da largura */
+}
+
+.product-input {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Espaçamento entre os elementos */
+  margin-bottom: 20px;
+}
+
+.product-input label {
+  font-weight: bold;
+  margin-right: 5px; /* Espaçamento entre o label e o input */
+}
+
+.product-input input {
+  padding: 5px; /* Ajustar o padding para deixar mais fino */
+  border: 1px solid #ddd; /* Ajustar a espessura da borda */
+  border-radius: 5px;
+  font-size: 14px; /* Ajustar o tamanho da fonte */
+}
+
+.product-input button {
+  padding: 5px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+}
+
+.product-input button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  padding: 5px;
 }

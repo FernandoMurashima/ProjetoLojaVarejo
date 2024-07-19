@@ -70,6 +70,9 @@ urlpatterns = [
     path('tabelaprecoitems/exists/<str:codigodebarra>/<str:codigoproduto>/<int:idtabela>/', views.check_tabelaprecoitem_exists, name='check_tabelaprecoitem_exists'),
     path('estoques/exists/<str:codigodebarra>/<str:codigoproduto>/<int:idloja>/', views.check_estoque_exists, name='check_estoque_exists'),
     path('create-user/', views.create_user, name='create_user'),  # Adicionando a nova rota para criação de novos usuários.
+    path('tabelaprecoitems/preco/<str:codigo_barra>/', views.get_preco_por_codigo_barra, name='get_preco_por_codigo_barra'),
+    path('produtodetalhes/', views.get_produto_detalhe_by_codigo_barra, name='get_produto_detalhe_by_codigo_barra'),
+    # Outras rotas
     
 ]
 logger.info("Rota users/me/ registrada corretamente")  # Log para verificar o registro da rota

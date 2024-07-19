@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import make_password
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
@@ -370,4 +371,36 @@ def create_user(request):
 
     return JsonResponse({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
 
+def get_preco_por_codigo_barra(request, codigo_barra):
+    tabela_preco_item = get_object_or_404(TabelaPrecoItem, codigodebarra=codigo_barra)
+    return JsonResponse({'preco': tabela_preco_item.preco})
 
+
+
+@csrf_exempt
+def get_produto_detalhe_by_codigo_barra(request):
+    if request.method == 'GET':
+        codigo_barra = request.GET.get('codigoBarra', None)
+        if codigo_barra:
+            try:
+                produto_detalhe = ProdutoDetalhe.objects.filter(CodigodeBarra=codigo_barra).first()
+                if produto_detalhe:
+                    response_data = {
+                        'Idprodutodetalhe': produto_detalhe.Idprodutodetalhe,
+                        'CodigodeBarra': produto_detalhe.CodigodeBarra,
+                        'Codigoproduto': produto_detalhe.Codigoproduto,
+                        'Idproduto': produto_detalhe.Idproduto.id,
+                        'Idtamanho': produto_detalhe.Idtamanho,
+                        'Idcor': produto_detalhe.Idcor,
+                        'Item': produto_detalhe.Item,
+                        'data_cadastro': produto_detalhe.data_cadastro,
+                    }
+                    return JsonResponse(response_data, safe=False)
+                else:
+                    return JsonResponse({'error': 'ProdutoDetalhe não encontrado.'}, status=404)
+            except Exception as e:
+                return JsonResponse({'error': str(e)}, status=500)
+        else:
+            return JsonResponse({'error': 'Código de barra não fornecido.'}, status=400)
+    else:
+        return JsonResponse({'error': 'Método não permitido.'}, status=405)

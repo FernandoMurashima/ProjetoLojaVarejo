@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators'; // Importar 'map'
 import { environment } from '../../environments/environment';
+import { tap, map } from 'rxjs/operators';
 
 export interface Produto {
   Idproduto?: number;
@@ -44,28 +44,33 @@ export class ProdutoService {
 
   constructor(private http: HttpClient) {}
 
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token'); // Substitua pelo seu método de obtenção do token
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
+
   load(): Observable<Produto[]> {
-    return this.http.get<Produto[]>(this.apiUrl);
+    return this.http.get<Produto[]>(this.apiUrl, { headers: this.getHeaders() });
   }
 
   get(id: number): Observable<Produto> {
-    return this.http.get<Produto>(`${this.apiUrl}${id}/`);
+    return this.http.get<Produto>(`${this.apiUrl}${id}/`, { headers: this.getHeaders() });
   }
 
   addProduto(produto: Produto): Observable<Produto> {
-    return this.http.post<Produto>(this.apiUrl, produto);
+    return this.http.post<Produto>(this.apiUrl, produto, { headers: this.getHeaders() });
   }
 
   updateProduto(id: number, produto: Produto): Observable<Produto> {
-    return this.http.put<Produto>(`${this.apiUrl}${id}/`, produto);
+    return this.http.put<Produto>(`${this.apiUrl}${id}/`, produto, { headers: this.getHeaders() });
   }
 
   deleteProduto(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}${id}/`);
+    return this.http.delete(`${this.apiUrl}${id}/`, { headers: this.getHeaders() });
   }
 
   checkUniqueReference(referencia: string): Observable<boolean> {
-    return this.http.get<{ isUnique: boolean }>(`${this.apiUrl}check_unique_reference/${referencia}`).pipe(
+    return this.http.get<{ isUnique: boolean }>(`${this.apiUrl}check_unique_reference/${referencia}`, { headers: this.getHeaders() }).pipe(
       map((response: { isUnique: boolean }) => response.isUnique)
     );
   }
@@ -73,14 +78,38 @@ export class ProdutoService {
   updateContador(colecaoId: number): Observable<any> {
     const url = `${environment.apiURL}/colecoes/${colecaoId}/update_contador/`;
     console.log(`Sending request to: ${url}`);
-    return this.http.post<any>(url, { contador: 1 });
+    return this.http.post<any>(url, { contador: 1 }, { headers: this.getHeaders() });
   }
 
   addProdutoDetalhe(produtoDetalhe: ProdutoDetalhe): Observable<ProdutoDetalhe> {
-    return this.http.post<ProdutoDetalhe>(`${environment.apiURL}/produtodetalhes/`, produtoDetalhe);
+    return this.http.post<ProdutoDetalhe>(`${environment.apiURL}/produtodetalhes/`, produtoDetalhe, { headers: this.getHeaders() });
   }
 
   getDetalhesByReferencia(referencia: string): Observable<ProdutoDetalhe[]> {
-    return this.http.get<ProdutoDetalhe[]>(`${environment.apiURL}/produtos/detalhes/${referencia}/`);
+    return this.http.get<ProdutoDetalhe[]>(`${environment.apiURL}/produtos/detalhes/${referencia}/`, { headers: this.getHeaders() });
+  }
+
+  buscarPorCodigoBarra(codigoBarra: string): Observable<ProdutoDetalhe> {
+    console.log(`Buscando ProdutoDetalhe com código de barra: ${codigoBarra}`);
+    return this.http.get<ProdutoDetalhe[]>(`${environment.apiURL}/produtodetalhes/?codigoBarra=${codigoBarra}`, { headers: this.getHeaders() }).pipe(
+      tap((data: ProdutoDetalhe[]) => {
+        console.log(`Resposta da API para código de barra ${codigoBarra}:`, data);
+      }),
+      map((data: ProdutoDetalhe[]) => {
+        if (data.length > 0) {
+          return data.find(item => item.CodigodeBarra === codigoBarra) || {} as ProdutoDetalhe;
+        }
+        return {} as ProdutoDetalhe;
+      })
+    );
+  }
+
+  getDetalhesByCodigoDeBarra(codigoDeBarra: string): Observable<ProdutoDetalhe> {
+    return this.http.get<ProdutoDetalhe>(`${environment.apiURL}/produtodetalhes/${codigoDeBarra}/`, { headers: this.getHeaders() });
+  }
+
+  getProdutoDescricaoPorId(idProduto: number): Observable<Produto> {
+    console.log(`Buscando descrição do produto com ID: ${idProduto}`);
+    return this.http.get<Produto>(`${this.apiUrl}${idProduto}/`, { headers: this.getHeaders() });
   }
 }
