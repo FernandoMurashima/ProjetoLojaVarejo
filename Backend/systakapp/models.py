@@ -307,8 +307,8 @@ class Venda(models.Model):
     Idvenda = models.AutoField(primary_key=True)
     Idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
     Idcliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    Data = models.DateField()
-    Data_entrega = models.DateField()
+    Data = models.DateTimeField(default=timezone.now)
+    Data_venda = models.DateField()
     Desconto = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True)
     Cancelada = models.CharField(max_length=2, null=True, blank=True)
     Documento = models.CharField(max_length=20)
@@ -318,7 +318,7 @@ class Venda(models.Model):
     comissao = models.DecimalField(max_digits=18, decimal_places=2)
     acrescimo = models.DecimalField(max_digits=18, decimal_places=2)
     tipopag = models.CharField(max_length=20)
-    data_cadastro = models.DateTimeField(default=timezone.now)
+    
 
     def __str__(self):
         return f'{self.Documento} - {self.Valor}'
@@ -326,14 +326,13 @@ class Venda(models.Model):
 class VendaItem(models.Model):
     Idvendaitem = models.AutoField(primary_key=True)
     Idvenda = models.ForeignKey(Venda, on_delete=models.CASCADE)
-    Idproduto = models.ForeignKey(Produto, on_delete=models.CASCADE)
-    Idprodutodetalhe = models.ForeignKey(ProdutoDetalhe, on_delete=models.CASCADE)
+    CodigodeBarra = models.CharField(max_length=20, default='0000000000000')
+    codigoproduto = models.CharField(max_length=11, default='00.00.00000')
     Qtd = models.IntegerField()
     valorunitario = models.DecimalField(max_digits=18, decimal_places=2)
     Desconto = models.DecimalField(max_digits=18, decimal_places=2)
     Total_item = models.DecimalField(max_digits=18, decimal_places=2)
-    data_cadastro = models.DateTimeField(default=timezone.now)
-
+    
     def __str__(self):
         return f'{self.Idvenda} - {self.Total_item}'
 
@@ -546,7 +545,7 @@ class GrupoDetalhe(models.Model):
 class Codigos(models.Model):
     Idcodigo = models.AutoField(primary_key=True)
     variavel = models.CharField(max_length=7)
-    valor = models.CharField(max_length=15)
+    valor_var = models.CharField(max_length=15)
     
     def __str__(self):
          return f'{self.variavel}: {self.valor}'

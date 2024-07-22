@@ -10,6 +10,7 @@
 
       <!-- Botão Iniciar Venda -->
       <button (click)="iniciarVenda()">Iniciar Venda</button>
+      <span *ngIf="documentoFiscal">Documento Fiscal: {{ documentoFiscal }}</span>
 
       <div class="selector">
         <label for="loja-select">Loja:</label>

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+from rest_framework.renderers import TemplateHTMLRenderer
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,6 +45,13 @@ INSTALLED_APPS = [
     'systakapp'
 ]
 
+class DefaultTemplateHTMLRenderer(TemplateHTMLRenderer):
+    def get_template_names(self, response, view):
+        template_name = super().get_template_names(response, view)
+        if not template_name:
+            return ['default.html']
+        return template_name
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
@@ -56,7 +64,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.TemplateHTMLRenderer',
+        'path.to.DefaultTemplateHTMLRenderer',
     ),
     'FORM_RENDERER': 'rest_framework.renderers.TemplateSettings',
 }
@@ -77,7 +85,7 @@ ROOT_URLCONF = 'systakback.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'systakapp', 'templates')],  # Adicione o caminho para sua pasta de templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -157,25 +165,4 @@ STATIC_URL = 'static/'
 
 APPEND_SLASH = True
 
-""" LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'django_debug.log',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
- """
+

@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import make_password
 from rest_framework import viewsets, permissions, generics
+from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, action, permission_classes
@@ -47,15 +48,15 @@ class UserViewSet(viewsets.ModelViewSet):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_data(request):
-        logger.info("get_user_data foi chamada")  # Log para verificar a chamada da função
-        user = request.user
-        logger.info(f"Usuário autenticado: {user.username}")  # Log para verificar o usuário autenticado
-        user_data = {
-            'id': user.id,
-            'username': user.username,
-            'type': user.type,  # Certifique-se de que o campo 'type' está disponível no modelo User
-        }
-        return Response(user_data)
+    logger.info("get_user_data foi chamada")  # Log para verificar a chamada da função
+    user = request.user
+    logger.info(f"Usuário autenticado: {user.username}")  # Log para verificar o usuário autenticado
+    user_data = {
+        'id': user.id,
+        'username': user.username,
+        'type': user.type,  # Certifique-se de que o campo 'type' está disponível no modelo User
+    }
+    return Response(user_data)
 
 class UnidadeViewSet(viewsets.ModelViewSet):
     queryset = Unidade.objects.all()
@@ -159,7 +160,6 @@ class TabelaprecoViewSet(viewsets.ModelViewSet):
     queryset = Tabelapreco.objects.all()
     serializer_class = TabelaprecoSerializer
     permission_classes = [permissions.IsAuthenticated]
-
 
 class TabelaPrecoItemViewSet(viewsets.ModelViewSet):
     queryset = TabelaPrecoItem.objects.all()
@@ -275,6 +275,7 @@ class SubGrupoViewSet(viewsets.ModelViewSet):
 class CodigosViewSet(viewsets.ModelViewSet):
     queryset = Codigos.objects.all()
     serializer_class = CodigosSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 @api_view(['POST'])
 def add_grupo_detalhe(request):
@@ -375,8 +376,6 @@ def get_preco_por_codigo_barra(request, codigo_barra):
     tabela_preco_item = get_object_or_404(TabelaPrecoItem, codigodebarra=codigo_barra)
     return JsonResponse({'preco': tabela_preco_item.preco})
 
-
-
 @csrf_exempt
 def get_produto_detalhe_by_codigo_barra(request):
     if request.method == 'GET':
@@ -404,3 +403,26 @@ def get_produto_detalhe_by_codigo_barra(request):
             return JsonResponse({'error': 'Código de barra não fornecido.'}, status=400)
     else:
         return JsonResponse({'error': 'Método não permitido.'}, status=405)
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def incrementar_codigo(request):
+    print("Endpoint incrementar_codigo chamado")  # Adicione este print para verificar a chamada
+    if request.method == 'POST':
+        try:
+            variavel = request.data.get('variavel')
+            codigo = Codigos.objects.get(variavel=variavel)
+            codigo.valor_var = str(int(codigo.valor_var) + 1)
+            codigo.save()
+            return JsonResponse({'status': 'success', 'message': 'Código incrementado com sucesso'})
+        except Codigos.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Código não encontrado'}, status=404)
+    return JsonResponse({'status': 'error', 'message': 'Método não permitido'}, status=405)
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def test_post(request):
+    print("Endpoint test_post chamado")
+    return JsonResponse({'status': 'success', 'message': 'POST request received'})

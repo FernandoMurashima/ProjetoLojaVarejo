@@ -1,14 +1,8 @@
 from django.urls import path, include
 from rest_framework import routers
 from rest_framework.authtoken import views as auth_views
-from rest_framework.authtoken.views import obtain_auth_token
 from django.contrib import admin
 from systakapp import views
-
-import logging
-
-logger = logging.getLogger(__name__)
-
 
 router = routers.DefaultRouter()
 
@@ -53,14 +47,15 @@ router.register(r'grupodetalhes', views.GrupoDetalheViewSet)
 router.register(r'subgrupos', views.SubGrupoViewSet)
 router.register(r'codigos', views.CodigosViewSet)
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', auth_views.obtain_auth_token),
-    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('api-token-auth/', auth_views.obtain_auth_token, name='api_token_auth'),
     path('users/me/', views.get_user_data, name='get_user_data'),
-    path('', include(router.urls)),
+    path('codigos/incrementar/', views.incrementar_codigo, name='incrementar_codigo'),
+    
+    
     path('grupos/<int:grupo_id>/codigo/', views.get_codigo_grupo, name='get_codigo_grupo'),
     path('colecoes/<int:colecao_id>/update_contador/', views.update_contador, name='update_contador'),
     path('produtos/check_unique_reference/<str:referencia>/', views.ProdutoViewSet.as_view({'get': 'check_unique_reference'}), name='check_unique_reference'),
@@ -72,7 +67,8 @@ urlpatterns = [
     path('create-user/', views.create_user, name='create_user'),  # Adicionando a nova rota para criação de novos usuários.
     path('tabelaprecoitems/preco/<str:codigo_barra>/', views.get_preco_por_codigo_barra, name='get_preco_por_codigo_barra'),
     path('produtodetalhes/', views.get_produto_detalhe_by_codigo_barra, name='get_produto_detalhe_by_codigo_barra'),
-    # Outras rotas
     
+    
+    path('test-post/', views.test_post, name='test_post'),
+    path('', include(router.urls)),
 ]
-logger.info("Rota users/me/ registrada corretamente")  # Log para verificar o registro da rota

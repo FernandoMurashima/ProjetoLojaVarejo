@@ -8,6 +8,7 @@ import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
 import { CorService, Cor } from '../../service/cor.service';
 import { TamanhoService, Tamanho } from '../../service/tamanho.service';
+import { CodigoService } from '../../service/codigo.service'; // Adicione o serviço Codigos
 
 export interface Produto {
   id: number;
@@ -46,6 +47,7 @@ export class PdvComponent implements OnInit {
   formaPagamento: string = '';
   totalComDesconto: number = 0;
   produtoFoto: string = 'https://via.placeholder.com/150'; // URL padrão para a imagem
+  documentoFiscal: string = ''; // Adicione esta linha
 
   constructor(
     private lojaService: LojaService,
@@ -55,6 +57,7 @@ export class PdvComponent implements OnInit {
     private tabelaPrecoItemService: TabelaPrecoItemService,
     private authService: AuthService,
     private router: Router,
+    private codigoService: CodigoService, // Adicione o serviço Codigos
     private corService: CorService,
     private tamanhoService: TamanhoService
   ) {}
@@ -151,11 +154,25 @@ export class PdvComponent implements OnInit {
   }
 
   iniciarVenda() {
+    console.log('Iniciando venda...');
     this.vendaIniciada = true;
     this.botaoVoltarDesativado = true;
+    this.codigoService.getCodigo('Nfce').subscribe(codigos => {
+      console.log('Código fiscal recebido:', codigos);
+      const codigoFiscal = codigos.find(codigo => codigo.variavel === 'Nfce');
+      if (codigoFiscal) {
+        this.documentoFiscal = codigoFiscal.valor_var;
+        console.log('Documento fiscal atualizado:', this.documentoFiscal);
+      } else {
+        console.error('Código fiscal "Nfce" não encontrado.');
+      }
+    }, error => {
+      console.error('Erro ao buscar o código fiscal:', error);
+    });
   }
 
   cancelarVenda() {
+    console.log('Cancelando venda...');
     this.vendaIniciada = false;
     this.botaoVoltarDesativado = false;
     this.selectedLoja = null;
@@ -168,10 +185,13 @@ export class PdvComponent implements OnInit {
     this.totalCompra = 0;
     this.exibirPagamento = false;
     this.produtoFoto = 'https://via.placeholder.com/150'; // Reset para URL padrão
+    this.documentoFiscal = ''; // Reset o número do documento fiscal
+    console.log('Venda cancelada.');
   }
 
   voltarAoMenuAnterior() {
     if (!this.botaoVoltarDesativado) {
+      console.log('Voltando ao menu anterior...');
       this.router.navigate(['/home']);
     }
   }
@@ -224,19 +244,30 @@ export class PdvComponent implements OnInit {
   }
 
   finalizarVenda() {
+    console.log('Finalizando venda...');
     this.exibirPagamento = true;
   }
 
   atualizarTotalComDesconto() {
+    console.log('Atualizando total com desconto...');
     this.totalComDesconto = this.totalCompra - (this.totalCompra * (this.desconto / 100));
+    console.log('Total com desconto atualizado:', this.totalComDesconto);
   }
 
   confirmarPagamento() {
-    console.log('Pagamento confirmado com desconto de:', this.desconto);
+    console.log('Confirmando pagamento com desconto de:', this.desconto);
     console.log('Forma de pagamento selecionada:', this.formaPagamento);
+
+    // Incrementa o valor_var do registro com variavel = 'Nfce'
+    this.codigoService.incrementarCodigo('Nfce').subscribe(() => {
+      console.log('Número do documento fiscal incrementado');
+    }, error => {
+      console.error('Erro ao incrementar o número do documento fiscal:', error);
+    });
 
     // Lógica para processar o pagamento...
 
     this.cancelarVenda(); // Reiniciar o processo de venda após o pagamento
+    console.log('Pagamento confirmado e venda reiniciada.');
   }
 }
