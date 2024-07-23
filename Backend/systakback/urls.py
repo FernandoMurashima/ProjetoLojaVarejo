@@ -53,7 +53,11 @@ urlpatterns = [
     path('api-token-auth/', auth_views.obtain_auth_token),
     path('api-token-auth/', auth_views.obtain_auth_token, name='api_token_auth'),
     path('users/me/', views.get_user_data, name='get_user_data'),
+    path('vendas/create_venda/', views.create_venda, name='create_venda'),
     path('codigos/incrementar/', views.incrementar_codigo, name='incrementar_codigo'),
+   
+    path('', include(router.urls)),
+    
     
     
     path('grupos/<int:grupo_id>/codigo/', views.get_codigo_grupo, name='get_codigo_grupo'),
@@ -68,7 +72,6 @@ urlpatterns = [
     path('tabelaprecoitems/preco/<str:codigo_barra>/', views.get_preco_por_codigo_barra, name='get_preco_por_codigo_barra'),
     path('produtodetalhes/', views.get_produto_detalhe_by_codigo_barra, name='get_produto_detalhe_by_codigo_barra'),
     
-    
     path('test-post/', views.test_post, name='test_post'),
-    path('', include(router.urls)),
+    
 ]

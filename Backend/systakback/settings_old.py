@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+from rest_framework.renderers import TemplateHTMLRenderer
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,6 +45,13 @@ INSTALLED_APPS = [
     'systakapp'
 ]
 
+class DefaultTemplateHTMLRenderer(TemplateHTMLRenderer):
+    def get_template_names(self, response, view):
+        template_name = super().get_template_names(response, view)
+        if not template_name:
+            return ['default.html']
+        return template_name
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
@@ -53,6 +61,11 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        # 'path.to.DefaultTemplateHTMLRenderer',  # Certifique-se de que o caminho está correto
+    ),
+    'FORM_RENDERER': 'rest_framework.renderers.TemplateSettings',
 }
 
 MIDDLEWARE = [
@@ -150,20 +163,3 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 APPEND_SLASH = True
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        '': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-        },
-    },
-}

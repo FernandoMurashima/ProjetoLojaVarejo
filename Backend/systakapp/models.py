@@ -308,13 +308,12 @@ class Venda(models.Model):
     Idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
     Idcliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     Data = models.DateTimeField(default=timezone.now)
-    Data_venda = models.DateField()
     Desconto = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True)
     Cancelada = models.CharField(max_length=2, null=True, blank=True)
     Documento = models.CharField(max_length=20)
     Valor = models.DecimalField(max_digits=18, decimal_places=2)
     Tipo_documento = models.CharField(max_length=20, null=True, blank=True)
-    idfuncionario = models.ForeignKey(Funcionarios, on_delete=models.CASCADE)
+    Idfuncionario = models.ForeignKey(Funcionarios, on_delete=models.CASCADE, default='0')
     comissao = models.DecimalField(max_digits=18, decimal_places=2)
     acrescimo = models.DecimalField(max_digits=18, decimal_places=2)
     tipopag = models.CharField(max_length=20)
@@ -325,7 +324,8 @@ class Venda(models.Model):
 
 class VendaItem(models.Model):
     Idvendaitem = models.AutoField(primary_key=True)
-    Idvenda = models.ForeignKey(Venda, on_delete=models.CASCADE)
+    
+    Documento = models.CharField(max_length=20, default='')
     CodigodeBarra = models.CharField(max_length=20, default='0000000000000')
     codigoproduto = models.CharField(max_length=11, default='00.00.00000')
     Qtd = models.IntegerField()

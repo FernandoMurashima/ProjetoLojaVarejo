@@ -8,7 +8,9 @@ import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
 import { CorService, Cor } from '../../service/cor.service';
 import { TamanhoService, Tamanho } from '../../service/tamanho.service';
-import { CodigoService } from '../../service/codigo.service'; // Adicione o serviço Codigos
+import { CodigoService } from '../../service/codigo.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 export interface Produto {
   id: number;
@@ -19,6 +21,7 @@ export interface Produto {
   quantidade: number;
   preco: number;
   total: number;
+  referencia: string;
 }
 
 @Component({
@@ -33,7 +36,7 @@ export class PdvComponent implements OnInit {
   clienteInput: string = '';
   clientes: Cliente[] = [];
   selectedVendedor: number | null = null;
-  selectedCliente: number | null = null;
+  selectedCliente: Cliente | null = null;
   vendedores: Funcionario[] = [];
   user: any;
   vendaIniciada: boolean = false;
@@ -46,8 +49,10 @@ export class PdvComponent implements OnInit {
   desconto: number = 0;
   formaPagamento: string = '';
   totalComDesconto: number = 0;
-  produtoFoto: string = 'https://via.placeholder.com/150'; // URL padrão para a imagem
-  documentoFiscal: string = ''; // Adicione esta linha
+  produtoFoto: string = 'https://via.placeholder.com/150';
+  documentoFiscal: string = '';
+  mostrarDialogoCancelamento: boolean = false;
+  senhaCancelamento: string = '';
 
   constructor(
     private lojaService: LojaService,
@@ -57,9 +62,10 @@ export class PdvComponent implements OnInit {
     private tabelaPrecoItemService: TabelaPrecoItemService,
     private authService: AuthService,
     private router: Router,
-    private codigoService: CodigoService, // Adicione o serviço Codigos
+    private codigoService: CodigoService,
     private corService: CorService,
-    private tamanhoService: TamanhoService
+    private tamanhoService: TamanhoService,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -131,14 +137,20 @@ export class PdvComponent implements OnInit {
   }
 
   buscarCliente(event: KeyboardEvent) {
-    const input = (event.target as HTMLInputElement).value;
+    const input = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    console.log('Valor de entrada:', input); // Log para verificar o valor de entrada
     if (input) {
       this.clienteService.load().subscribe(data => {
-        this.clientes = data.filter(cliente =>
-          cliente.Idcliente.toString().includes(input) || 
-          cliente.Nome_cliente.toLowerCase().startsWith(input.toLowerCase())
-        );
-        console.log('Clientes encontrados:', this.clientes);
+        console.log('Clientes carregados do serviço:', data);
+        this.clientes = data.filter(cliente => {
+          const idMatch = cliente.Idcliente.toString().toLowerCase().includes(input);
+          const nameMatch = cliente.Nome_cliente.toLowerCase().includes(input);
+          console.log(`Verificando cliente ${cliente.Nome_cliente} - ID match: ${idMatch}, Name match: ${nameMatch}`);
+          return idMatch || nameMatch;
+        });
+        console.log('Clientes encontrados após filtro:', this.clientes);
+      }, error => {
+        console.error('Erro ao carregar clientes:', error);
       });
     } else {
       this.clientes = [];
@@ -147,10 +159,11 @@ export class PdvComponent implements OnInit {
   }
 
   selectCliente(cliente: Cliente) {
+    console.log('Cliente selecionado antes de atribuir:', cliente);
     this.clienteInput = `${cliente.Idcliente} - ${cliente.Nome_cliente}`;
-    this.selectedCliente = cliente.Idcliente;
+    this.selectedCliente = cliente;
     this.clientes = [];
-    console.log('Cliente selecionado:', cliente);
+    console.log('Cliente selecionado após atribuir:', this.selectedCliente);
   }
 
   iniciarVenda() {
@@ -171,8 +184,28 @@ export class PdvComponent implements OnInit {
     });
   }
 
+  showCancelDialog() {
+    this.mostrarDialogoCancelamento = true;
+  }
+
+  fecharDialogoCancelamento() {
+    this.mostrarDialogoCancelamento = false;
+    this.senhaCancelamento = '';
+  }
+
   cancelarVenda() {
-    console.log('Cancelando venda...');
+    if (this.senhaCancelamento === '1234') {
+      console.log('Cancelando venda...');
+      this.resetVenda();
+      this.mostrarDialogoCancelamento = false;
+      this.senhaCancelamento = '';
+    } else {
+      alert('Senha de cancelamento incorreta.');
+      console.error('Erro: Senha de cancelamento incorreta.');
+    }
+  }
+
+  resetVenda() {
     this.vendaIniciada = false;
     this.botaoVoltarDesativado = false;
     this.selectedLoja = null;
@@ -184,9 +217,9 @@ export class PdvComponent implements OnInit {
     this.produtos = [];
     this.totalCompra = 0;
     this.exibirPagamento = false;
-    this.produtoFoto = 'https://via.placeholder.com/150'; // Reset para URL padrão
-    this.documentoFiscal = ''; // Reset o número do documento fiscal
-    console.log('Venda cancelada.');
+    this.produtoFoto = 'https://via.placeholder.com/150';
+    this.documentoFiscal = '';
+    console.log('Venda resetada.');
   }
 
   voltarAoMenuAnterior() {
@@ -218,14 +251,15 @@ export class PdvComponent implements OnInit {
                     cor: cor.Descricao,
                     tamanho: tamanho.Tamanho,
                     quantidade: this.productQty,
-                    preco: precoItem.preco,
-                    total: this.productQty * precoItem.preco
+                    preco: Number(precoItem.preco), // Certificando que é decimal
+                    total: this.productQty * Number(precoItem.preco),
+                    referencia: produtoCompleto.referencia // Atribuindo a referência correta
                   };
 
                   this.produtos.push(novoProduto);
                   this.totalCompra += novoProduto.total;
                   this.atualizarTotalComDesconto();
-                  this.produtoFoto = produtoCompleto.produto_foto || 'https://via.placeholder.com/150'; // Atualiza a foto do produto
+                  this.produtoFoto = produtoCompleto.produto_foto || 'https://via.placeholder.com/150';
                   console.log('Produto adicionado à lista:', novoProduto);
 
                   this.productCode = '';
@@ -258,16 +292,51 @@ export class PdvComponent implements OnInit {
     console.log('Confirmando pagamento com desconto de:', this.desconto);
     console.log('Forma de pagamento selecionada:', this.formaPagamento);
 
-    // Incrementa o valor_var do registro com variavel = 'Nfce'
-    this.codigoService.incrementarCodigo('Nfce').subscribe(() => {
-      console.log('Número do documento fiscal incrementado');
+    if (this.selectedVendedor === null || this.selectedLoja === null) {
+      console.error('Erro: Loja ou vendedor não selecionado');
+      return;
+    }
+
+    const vendaData = {
+      venda: {
+        Idloja: parseInt(this.selectedLoja.toString(), 10),
+        Idcliente: this.selectedCliente?.Idcliente || 0,
+        Desconto: this.desconto,
+        Cancelada: 'N',
+        Documento: this.documentoFiscal,
+        Valor: this.totalComDesconto,
+        Tipo_documento: 'NFce',
+        Idfuncionario: parseInt(this.selectedVendedor.toString(), 10),
+        comissao: this.totalComDesconto * 0.01,
+        acrescimo: 0,
+        tipopag: this.formaPagamento,
+      },
+      itens: this.produtos.map(item => ({
+        Documento: this.documentoFiscal,
+        CodigodeBarra: item.codigo,
+        codigoproduto: item.referencia, // Usando a referência correta
+        Qtd: item.quantidade,
+        valorunitario: item.preco, // Garantindo que é decimal
+        Desconto: 0,
+        Total_item: item.total,
+      }))
+    };
+
+    console.log('Dados da venda que serão enviados:', vendaData);
+
+    this.http.post(`${environment.apiURL}/vendas/create_venda/`, vendaData).subscribe(response => {
+      console.log('Venda gravada com sucesso', response);
+
+      // Incrementar o valor_var após gravar a venda
+      this.codigoService.incrementarCodigo('Nfce').subscribe(incrementResponse => {
+        console.log('Código fiscal incrementado com sucesso:', incrementResponse);
+        this.resetVenda(); // Cancelar venda (resetar o formulário)
+        this.iniciarVenda(); // Iniciar nova venda
+      }, incrementError => {
+        console.error('Erro ao incrementar o código fiscal:', incrementError);
+      });
     }, error => {
-      console.error('Erro ao incrementar o número do documento fiscal:', error);
+      console.error('Erro ao gravar venda', error);
     });
-
-    // Lógica para processar o pagamento...
-
-    this.cancelarVenda(); // Reiniciar o processo de venda após o pagamento
-    console.log('Pagamento confirmado e venda reiniciada.');
   }
 }

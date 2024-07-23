@@ -29,7 +29,7 @@
   display: flex;
   gap: 20px;
   align-items: center;
-  width: 100%; /* Garante que ocupe 100% da largura */
+  width: 50%; /* Garante que ocupe 100% da largura */
 }
 
 .selector {
@@ -40,13 +40,18 @@
 .selector2 {
   display: flex;
   align-items: center;
-  width: 400px; /* Garante que ocupe 100% da largura */
+  width: 100%; /* Garante que ocupe 100% da largura */
 }
 
 .selector2 select {
   flex: 1;
   padding: 5px;
   font-size: 16px;  /* Ajuste o tamanho da fonte conforme necessário */
+}
+
+.selector2 .select-button {
+  margin-left: 20px; /* Ajuste conforme necessário */
+  padding: 5px 10px; /* Ajuste conforme necessário */
 }
 
 .selector label {
@@ -76,6 +81,7 @@
   border: 2px solid #ddd;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   margin-bottom: 20px;
+  margin-top: 10px;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -89,11 +95,18 @@
   box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
 
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espaçamento entre os botões */
+}
+
 .menu-container ul {
   list-style-type: none;
-  padding: 0;
+  padding: 5px;
   width: 100%;
   text-align: left;
+  margin-top: 5px;
 }
 
 .menu-container li {
@@ -241,7 +254,7 @@
 }
 
 button {
-  padding: 10px 20px;
+  padding: 5px 10px;
   border: none;
   border-radius: 5px;
   background-color: #28a745;
@@ -252,4 +265,31 @@ button {
 button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+.cancel-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.selected-button {
+  background-color: #cacc37;
+  border-color: #cacc37;
+}
+
+/* Adicione essas classes para definir as cores dos botões */
+.finalizar-venda-button {
+  background-color: #28a745; /* Cor de fundo para o botão Finalizar Venda */
+  color: white; /* Cor do texto para o botão Finalizar Venda */
+}
+
+.cancelar-venda-button {
+  background-color: #dc3545; /* Cor de fundo para o botão Cancelar Venda */
+  color: white; /* Cor do texto para o botão Cancelar Venda */
 }

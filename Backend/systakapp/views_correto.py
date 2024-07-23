@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import make_password
 from rest_framework import viewsets, permissions, generics
-import json
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -16,7 +15,6 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse, Http404
 from django.db.models import F
-from django.db import transaction
 from .serializers import (
     UserSerializer, ClienteSerializer, FornecedorSerializer, VendedorSerializer,
     FuncionariosSerializer, TamanhoSerializer, CorSerializer, NaturezaLancamentoSerializer,
@@ -177,30 +175,13 @@ class VendaViewSet(viewsets.ModelViewSet):
     serializer_class = VendaSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-"""     @action(detail=False, methods=['post'])
-    def create_venda(self, request):
-        data = request.data
-        venda_data = data.get('venda')
-        itens_data = data.get('itens')
+    
 
-        if not venda_data or not itens_data:
-            return Response({"error": "Dados incompletos para a criação da venda."}, status=status.HTTP_400_BAD_REQUEST)
 
-        with transaction.atomic():
-            venda_serializer = VendaSerializer(data=venda_data)
-            if venda_serializer.is_valid():
-                venda = venda_serializer.save()
-                for item_data in itens_data:
-                    item_data['Idvenda'] = venda.Idvenda
-                    item_serializer = VendaItemSerializer(data=item_data)
-                    if item_serializer.is_valid():
-                        item_serializer.save()
-                    else:
-                        transaction.set_rollback(True)
-                        return Response(item_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                return Response(venda_serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(venda_serializer.errors, status=status.HTTP_400_BAD_REQUEST) """
+
+
+
+
 
 class VendaItemViewSet(viewsets.ModelViewSet):
     queryset = VendaItem.objects.all()
@@ -407,7 +388,7 @@ def get_preco_por_codigo_barra(request, codigo_barra):
 def get_produto_detalhe_by_codigo_barra(request):
     if request.method == 'GET':
         codigo_barra = request.GET.get('codigoBarra', None)
-        if (codigo_barra):
+        if codigo_barra:
             try:
                 produto_detalhe = ProdutoDetalhe.objects.filter(CodigodeBarra=codigo_barra).first()
                 if produto_detalhe:
@@ -453,27 +434,3 @@ def incrementar_codigo(request):
 def test_post(request):
     print("Endpoint test_post chamado")
     return JsonResponse({'status': 'success', 'message': 'POST request received'})
-
-
-@csrf_exempt
-@api_view(['POST'])
-def create_venda(request):
-    print("create_venda called")  # Log para garantir que a função está sendo chamada
-    venda_data = request.data.get('venda')
-    itens_data = request.data.get('itens')
-
-    venda_serializer = VendaSerializer(data=venda_data)
-    if venda_serializer.is_valid():
-        venda = venda_serializer.save()
-        for item_data in itens_data:
-            item_data['Idvenda'] = venda.Idvenda
-            item_serializer = VendaItemSerializer(data=item_data)
-            if item_serializer.is_valid():
-                item_serializer.save()
-            else:
-                venda.delete()
-                return Response(item_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(venda_serializer.data, status=status.HTTP_201_CREATED)
-    return Response(venda_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-

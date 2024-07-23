@@ -6,11 +6,11 @@
   <div class="header2">
     <div class="selectors">
       <!-- Botão Voltar ao Menu Anterior -->
-      <button (click)="voltarAoMenuAnterior()" [disabled]="botaoVoltarDesativado">Voltar ao Menu Anterior</button>
+      <button (click)="voltarAoMenuAnterior()" [disabled]="botaoVoltarDesativado">Home</button>
 
       <!-- Botão Iniciar Venda -->
-      <button (click)="iniciarVenda()">Iniciar Venda</button>
-      <span *ngIf="documentoFiscal">Documento Fiscal: {{ documentoFiscal }}</span>
+      <button (click)="iniciarVenda()">Venda</button>
+      <span *ngIf="documentoFiscal">Cupom: {{ documentoFiscal }}</span>
 
       <div class="selector">
         <label for="loja-select">Loja:</label>
@@ -24,6 +24,17 @@
           <option *ngFor="let vendedor of vendedores" [value]="vendedor.Idfuncionario">{{ vendedor.apelido }}</option>
         </select>
       </div>
+
+
+      
+
+      
+
+
+      
+
+
+      
       <div class="selector2">
         <label for="cliente-code">Cliente:</label>
         <input type="text" id="cliente-code" class="cliente-select" placeholder="Digite o Código ou Nome do Cliente" [(ngModel)]="clienteInput" (keyup)="buscarCliente($event)" [disabled]="!vendaIniciada">
@@ -34,9 +45,9 @@
             </li>
           </ul>
         </div>
-      </div>
-      <!-- Botão Cancelar Venda -->
-      <button *ngIf="vendaIniciada" (click)="cancelarVenda()" class="cancelar-venda">Cancelar Venda</button>
+        <button (click)="selectCliente(selectedCliente!)" [disabled]="!selectedCliente || !vendaIniciada" [ngClass]="{ 'selected-button': selectedCliente }">Selecionar Cliente</button>
+      </div> 
+
     </div>
   </div>
 
@@ -45,9 +56,14 @@
       <div class="product-image-container">
         <img [src]="produtoFoto" alt="Foto do Produto" id="product-image">
       </div>
+
       <div class="menu-container">
-        <button (click)="finalizarVenda()" [disabled]="produtos.length === 0">Finalizar Venda</button>
+        <button class="finalizar-venda-button" (click)="finalizarVenda()" [disabled]="produtos.length === 0">Finalizar Venda</button>
+        <button class="cancelar-venda-button"  *ngIf="vendaIniciada" (click)="showCancelDialog()" class="cancelar-venda">Cancelar Venda</button>
       </div>
+
+
+    
     </div>
     <div class="content">
       <div class="product-input">
@@ -117,6 +133,17 @@
         </select>
       </div>
       <button (click)="confirmarPagamento()">Confirmar Pagamento</button>
+    </div>
+
+    <!-- Diálogo de cancelamento -->
+    <div *ngIf="mostrarDialogoCancelamento" class="cancel-dialog">
+      <h2>Cancelar Venda</h2>
+      <div class="form-group">
+        <label for="senhaCancelamento">Senha de Cancelamento:</label>
+        <input type="password" id="senhaCancelamento" [(ngModel)]="senhaCancelamento">
+      </div>
+      <button (click)="cancelarVenda()">Confirmar Cancelamento</button>
+      <button (click)="fecharDialogoCancelamento()">Fechar</button>
     </div>
   </div>
 
