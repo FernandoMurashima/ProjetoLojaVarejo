@@ -20,7 +20,7 @@ export type NatLancamentoCreate = Omit<NatLancamento, 'idnatureza'>;
   providedIn: 'root'
 })
 export class NatLancamentoService {
-  private apiUrl = `${environment.apiURL}/natureza-lancamentos/`;
+  private apiUrl = `${environment.apiURL}/natureza-lancamento/`;
 
   constructor(private http: HttpClient) {}
 

@@ -341,7 +341,7 @@ def update_contador(request, colecao_id):
 def get_empresa_codigo(request):
     try:
         codigo = Codigos.objects.get(variavel='EMPRESA')
-        return JsonResponse({"valor": codigo.valor})
+        return JsonResponse({"valor_var": codigo.valor_var})
     except Codigos.DoesNotExist:
         return JsonResponse({"error": "Código da empresa não encontrado"}, status=404)
 
@@ -350,10 +350,10 @@ def get_empresa_codigo(request):
 def increment_empresa_codigo(request):
     try:
         codigo = Codigos.objects.get(variavel='EMPRESA')
-        codigo.valor = F('valor') + 1
+        codigo.valor_var = F('valor_var') + 1
         codigo.save()
         codigo.refresh_from_db()
-        return JsonResponse({"success": True, "novo_valor": codigo.valor})
+        return JsonResponse({"success": True, "novo_valor": codigo.valor_var})
     except Codigos.DoesNotExist:
         return JsonResponse({"error": "Código da empresa não encontrado"}, status=404)
 

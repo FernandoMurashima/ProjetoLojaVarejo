@@ -3,6 +3,7 @@ import { NatLancamentoService, NatLancamento, NatLancamentoCreate } from '../../
 import { Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 
+
 @Component({
   selector: 'app-nat-lancamento',
   templateUrl: './nat-lancamento.component.html',

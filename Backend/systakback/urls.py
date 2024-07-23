@@ -14,7 +14,7 @@ router.register(r'vendedores', views.VendedorViewSet)
 router.register(r'funcionarios', views.FuncionariosViewSet)
 router.register(r'tamanhos', views.TamanhoViewSet)
 router.register(r'cores', views.CorViewSet)
-router.register(r'naturezaslancamento', views.NaturezaLancamentoViewSet)
+router.register(r'natureza-lancamento', views.NaturezaLancamentoViewSet)
 router.register(r'contasbancarias', views.ContaBancariaViewSet)
 router.register(r'produtos', views.ProdutoViewSet)
 router.register(r'produtodetalhes', views.ProdutoDetalheViewSet)
@@ -58,7 +58,7 @@ urlpatterns = [
    
     path('', include(router.urls)),
     
-    
+
     
     path('grupos/<int:grupo_id>/codigo/', views.get_codigo_grupo, name='get_codigo_grupo'),
     path('colecoes/<int:colecao_id>/update_contador/', views.update_contador, name='update_contador'),
@@ -71,6 +71,7 @@ urlpatterns = [
     path('create-user/', views.create_user, name='create_user'),  # Adicionando a nova rota para criação de novos usuários.
     path('tabelaprecoitems/preco/<str:codigo_barra>/', views.get_preco_por_codigo_barra, name='get_preco_por_codigo_barra'),
     path('produtodetalhes/', views.get_produto_detalhe_by_codigo_barra, name='get_produto_detalhe_by_codigo_barra'),
+   
     
     path('test-post/', views.test_post, name='test_post'),
     
