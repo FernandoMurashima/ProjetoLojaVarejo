@@ -10,32 +10,19 @@
 
       <!-- Botão Iniciar Venda -->
       <button (click)="iniciarVenda()">Venda</button>
-      <span *ngIf="documentoFiscal">Cupom: {{ documentoFiscal }}</span>
+      <span class="documento-fiscal" *ngIf="documentoFiscal">Cupom Fiscal: {{ documentoFiscal }}</span>
+      
 
       <div class="selector">
         <label for="loja-select">Loja:</label>
         <select id="loja-select" [(ngModel)]="selectedLoja" (change)="onLojaChange()" [disabled]="!vendaIniciada">
           <option *ngFor="let loja of lojas" [value]="loja.Idloja">{{ loja.nome_loja }}</option>
         </select>
-      </div>
-      <div class="selector">
         <label for="vendedor-code">Vendedor:</label>
         <select id="vendedor-code" [(ngModel)]="selectedVendedor" [disabled]="!vendaIniciada">
           <option *ngFor="let vendedor of vendedores" [value]="vendedor.Idfuncionario">{{ vendedor.apelido }}</option>
         </select>
-      </div>
-
-
       
-
-      
-
-
-      
-
-
-      
-      <div class="selector2">
         <label for="cliente-code">Cliente:</label>
         <input type="text" id="cliente-code" class="cliente-select" placeholder="Digite o Código ou Nome do Cliente" [(ngModel)]="clienteInput" (keyup)="buscarCliente($event)" [disabled]="!vendaIniciada">
         <div *ngIf="clientes.length">

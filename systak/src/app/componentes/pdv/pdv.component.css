@@ -16,25 +16,31 @@
   padding: 10px;
   border-bottom: 2px solid #ddd;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-wrap: wrap; /* Permite que os elementos sejam quebrados em várias linhas, se necessário */
+  align-items: center;
   width: 96.8vw; /* Garante que ocupe 100% da largura */
+  gap: 10px; /* Reduz o espaçamento entre os elementos */
 }
 
 .header2 button {
-  margin-bottom: 10px;
+  margin-right: 10px; /* Adiciona espaço entre os botões */
+  padding: 5px 10px; /* Ajuste o padding para reduzir o tamanho dos botões */
+  font-size: 14px; /* Ajuste o tamanho da fonte conforme necessário */
 }
 
-.selectors {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  width: 50%; /* Garante que ocupe 100% da largura */
+.header2 .documento-fiscal {
+  font-weight: bold; /* Opcional, para dar destaque */
+  white-space: nowrap; /* Garante que o texto não quebra para a próxima linha */
 }
 
 .selector {
   display: flex;
   align-items: center;
+  gap: 10px; /* Reduz o espaçamento entre os elementos */
+}
+
+.selector label {
+  margin-right: 5px;
 }
 
 .selector2 {
@@ -46,16 +52,12 @@
 .selector2 select {
   flex: 1;
   padding: 5px;
-  font-size: 16px;  /* Ajuste o tamanho da fonte conforme necessário */
+  font-size: 14px; /* Ajuste o tamanho da fonte conforme necessário */
 }
 
 .selector2 .select-button {
-  margin-left: 20px; /* Ajuste conforme necessário */
+  margin-left: 10px; /* Reduz o espaçamento conforme necessário */
   padding: 5px 10px; /* Ajuste conforme necessário */
-}
-
-.selector label {
-  margin-right: 5px;
 }
 
 .main {
@@ -175,7 +177,7 @@
 .cliente-select {
   flex: 1;
   padding: 5px;
-  font-size: 16px; /* Ajuste o tamanho da fonte conforme necessário */
+  font-size: 14px; /* Ajuste o tamanho da fonte conforme necessário */
   width: 100%; /* Garante que ocupe 100% da largura */
 }
 
