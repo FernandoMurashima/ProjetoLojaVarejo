@@ -549,3 +549,4 @@ class Codigos(models.Model):
     
     def __str__(self):
          return f'{self.variavel}: {self.valor}'
+

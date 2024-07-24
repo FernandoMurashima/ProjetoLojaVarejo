@@ -18,7 +18,7 @@ export interface Estoque {
   providedIn: 'root'
 })
 export class EstoqueService {
-  private apiUrl = `${environment.apiURL}/estoques/`;
+  private apiUrl = `${environment.apiURL}/estoques`;
 
   constructor(private http: HttpClient) {}
 
@@ -36,6 +36,16 @@ export class EstoqueService {
 
   updateEstoque(id: number, estoque: Estoque): Observable<Estoque> {
     return this.http.put<Estoque>(`${this.apiUrl}${id}/`, estoque);
+  }
+
+  getEstoque(codigoDeBarra: string, idLoja: number): Observable<any> {
+    const url = `${this.apiUrl}/?CodigodeBarra=${codigoDeBarra}&Idloja=${idLoja}`;
+    return this.http.get<any>(url);
+  }
+
+  updateEstoqueByCodigoAndLoja(codigoDeBarra: string, idLoja: number, estoque: any): Observable<any> {
+    const url = `${this.apiUrl}/?CodigodeBarra=${codigoDeBarra}&Idloja=${idLoja}`;
+    return this.http.put<any>(url, { Estoque: estoque.Estoque });
   }
 
   deleteEstoque(id: number): Observable<any> {

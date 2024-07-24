@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, action, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.views.decorators.http import require_http_methods
 
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -176,31 +177,6 @@ class VendaViewSet(viewsets.ModelViewSet):
     queryset = Venda.objects.all()
     serializer_class = VendaSerializer
     permission_classes = [permissions.IsAuthenticated]
-
-"""     @action(detail=False, methods=['post'])
-    def create_venda(self, request):
-        data = request.data
-        venda_data = data.get('venda')
-        itens_data = data.get('itens')
-
-        if not venda_data or not itens_data:
-            return Response({"error": "Dados incompletos para a criação da venda."}, status=status.HTTP_400_BAD_REQUEST)
-
-        with transaction.atomic():
-            venda_serializer = VendaSerializer(data=venda_data)
-            if venda_serializer.is_valid():
-                venda = venda_serializer.save()
-                for item_data in itens_data:
-                    item_data['Idvenda'] = venda.Idvenda
-                    item_serializer = VendaItemSerializer(data=item_data)
-                    if item_serializer.is_valid():
-                        item_serializer.save()
-                    else:
-                        transaction.set_rollback(True)
-                        return Response(item_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                return Response(venda_serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(venda_serializer.errors, status=status.HTTP_400_BAD_REQUEST) """
 
 class VendaItemViewSet(viewsets.ModelViewSet):
     queryset = VendaItem.objects.all()
@@ -476,4 +452,35 @@ def create_venda(request):
         return Response(venda_serializer.data, status=status.HTTP_201_CREATED)
     return Response(venda_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class EstoqueDetail(APIView):
 
+    def get(self, request, *args, **kwargs):
+        codigo_de_barra = request.query_params.get('CodigodeBarra')
+        id_loja = request.query_params.get('Idloja')
+
+        if not codigo_de_barra or not id_loja:
+            return Response({"error": "Código de Barra e Id da Loja são obrigatórios."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            estoque = Estoque.objects.get(CodigodeBarra=codigo_de_barra, Idloja=id_loja)
+            serializer = EstoqueSerializer(estoque)
+            return Response(serializer.data)
+        except Estoque.DoesNotExist:
+            return Response({"error": "Estoque não encontrado."}, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request, *args, **kwargs):
+        codigo_de_barra = request.query_params.get('CodigodeBarra')
+        id_loja = request.query_params.get('Idloja')
+
+        if not codigo_de_barra or not id_loja:
+            return Response({"error": "Código de Barra e Id da Loja são obrigatórios."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            estoque = Estoque.objects.get(CodigodeBarra=codigo_de_barra, Idloja=id_loja)
+            serializer = EstoqueSerializer(estoque, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Estoque.DoesNotExist:
+            return Response({"error": "Estoque não encontrado."}, status=status.HTTP_404_NOT_FOUND)

@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { CorService, Cor } from '../../service/cor.service';
 import { TamanhoService, Tamanho } from '../../service/tamanho.service';
 import { CodigoService } from '../../service/codigo.service';
+import { EstoqueService, Estoque } from '../../service/estoque.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
@@ -65,6 +66,7 @@ export class PdvComponent implements OnInit {
     private codigoService: CodigoService,
     private corService: CorService,
     private tamanhoService: TamanhoService,
+    private estoqueService: EstoqueService,
     private http: HttpClient
   ) {}
 
@@ -330,8 +332,12 @@ export class PdvComponent implements OnInit {
       // Incrementar o valor_var após gravar a venda
       this.codigoService.incrementarCodigo('Nfce').subscribe(incrementResponse => {
         console.log('Código fiscal incrementado com sucesso:', incrementResponse);
-        this.resetVenda(); // Cancelar venda (resetar o formulário)
-        this.iniciarVenda(); // Iniciar nova venda
+        this.baixarEstoque(vendaData.itens).then(() => {
+          this.resetVenda(); // Cancelar venda (resetar o formulário)
+          this.iniciarVenda(); // Iniciar nova venda
+        }).catch(error => {
+          console.error('Erro ao baixar o estoque:', error);
+        });
       }, incrementError => {
         console.error('Erro ao incrementar o código fiscal:', incrementError);
       });
@@ -339,4 +345,33 @@ export class PdvComponent implements OnInit {
       console.error('Erro ao gravar venda', error);
     });
   }
+
+
+  async baixarEstoque(itens: any[]): Promise<void> {
+    try {
+      for (const item of itens) {
+        const codigoDeBarra = item.CodigodeBarra;
+        const idLoja = this.selectedLoja!;
+        console.log(`Buscando estoque para o código de barra ${codigoDeBarra} e loja ${idLoja}`);
+        const estoque = await this.estoqueService.getEstoque(codigoDeBarra, idLoja).toPromise();
+
+        if (estoque) {
+          const novoEstoque = estoque.Estoque - item.Qtd;
+          if (novoEstoque < 0) {
+            throw new Error(`Estoque insuficiente para o produto ${item.CodigodeBarra}`);
+          }
+          estoque.Estoque = novoEstoque;
+          console.log(`Atualizando estoque para código de barra ${codigoDeBarra} e loja ${idLoja}: ${novoEstoque}`);
+          await this.estoqueService.updateEstoqueByCodigoAndLoja(estoque.CodigodeBarra, estoque.Idloja, estoque).toPromise();
+          console.log(`Estoque atualizado para o produto ${item.CodigodeBarra}: ${novoEstoque}`);
+        } else {
+          throw new Error(`Produto ${item.CodigodeBarra} não encontrado no estoque da loja ${this.selectedLoja}`);
+        }
+      }
+    } catch (error: any) {
+      console.error('Erro ao baixar o estoque:', error);
+      alert(`Erro ao baixar o estoque: ${error.message || error}`);
+    }
+  }
 }
+
