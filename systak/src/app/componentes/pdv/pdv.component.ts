@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 import { LojaService, Loja } from '../../service/loja.service';
 import { ClienteService, Cliente } from '../../service/cliente.service';
 import { FuncionarioService, Funcionario } from '../../service/funcionario.service';
@@ -31,13 +34,19 @@ export interface Produto {
   styleUrls: ['./pdv.component.css']
 })
 export class PdvComponent implements OnInit {
+  clienteCtrl = new FormControl({ value: '', disabled: true }); 
+  lojaCtrl = new FormControl({ value: '', disabled: true });
+  vendedorCtrl = new FormControl({ value: '', disabled: true });
+
+  clientesFiltrados: Observable<Cliente[]>;
+  clienteInput: string = '';
+  clientes: Cliente[] = [];
+  selectedCliente: Cliente | null = null;
+
   selectedLoja: number | null = null;
   lojas: Loja[] = [];
   isAuthorized: boolean = false;
-  clienteInput: string = '';
-  clientes: Cliente[] = [];
   selectedVendedor: number | null = null;
-  selectedCliente: Cliente | null = null;
   vendedores: Funcionario[] = [];
   user: any;
   vendaIniciada: boolean = false;
@@ -68,7 +77,12 @@ export class PdvComponent implements OnInit {
     private tamanhoService: TamanhoService,
     private estoqueService: EstoqueService,
     private http: HttpClient
-  ) {}
+  ) {
+    this.clientesFiltrados = this.clienteCtrl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || ''))
+    );
+  }
 
   ngOnInit() {
     this.loadLojas();
@@ -78,10 +92,15 @@ export class PdvComponent implements OnInit {
           this.user = user;
           console.log('Usuário autenticado:', this.user);
           this.checkAuthorization();
+          this.clienteCtrl.enable(); // Habilitar após a autorização
         });
       } else {
         console.log('Usuário não está autenticado');
       }
+    });
+
+    this.clienteService.load().subscribe(data => {
+      this.clientes = data;
     });
   }
 
@@ -91,6 +110,16 @@ export class PdvComponent implements OnInit {
       console.log('Lojas carregadas:', this.lojas);
     });
   }
+
+  selectLoja() {
+    if (this.selectedLoja) {
+      console.log('Loja selecionada:', this.selectedLoja);
+    } else {
+      console.log('Nenhuma loja selecionada.');
+    }
+  }
+
+
 
   loadVendedores() {
     if (this.selectedLoja !== null) {
@@ -110,6 +139,14 @@ export class PdvComponent implements OnInit {
     } else {
       this.vendedores = [];
       console.log('Nenhuma loja selecionada, lista de vendedores está vazia');
+    }
+  }
+
+  selectVendedor() {
+    if (this.selectedVendedor) {
+      console.log('Vendedor selecionado:', this.selectedVendedor);
+    } else {
+      console.log('Nenhum vendedor selecionado.');
     }
   }
 
@@ -138,35 +175,30 @@ export class PdvComponent implements OnInit {
     }
   }
 
-  buscarCliente(event: KeyboardEvent) {
-    const input = (event.target as HTMLInputElement).value.trim().toLowerCase();
-    console.log('Valor de entrada:', input); // Log para verificar o valor de entrada
-    if (input) {
-      this.clienteService.load().subscribe(data => {
-        console.log('Clientes carregados do serviço:', data);
-        this.clientes = data.filter(cliente => {
-          const idMatch = cliente.Idcliente.toString().toLowerCase().includes(input);
-          const nameMatch = cliente.Nome_cliente.toLowerCase().includes(input);
-          console.log(`Verificando cliente ${cliente.Nome_cliente} - ID match: ${idMatch}, Name match: ${nameMatch}`);
-          return idMatch || nameMatch;
-        });
-        console.log('Clientes encontrados após filtro:', this.clientes);
-      }, error => {
-        console.error('Erro ao carregar clientes:', error);
-      });
+  selectCliente() {
+    if (this.selectedCliente) {
+      console.log('Cliente selecionado antes de atribuir:', this.selectedCliente);
+      this.clienteInput = `${this.selectedCliente.Idcliente} - ${this.selectedCliente.Nome_cliente}`;
+      this.clienteCtrl.setValue(this.selectedCliente.Nome_cliente); // Atualiza o valor do controle do formulário
+      console.log('Cliente selecionado após atribuir:', this.selectedCliente);
     } else {
-      this.clientes = [];
-      console.log('Nenhum cliente encontrado');
+      console.log('Nenhum cliente selecionado.');
     }
   }
+  
 
-  selectCliente(cliente: Cliente) {
-    console.log('Cliente selecionado antes de atribuir:', cliente);
-    this.clienteInput = `${cliente.Idcliente} - ${cliente.Nome_cliente}`;
+  onClienteSelected(cliente: Cliente) {
     this.selectedCliente = cliente;
-    this.clientes = [];
-    console.log('Cliente selecionado após atribuir:', this.selectedCliente);
+    this.clienteCtrl.setValue(cliente.Nome_cliente); // Atualiza o valor do controle do formulário para exibir o nome do cliente
   }
+  
+  
+
+  private _filter(value: string | Cliente): Cliente[] {
+    const filterValue = typeof value === 'string' ? value.toLowerCase() : value.Nome_cliente.toLowerCase();
+    return this.clientes.filter(cliente => cliente.Nome_cliente.toLowerCase().includes(filterValue) || cliente.Idcliente.toString().includes(filterValue));
+  }
+  
 
   iniciarVenda() {
     console.log('Iniciando venda...');
@@ -184,7 +216,13 @@ export class PdvComponent implements OnInit {
     }, error => {
       console.error('Erro ao buscar o código fiscal:', error);
     });
+  
+    // Habilitar os controles após iniciar a venda
+    this.clienteCtrl.enable();
+    this.lojaCtrl.enable();
+    this.vendedorCtrl.enable();
   }
+  
 
   showCancelDialog() {
     this.mostrarDialogoCancelamento = true;
@@ -214,6 +252,7 @@ export class PdvComponent implements OnInit {
     this.selectedCliente = null;
     this.selectedVendedor = null;
     this.clienteInput = '';
+    this.clienteCtrl.setValue('');
     this.productCode = '';
     this.productQty = 1;
     this.produtos = [];
@@ -293,12 +332,12 @@ export class PdvComponent implements OnInit {
   confirmarPagamento() {
     console.log('Confirmando pagamento com desconto de:', this.desconto);
     console.log('Forma de pagamento selecionada:', this.formaPagamento);
-
+  
     if (this.selectedVendedor === null || this.selectedLoja === null) {
       console.error('Erro: Loja ou vendedor não selecionado');
       return;
     }
-
+  
     const vendaData = {
       venda: {
         Idloja: parseInt(this.selectedLoja.toString(), 10),
@@ -323,29 +362,40 @@ export class PdvComponent implements OnInit {
         Total_item: item.total,
       }))
     };
-
+  
     console.log('Dados da venda que serão enviados:', vendaData);
-
-    this.http.post(`${environment.apiURL}/vendas/create_venda/`, vendaData).subscribe(response => {
-      console.log('Venda gravada com sucesso', response);
-
-      // Incrementar o valor_var após gravar a venda
-      this.codigoService.incrementarCodigo('Nfce').subscribe(incrementResponse => {
-        console.log('Código fiscal incrementado com sucesso:', incrementResponse);
+  
+    this.http.post(`${environment.apiURL}/vendas/create_venda/`, vendaData).subscribe({
+      next: response => {
+        console.log('Venda gravada com sucesso', response);
+  
+        // Chamar a rotina baixarEstoque após gravar a venda
         this.baixarEstoque(vendaData.itens).then(() => {
-          this.resetVenda(); // Cancelar venda (resetar o formulário)
-          this.iniciarVenda(); // Iniciar nova venda
+          // Incrementar o valor_var após baixar o estoque
+          this.codigoService.incrementarCodigo('Nfce').subscribe({
+            next: incrementResponse => {
+              console.log('Código fiscal incrementado com sucesso:', incrementResponse);
+              this.resetVenda(); // Cancelar venda (resetar o formulário)
+              this.iniciarVenda(); // Iniciar nova venda
+            },
+            error: incrementError => {
+              console.error('Erro ao incrementar o código fiscal:', incrementError);
+            }
+          });
         }).catch(error => {
           console.error('Erro ao baixar o estoque:', error);
         });
-      }, incrementError => {
-        console.error('Erro ao incrementar o código fiscal:', incrementError);
-      });
-    }, error => {
-      console.error('Erro ao gravar venda', error);
+      },
+      error: error => {
+        console.error('Erro ao gravar venda', error);
+        if (error.error) {
+          console.error('Detalhes do erro:', error.error);
+        }
+      }
     });
   }
-
+  
+  
 
   async baixarEstoque(itens: any[]): Promise<void> {
     try {
@@ -374,4 +424,3 @@ export class PdvComponent implements OnInit {
     }
   }
 }
-

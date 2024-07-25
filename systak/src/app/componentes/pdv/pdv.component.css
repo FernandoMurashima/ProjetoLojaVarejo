@@ -37,6 +37,7 @@
   display: flex;
   align-items: center;
   gap: 10px; /* Reduz o espaçamento entre os elementos */
+  width: 200%; 
 }
 
 .selector label {
@@ -285,13 +286,50 @@ button:disabled {
   border-color: #cacc37;
 }
 
-/* Adicione essas classes para definir as cores dos botões */
-.finalizar-venda-button {
-  background-color: #28a745; /* Cor de fundo para o botão Finalizar Venda */
-  color: white; /* Cor do texto para o botão Finalizar Venda */
+.selectorcliente {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Reduz o espaçamento entre os elementos */
+  width: 300%;
 }
 
-.cancelar-venda-button {
-  background-color: #dc3545; /* Cor de fundo para o botão Cancelar Venda */
-  color: white; /* Cor do texto para o botão Cancelar Venda */
+.cliente-input {
+  flex: 1;
+  min-width: 200px; /* Largura mínima do input */
+  max-width: 600px; /* Largura máxima do input */
+  min-height: 50px;
+  max-height: 60px;
+}
+
+.selectorcliente {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espaçamento entre os elementos */
+}
+
+.cliente-input {
+  flex: 1;
+  min-width: 200px; /* Largura mínima do input */
+  max-width: 400px; /* Largura máxima do input */
+}
+
+.selector button {
+  margin-left: 10px; /* Adiciona espaço entre os botões */
+  padding: 5px 10px; /* Ajusta o padding */
+  font-size: 14px; /* Ajusta o tamanho da fonte */
+  background-color: #28a745; /* Cor de fundo dos botões */
+  color: white; /* Cor do texto */
+  border: none; /* Remove a borda */
+  border-radius: 5px; /* Adiciona borda arredondada */
+  cursor: pointer; /* Adiciona o cursor pointer */
+}
+
+.selector button:disabled {
+  background-color: #ccc; /* Cor de fundo para botão desabilitado */
+  cursor: not-allowed; /* Cursor para botão desabilitado */
+}
+
+.selected-button {
+  background-color: #cacc37;
+  border-color: #cacc37;
 }

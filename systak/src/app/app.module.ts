@@ -21,6 +21,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { AuthInterceptor } from './service/auth.interceptor';
 import { AuthService } from './service/auth.service';
@@ -99,7 +100,8 @@ import { TesteProdutoComponent } from './componentes/teste-produto/teste-produto
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatAutocompleteModule,
   ],
   providers: [
     AuthService,

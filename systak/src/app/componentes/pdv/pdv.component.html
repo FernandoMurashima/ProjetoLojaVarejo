@@ -11,30 +11,39 @@
       <!-- Botão Iniciar Venda -->
       <button (click)="iniciarVenda()">Venda</button>
       <span class="documento-fiscal" *ngIf="documentoFiscal">Cupom Fiscal: {{ documentoFiscal }}</span>
-      
 
       <div class="selector">
+
         <label for="loja-select">Loja:</label>
-        <select id="loja-select" [(ngModel)]="selectedLoja" (change)="onLojaChange()" [disabled]="!vendaIniciada">
+        <select id="loja-select" [(ngModel)]="selectedLoja" (change)="onLojaChange()" >
           <option *ngFor="let loja of lojas" [value]="loja.Idloja">{{ loja.nome_loja }}</option>
         </select>
+        <button (click)="selectLoja()" [disabled]="!selectedLoja || !vendaIniciada" [ngClass]="{ 'selected-button': selectedLoja }">Loja</button>
+
         <label for="vendedor-code">Vendedor:</label>
-        <select id="vendedor-code" [(ngModel)]="selectedVendedor" [disabled]="!vendaIniciada">
+        <select id="vendedor-code" [(ngModel)]="selectedVendedor" >
           <option *ngFor="let vendedor of vendedores" [value]="vendedor.Idfuncionario">{{ vendedor.apelido }}</option>
         </select>
-      
-        <label for="cliente-code">Cliente:</label>
-        <input type="text" id="cliente-code" class="cliente-select" placeholder="Digite o Código ou Nome do Cliente" [(ngModel)]="clienteInput" (keyup)="buscarCliente($event)" [disabled]="!vendaIniciada">
-        <div *ngIf="clientes.length">
-          <ul>
-            <li *ngFor="let cliente of clientes" (click)="selectCliente(cliente)">
-              {{ cliente.Nome_cliente }}
-            </li>
-          </ul>
-        </div>
-        <button (click)="selectCliente(selectedCliente!)" [disabled]="!selectedCliente || !vendaIniciada" [ngClass]="{ 'selected-button': selectedCliente }">Selecionar Cliente</button>
-      </div> 
+        <button (click)="selectVendedor()" [disabled]="!selectedVendedor || !vendaIniciada" [ngClass]="{ 'selected-button': selectedVendedor }">Vendedor</button>
 
+      <!-- Campo Cliente -->
+      <div class="selectorcliente">
+        <label for="cliente-code">Cliente:</label>
+        <mat-form-field class="cliente-input" appearance="fill">
+          <input type="text" matInput placeholder="Digite o Código ou Nome do Cliente" [formControl]="clienteCtrl" [matAutocomplete]="auto">
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onClienteSelected($event.option.value)">
+            <mat-option *ngFor="let cliente of clientesFiltrados | async" [value]="cliente">
+              {{ cliente.Nome_cliente }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <button (click)="selectCliente()" [disabled]="!selectedCliente || !vendaIniciada" [ngClass]="{ 'selected-button': selectedCliente }">Cliente</button>
+      </div>
+
+        
+
+      </div> 
+      
     </div>
   </div>
 
@@ -48,9 +57,6 @@
         <button class="finalizar-venda-button" (click)="finalizarVenda()" [disabled]="produtos.length === 0">Finalizar Venda</button>
         <button class="cancelar-venda-button"  *ngIf="vendaIniciada" (click)="showCancelDialog()" class="cancelar-venda">Cancelar Venda</button>
       </div>
-
-
-    
     </div>
     <div class="content">
       <div class="product-input">
