@@ -157,3 +157,24 @@ form {
 #telefone2-box { grid-row: 6; grid-column: 3; width: 150px; }
 #email-box { grid-row: 6; grid-column: 5; width: 500px; }
 #conta-contabil-box { grid-row: 6; grid-column: 7; width: 250px; }
+
+/* cliente.component.css */
+.mat-dialog-container {
+    width: 800px !important; /* Aumenta a largura do diálogo */
+    max-width: 100%;
+  }
+  
+  .pagamento {
+    background-color: #fff;
+    border: 2px solid #ddd;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 800px; /* Ajuste conforme necessário */
+    margin: 0 auto; /* Centraliza a div horizontalmente */
+    position: fixed; /* Centraliza a div verticalmente */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  

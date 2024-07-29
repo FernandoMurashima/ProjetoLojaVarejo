@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClienteService, Cliente } from '../../service/cliente.service';
 import { Router } from '@angular/router';
 import { NatLancamentoService, NatLancamento } from '../../service/nat-lancamento.service';
@@ -13,16 +14,23 @@ export class ClienteComponent implements OnInit {
   clientes: Cliente[] = [];
   clienteSelecionado?: Cliente;
   action: string = '';
-
   successMessage: string = '';
   errorMessage: string = '';
   natLancamentos: NatLancamento[] = [];
+  isInsertMode: boolean = false;
 
   constructor(
     private clienteService: ClienteService,
     private natLancamentoService: NatLancamentoService,
-    private router: Router
-  ) {}
+    private router: Router,
+    public dialogRef: MatDialogRef<ClienteComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    if (data && data.mode === 'insert') {
+      this.isInsertMode = true;
+      this.action = 'cadastrar';
+    }
+  }
 
   ngOnInit(): void {
     this.loadClientes();
@@ -85,28 +93,16 @@ export class ClienteComponent implements OnInit {
     });
   }
 
-/*   loadNatLancamentos() {
+  loadNatLancamentos() {
     this.natLancamentoService.getNatLancamentos().subscribe({
       next: (data: NatLancamento[]) => {
-        console.log(data); // Verifique os dados recebidos
-        this.natLancamentos = data;
+        this.natLancamentos = data.filter(nat => nat.codigo.startsWith('1.')); // Filtra os registros
       },
       error: (error: any) => {
         console.error('Erro ao carregar naturezas de lançamento', error);
       }
     });
-  } */
-
-    loadNatLancamentos() {
-      this.natLancamentoService.getNatLancamentos().subscribe({
-        next: (data: NatLancamento[]) => {
-          this.natLancamentos = data.filter(nat => nat.codigo.startsWith('1.')); // Filtra os registros
-        },
-        error: (error: any) => {
-          console.error('Erro ao carregar naturezas de lançamento', error);
-        }
-      });
-    }
+  }
 
   addCliente() {
     if (window.confirm('Confirma a inclusão do novo cliente?')) {
@@ -115,7 +111,11 @@ export class ClienteComponent implements OnInit {
       this.clienteService.addCliente(clienteParaEnviar).subscribe({
         next: (data: Cliente) => {
           this.successMessage = 'Cliente adicionado com sucesso!';
-          this.resetAction();
+          if (this.isInsertMode) {
+            this.dialogRef.close(data);  // Fechar o diálogo e retornar o cliente cadastrado
+          } else {
+            this.resetAction();
+          }
         },
         error: (error: any) => {
           console.error('Erro ao cadastrar cliente:', error);
@@ -176,3 +176,4 @@ export class ClienteComponent implements OnInit {
     }
   }
 }
+

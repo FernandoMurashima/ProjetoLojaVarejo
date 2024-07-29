@@ -15,6 +15,8 @@ import { CodigoService } from '../../service/codigo.service';
 import { EstoqueService, Estoque } from '../../service/estoque.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { MatDialog } from '@angular/material/dialog';
+import { ClienteComponent } from '../cliente/cliente.component';
 
 export interface Produto {
   id: number;
@@ -34,7 +36,7 @@ export interface Produto {
   styleUrls: ['./pdv.component.css']
 })
 export class PdvComponent implements OnInit {
-  clienteCtrl = new FormControl({ value: '', disabled: true }); 
+  clienteCtrl = new FormControl({ value: '', disabled: true });
   lojaCtrl = new FormControl({ value: '', disabled: true });
   vendedorCtrl = new FormControl({ value: '', disabled: true });
 
@@ -63,6 +65,7 @@ export class PdvComponent implements OnInit {
   documentoFiscal: string = '';
   mostrarDialogoCancelamento: boolean = false;
   senhaCancelamento: string = '';
+  numeroParcelas: number = 1;
 
   constructor(
     private lojaService: LojaService,
@@ -76,7 +79,8 @@ export class PdvComponent implements OnInit {
     private corService: CorService,
     private tamanhoService: TamanhoService,
     private estoqueService: EstoqueService,
-    private http: HttpClient
+    private http: HttpClient,
+    public dialog: MatDialog
   ) {
     this.clientesFiltrados = this.clienteCtrl.valueChanges.pipe(
       startWith(''),
@@ -92,7 +96,6 @@ export class PdvComponent implements OnInit {
           this.user = user;
           console.log('Usuário autenticado:', this.user);
           this.checkAuthorization();
-          this.clienteCtrl.enable(); // Habilitar após a autorização
         });
       } else {
         console.log('Usuário não está autenticado');
@@ -118,8 +121,6 @@ export class PdvComponent implements OnInit {
       console.log('Nenhuma loja selecionada.');
     }
   }
-
-
 
   loadVendedores() {
     if (this.selectedLoja !== null) {
@@ -179,31 +180,31 @@ export class PdvComponent implements OnInit {
     if (this.selectedCliente) {
       console.log('Cliente selecionado antes de atribuir:', this.selectedCliente);
       this.clienteInput = `${this.selectedCliente.Idcliente} - ${this.selectedCliente.Nome_cliente}`;
-      this.clienteCtrl.setValue(this.selectedCliente.Nome_cliente); // Atualiza o valor do controle do formulário
+      this.clienteCtrl.setValue(this.selectedCliente.Nome_cliente);
       console.log('Cliente selecionado após atribuir:', this.selectedCliente);
     } else {
       console.log('Nenhum cliente selecionado.');
     }
   }
-  
 
   onClienteSelected(cliente: Cliente) {
     this.selectedCliente = cliente;
-    this.clienteCtrl.setValue(cliente.Nome_cliente); // Atualiza o valor do controle do formulário para exibir o nome do cliente
+    this.clienteCtrl.setValue(cliente.Nome_cliente);
   }
-  
-  
 
   private _filter(value: string | Cliente): Cliente[] {
     const filterValue = typeof value === 'string' ? value.toLowerCase() : value.Nome_cliente.toLowerCase();
     return this.clientes.filter(cliente => cliente.Nome_cliente.toLowerCase().includes(filterValue) || cliente.Idcliente.toString().includes(filterValue));
   }
-  
 
   iniciarVenda() {
     console.log('Iniciando venda...');
     this.vendaIniciada = true;
     this.botaoVoltarDesativado = true;
+    this.selectedLoja = null;
+    this.selectedVendedor = null;
+    this.selectedCliente = null;
+    this.clienteCtrl.setValue('');
     this.codigoService.getCodigo('Nfce').subscribe(codigos => {
       console.log('Código fiscal recebido:', codigos);
       const codigoFiscal = codigos.find(codigo => codigo.variavel === 'Nfce');
@@ -216,11 +217,25 @@ export class PdvComponent implements OnInit {
     }, error => {
       console.error('Erro ao buscar o código fiscal:', error);
     });
-  
-    // Habilitar os controles após iniciar a venda
+
     this.clienteCtrl.enable();
     this.lojaCtrl.enable();
     this.vendedorCtrl.enable();
+  }
+
+  novoCliente() {
+    const dialogRef = this.dialog.open(ClienteComponent, {
+      width: '800px',  // Definindo a largura do diálogo para o modo de inserção
+      data: { mode: 'insert' }  // Passando o modo de inserção como dado
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.selectedCliente = result;
+        this.clienteCtrl.setValue(result.Nome_cliente);
+        console.log('Novo cliente cadastrado:', result);
+      }
+    });
   }
   
 
@@ -271,6 +286,19 @@ export class PdvComponent implements OnInit {
   }
 
   adicionarProduto() {
+    if (!this.selectedLoja) {
+      alert('Selecione uma loja.');
+      return;
+    }
+    if (!this.selectedVendedor) {
+      alert('Selecione um vendedor.');
+      return;
+    }
+    if (!this.selectedCliente) {
+      alert('Selecione um cliente.');
+      return;
+    }
+
     const codigoBarra = this.productCode;
     console.log('Adicionando produto com código de barra:', codigoBarra);
 
@@ -318,6 +346,8 @@ export class PdvComponent implements OnInit {
     });
   }
 
+  
+
   finalizarVenda() {
     console.log('Finalizando venda...');
     this.exibirPagamento = true;
@@ -332,12 +362,12 @@ export class PdvComponent implements OnInit {
   confirmarPagamento() {
     console.log('Confirmando pagamento com desconto de:', this.desconto);
     console.log('Forma de pagamento selecionada:', this.formaPagamento);
-  
+
     if (this.selectedVendedor === null || this.selectedLoja === null) {
       console.error('Erro: Loja ou vendedor não selecionado');
       return;
     }
-  
+
     const vendaData = {
       venda: {
         Idloja: parseInt(this.selectedLoja.toString(), 10),
@@ -351,32 +381,31 @@ export class PdvComponent implements OnInit {
         comissao: this.totalComDesconto * 0.01,
         acrescimo: 0,
         tipopag: this.formaPagamento,
+        numeroParcelas: this.formaPagamento === 'CREDITO_PARCELADO' ? this.numeroParcelas : 1
       },
       itens: this.produtos.map(item => ({
         Documento: this.documentoFiscal,
         CodigodeBarra: item.codigo,
-        codigoproduto: item.referencia, // Usando a referência correta
+        codigoproduto: item.referencia,
         Qtd: item.quantidade,
-        valorunitario: item.preco, // Garantindo que é decimal
+        valorunitario: item.preco,
         Desconto: 0,
         Total_item: item.total,
       }))
     };
-  
+
     console.log('Dados da venda que serão enviados:', vendaData);
-  
+
     this.http.post(`${environment.apiURL}/vendas/create_venda/`, vendaData).subscribe({
       next: response => {
         console.log('Venda gravada com sucesso', response);
-  
-        // Chamar a rotina baixarEstoque após gravar a venda
+
         this.baixarEstoque(vendaData.itens).then(() => {
-          // Incrementar o valor_var após baixar o estoque
           this.codigoService.incrementarCodigo('Nfce').subscribe({
             next: incrementResponse => {
               console.log('Código fiscal incrementado com sucesso:', incrementResponse);
-              this.resetVenda(); // Cancelar venda (resetar o formulário)
-              this.iniciarVenda(); // Iniciar nova venda
+              this.resetVenda();
+              this.exibirPagamento = false;
             },
             error: incrementError => {
               console.error('Erro ao incrementar o código fiscal:', incrementError);
@@ -394,8 +423,6 @@ export class PdvComponent implements OnInit {
       }
     });
   }
-  
-  
 
   async baixarEstoque(itens: any[]): Promise<void> {
     try {
@@ -423,4 +450,7 @@ export class PdvComponent implements OnInit {
       alert(`Erro ao baixar o estoque: ${error.message || error}`);
     }
   }
+
+
+  
 }

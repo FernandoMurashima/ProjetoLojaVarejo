@@ -13,37 +13,35 @@
       <span class="documento-fiscal" *ngIf="documentoFiscal">Cupom Fiscal: {{ documentoFiscal }}</span>
 
       <div class="selector">
-
         <label for="loja-select">Loja:</label>
-        <select id="loja-select" [(ngModel)]="selectedLoja" (change)="onLojaChange()" >
+        <select id="loja-select" [(ngModel)]="selectedLoja" (change)="onLojaChange()" [disabled]="!vendaIniciada">
+          <option value="" disabled selected>Selecione a Loja</option>
           <option *ngFor="let loja of lojas" [value]="loja.Idloja">{{ loja.nome_loja }}</option>
         </select>
-        <button (click)="selectLoja()" [disabled]="!selectedLoja || !vendaIniciada" [ngClass]="{ 'selected-button': selectedLoja }">Loja</button>
+        <button (click)="selectLoja()" [disabled]="!selectedLoja || !vendaIniciada" [ngClass]="{ 'selected-button': selectedLoja }">Selecionar</button>
 
         <label for="vendedor-code">Vendedor:</label>
-        <select id="vendedor-code" [(ngModel)]="selectedVendedor" >
+        <select id="vendedor-code" [(ngModel)]="selectedVendedor" [disabled]="!vendaIniciada || !selectedLoja">
+          <option value="" disabled selected>Selecione o Vendedor</option>
           <option *ngFor="let vendedor of vendedores" [value]="vendedor.Idfuncionario">{{ vendedor.apelido }}</option>
         </select>
-        <button (click)="selectVendedor()" [disabled]="!selectedVendedor || !vendaIniciada" [ngClass]="{ 'selected-button': selectedVendedor }">Vendedor</button>
+        <button (click)="selectVendedor()" [disabled]="!selectedVendedor" [ngClass]="{ 'selected-button': selectedVendedor }">Selecionar</button>
 
-      <!-- Campo Cliente -->
-      <div class="selectorcliente">
-        <label for="cliente-code">Cliente:</label>
-        <mat-form-field class="cliente-input" appearance="fill">
-          <input type="text" matInput placeholder="Digite o Código ou Nome do Cliente" [formControl]="clienteCtrl" [matAutocomplete]="auto">
-          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onClienteSelected($event.option.value)">
-            <mat-option *ngFor="let cliente of clientesFiltrados | async" [value]="cliente">
-              {{ cliente.Nome_cliente }}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-        <button (click)="selectCliente()" [disabled]="!selectedCliente || !vendaIniciada" [ngClass]="{ 'selected-button': selectedCliente }">Cliente</button>
-      </div>
-
-        
-
+        <!-- Campo Cliente -->
+        <div class="selectorcliente">
+          <label for="cliente-code">Cliente:</label>
+          <mat-form-field class="cliente-input" appearance="fill">
+            <input type="text" matInput placeholder="Digite o Código ou Nome do Cliente" [formControl]="clienteCtrl" [matAutocomplete]="auto" [disabled]="!vendaIniciada || !selectedLoja || !selectedVendedor">
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onClienteSelected($event.option.value)">
+              <mat-option *ngFor="let cliente of clientesFiltrados | async" [value]="cliente">
+                {{ cliente.Nome_cliente }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <button (click)="selectCliente()" [disabled]="!selectedCliente" [ngClass]="{ 'selected-button': selectedCliente }">Selecionar</button>
+          <button (click)="novoCliente()" [disabled]="!vendaIniciada || !selectedLoja || !selectedVendedor">Novo Cliente</button>
+        </div>
       </div> 
-      
     </div>
   </div>
 
@@ -55,16 +53,16 @@
 
       <div class="menu-container">
         <button class="finalizar-venda-button" (click)="finalizarVenda()" [disabled]="produtos.length === 0">Finalizar Venda</button>
-        <button class="cancelar-venda-button"  *ngIf="vendaIniciada" (click)="showCancelDialog()" class="cancelar-venda">Cancelar Venda</button>
+        <button class="cancelar-venda-button" *ngIf="vendaIniciada" (click)="showCancelDialog()" class="cancelar-venda">Cancelar Venda</button>
       </div>
     </div>
     <div class="content">
       <div class="product-input">
         <label for="product-code">Código de Barras:</label>
-        <input type="text" id="product-code" [(ngModel)]="productCode" [disabled]="!vendaIniciada">
+        <input type="text" id="product-code" [(ngModel)]="productCode" [disabled]="!vendaIniciada || !selectedLoja || !selectedVendedor || !selectedCliente">
         <label for="product-qty">Quantidade:</label>
-        <input type="number" id="product-qty" [(ngModel)]="productQty" min="1" [disabled]="!vendaIniciada">
-        <button (click)="adicionarProduto()" [disabled]="!vendaIniciada">Adicionar Produto</button>
+        <input type="number" id="product-qty" [(ngModel)]="productQty" min="1" [disabled]="!vendaIniciada || !selectedLoja || !selectedVendedor || !selectedCliente">
+        <button (click)="adicionarProduto()" [disabled]="!vendaIniciada || !selectedLoja || !selectedVendedor || !selectedCliente">Adicionar Produto</button>
       </div>
       <div class="product-display">
         <div class="product-info-header">
@@ -125,6 +123,13 @@
           <option value="DINHEIRO">Dinheiro</option>
         </select>
       </div>
+
+      <!-- Campo para número de parcelas, mostrado apenas se "Crédito Parcelado" for selecionado -->
+      <div class="form-group" *ngIf="formaPagamento === 'CREDITO_PARCELADO'">
+        <label for="numeroParcelas">Número de Parcelas:</label>
+        <input type="number" id="numeroParcelas" [(ngModel)]="numeroParcelas" min="1" max="12" />
+      </div>
+
       <button (click)="confirmarPagamento()">Confirmar Pagamento</button>
     </div>
 

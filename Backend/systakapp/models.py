@@ -310,7 +310,7 @@ class Venda(models.Model):
     Data = models.DateTimeField(default=timezone.now)
     Desconto = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True)
     Cancelada = models.CharField(max_length=2, null=True, blank=True)
-    Documento = models.CharField(max_length=20)
+    Documento = models.CharField(max_length=10, default='0000000000')
     Valor = models.DecimalField(max_digits=18, decimal_places=2)
     Tipo_documento = models.CharField(max_length=20, null=True, blank=True)
     Idfuncionario = models.ForeignKey(Funcionarios, on_delete=models.CASCADE, default='0')
@@ -392,17 +392,12 @@ class InventarioItem(models.Model):
 
 class Receber(models.Model):
     Idreceber = models.AutoField(primary_key=True)
-    Titulo = models.CharField(max_length=20)
     idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
-    idcliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    idvenda = models.ForeignKey(Venda, on_delete=models.CASCADE)
-    Idnatureza = models.ForeignKey(Nat_Lancamento, on_delete=models.CASCADE)
-    Parcelado = models.CharField(max_length=1)
-    TipoRecebimento = models.CharField(max_length=15)
-    Data = models.DateField()
-    Data_vencimento = models.DateField()
+    Documento = models.CharField(max_length=10, default='0000000000')
+    TipoRecebimento = models.CharField(max_length=20, blank=True)
     Valor = models.DecimalField(max_digits=18, decimal_places=2)
-    ContaContabil = models.CharField(max_length=50)
+    ContaContabil = models.CharField(max_length=50, blank=True)
+    Nat_Lancamento = models.CharField(max_length=50, blank=True)
     data_cadastro = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -411,7 +406,9 @@ class Receber(models.Model):
 class ReceberItens(models.Model):
     Idreceberitens = models.AutoField(primary_key=True)
     Idreceber = models.ForeignKey(Receber, on_delete=models.CASCADE)
-    parcela = models.CharField(max_length=1)
+    Titulo = models.CharField(max_length=10, default='00000000-0')
+    Parcela = models.IntegerField(default=1)
+    Datavencimento = models.DateField(null=True, blank=True)
     Databaixa = models.DateField(null=True, blank=True)
     valor_parcela = models.DecimalField(max_digits=18, decimal_places=2)
     juros = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True)
@@ -422,7 +419,7 @@ class ReceberItens(models.Model):
     data_cadastro = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f'{self.Idreceber} - {self.parcela}'
+        return f'{self.Titulo} - Parcela {self.Parcela}'
 
 class Pagar(models.Model):
     Idpagar = models.AutoField(primary_key=True)
