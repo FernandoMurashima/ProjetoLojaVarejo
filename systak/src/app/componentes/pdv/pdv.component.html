@@ -74,8 +74,9 @@
           <div>Qtd</div>
           <div>Preço</div>
           <div>Total</div>
+          <div>Ações</div>
         </div>
-        <div *ngFor="let produto of produtos">
+        <div *ngFor="let produto of produtos; let i = index">
           <div class="product-info">
             <div>{{ produto.id }}</div>
             <div>{{ produto.codigo }}</div>
@@ -85,6 +86,9 @@
             <div>{{ produto.quantidade }}</div>
             <div>R$ {{ produto.preco }}</div>
             <div>R$ {{ produto.total }}</div>
+            <div>
+              <button (click)="excluirProduto(i)">Excluir</button>
+            </div>
           </div>
         </div>
       </div>

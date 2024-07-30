@@ -350,6 +350,14 @@ export class PdvComponent implements OnInit {
     });
   }
 
+  excluirProduto(index: number) {
+    const produto = this.produtos[index];
+    this.totalCompra -= produto.total;
+    this.atualizarTotalComDesconto();
+    this.produtos.splice(index, 1);
+    console.log(`Produto removido: ${produto.descricao}`);
+  }
+
   finalizarVenda() {
     console.log('Finalizando venda...');
     this.exibirPagamento = true;
@@ -370,8 +378,6 @@ export class PdvComponent implements OnInit {
       return;
     }
 
-    const comissao = parseFloat((this.totalComDesconto * 0.01).toFixed(2));  // Ajuste aqui para garantir duas casas decimais
-
     const vendaData = {
       venda: {
         Idloja: parseInt(this.selectedLoja.toString(), 10),
@@ -382,7 +388,7 @@ export class PdvComponent implements OnInit {
         Valor: this.totalComDesconto,
         Tipo_documento: 'NFce',
         Idfuncionario: parseInt(this.selectedVendedor.toString(), 10),
-        comissao: this.totalComDesconto * 0.01,
+        comissao: Number((this.totalComDesconto * 0.01).toFixed(2)),
         acrescimo: 0,
         tipopag: this.formaPagamento,
         numeroParcelas: this.formaPagamento === 'CREDITO_PARCELADO' ? this.numeroParcelas : 1

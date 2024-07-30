@@ -141,19 +141,7 @@
   margin-bottom: 10px;
 }
 
-.product-info-header, .product-info {
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr 1fr 1fr 1fr;
-  width: 100%;
-  text-align: left;
-  margin-bottom: 10px;
-}
 
-.product-info-header {
-  font-weight: bold;
-  border-bottom: 2px solid #ddd;
-  padding-bottom: 10px;
-}
 
 .purchase-summary {
   display: flex;
@@ -358,4 +346,31 @@ button:disabled {
   padding: 20px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   z-index: 2000; /* Garante que o cancelamento fica sobreposto */
+}
+
+.product-info-header, .product-info {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr 2fr 1fr 1fr 0.5fr 1fr 1fr 1fr; /* Adiciona a última coluna para o botão */
+  width: 100%;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.product-info-header {
+  font-weight: bold;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.product-info button {
+  padding: 5px 10px;
+  background-color: #ff4c4c; /* Cor de fundo para o botão "Excluir" */
+  color: white; /* Cor do texto do botão "Excluir" */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.product-info button:hover {
+  background-color: #ff1a1a; /* Cor de fundo ao passar o mouse */
 }
