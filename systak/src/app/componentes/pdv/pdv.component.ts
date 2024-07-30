@@ -17,6 +17,9 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { MatDialog } from '@angular/material/dialog';
 import { ClienteComponent } from '../cliente/cliente.component';
+import { ReceberService } from '../../service/receber.service';
+import { ReceberItensService } from '../../service/receberitens.service';
+import { formatDate } from '@angular/common';
 
 export interface Produto {
   id: number;
@@ -80,7 +83,9 @@ export class PdvComponent implements OnInit {
     private tamanhoService: TamanhoService,
     private estoqueService: EstoqueService,
     private http: HttpClient,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private receberService: ReceberService,
+    private receberItensService: ReceberItensService
   ) {
     this.clientesFiltrados = this.clienteCtrl.valueChanges.pipe(
       startWith(''),
@@ -237,7 +242,6 @@ export class PdvComponent implements OnInit {
       }
     });
   }
-  
 
   showCancelDialog() {
     this.mostrarDialogoCancelamento = true;
@@ -346,8 +350,6 @@ export class PdvComponent implements OnInit {
     });
   }
 
-  
-
   finalizarVenda() {
     console.log('Finalizando venda...');
     this.exibirPagamento = true;
@@ -404,8 +406,12 @@ export class PdvComponent implements OnInit {
           this.codigoService.incrementarCodigo('Nfce').subscribe({
             next: incrementResponse => {
               console.log('Código fiscal incrementado com sucesso:', incrementResponse);
-              this.resetVenda();
-              this.exibirPagamento = false;
+              this.gravarDadosFinanceiros(vendaData.venda, vendaData.itens).then(() => {
+                this.resetVenda();
+                this.exibirPagamento = false;
+              }).catch(financeError => {
+                console.error('Erro ao gravar dados financeiros:', financeError);
+              });
             },
             error: incrementError => {
               console.error('Erro ao incrementar o código fiscal:', incrementError);
@@ -451,6 +457,63 @@ export class PdvComponent implements OnInit {
     }
   }
 
+  async gravarDadosFinanceiros(venda: any, itens: any[]): Promise<void> {
+    try {
+      const receberData = {
+        idloja: venda.Idloja,
+        Documento: venda.Documento,
+        TipoRecebimento: venda.tipopag,
+        Valor: venda.Valor,
+        ContaContabil: '',
+        Nat_Lancamento: '',
+        data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US')
+      };
 
-  
+      const receberResponse: any = await this.receberService.createReceber(receberData).toPromise();
+      const idReceber = receberResponse.Idreceber;
+
+      for (let i = 1; i <= venda.numeroParcelas; i++) {
+        let dataVencimento = new Date();
+        switch (venda.tipopag) {
+          case 'PIX':
+          case 'DINHEIRO':
+            dataVencimento = new Date();
+            break;
+          case 'DEBITO':
+            dataVencimento.setDate(dataVencimento.getDate() + 1);
+            break;
+          case 'CREDITO_AVISTA':
+            dataVencimento.setDate(dataVencimento.getDate() + 30);
+            break;
+          case 'CREDITO_PARCELADO':
+            dataVencimento.setDate(dataVencimento.getDate() + 30 * i);
+            break;
+          default:
+            throw new Error(`Forma de pagamento desconhecida: ${venda.tipopag}`);
+        }
+
+        const receberItensData = {
+          Idreceber: idReceber,
+          Titulo: `${venda.Documento}-${i}`,
+          Parcela: i,
+          Datavencimento: formatDate(dataVencimento, 'yyyy-MM-dd', 'en-US'),
+          Databaixa: null,
+          valor_parcela: venda.tipopag === 'CREDITO_PARCELADO' ? venda.Valor / venda.numeroParcelas : venda.Valor,
+          juros: 0,
+          desconto: 0,
+          Titulo_descontado: 'N',
+          Data_desconto: null,
+          idconta: 1,
+          data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US')
+        };
+
+        await this.receberItensService.createReceberItens(receberItensData).toPromise();
+      }
+
+      console.log('Dados financeiros gravados com sucesso');
+    } catch (error: any) {
+      console.error('Erro ao gravar dados financeiros:', error);
+      alert(`Erro ao gravar dados financeiros: ${error.message || error}`);
+    }
+  }
 }

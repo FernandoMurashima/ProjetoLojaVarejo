@@ -18,6 +18,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse, Http404
 from django.db.models import F
 from django.db import transaction
+from datetime import timedelta
+from django.utils import timezone
 from .serializers import (
     UserSerializer, ClienteSerializer, FornecedorSerializer, VendedorSerializer,
     FuncionariosSerializer, TamanhoSerializer, CorSerializer, NaturezaLancamentoSerializer,
@@ -484,3 +486,49 @@ class EstoqueDetail(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Estoque.DoesNotExist:
             return Response({"error": "Estoque não encontrado."}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_financeiro(request):
+    venda_id = request.data.get('venda_id')
+
+    try:
+        venda = Venda.objects.get(Idvenda=venda_id)
+    except Venda.DoesNotExist:
+        return Response({"status": "error", "message": "Venda não encontrada"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Assumindo que a informação sobre o número de parcelas e a forma de pagamento está na tabela Venda
+    numero_parcelas = venda.numeroParcelas if hasattr(venda, 'numeroParcelas') else 1
+    tipo_pagamento = venda.tipopag
+
+    with transaction.atomic():
+        receber = Receber.objects.create(
+            idloja=venda.Idloja,
+            Documento=venda.Documento,
+            TipoRecebimento=tipo_pagamento,
+            Valor=venda.Valor,
+            ContaContabil='',
+            Nat_Lancamento='',
+            data_cadastro=timezone.now()
+        )
+
+        valor_parcela = venda.Valor / numero_parcelas
+        for parcela in range(1, numero_parcelas + 1):
+            data_vencimento = venda.Data + timedelta(days=30 * parcela)
+
+            ReceberItens.objects.create(
+                Idreceber=receber,
+                Titulo=f"{venda.Documento}-{parcela}",
+                Parcela=parcela,
+                Datavencimento=data_vencimento,
+                Databaixa=None,
+                valor_parcela=valor_parcela,
+                juros=0,
+                desconto=0,
+                Titulo_descontado="N",
+                Data_desconto=None,
+                idconta=1,
+                data_cadastro=timezone.now()
+            )
+
+    return Response({"status": "success", "message": "Dados financeiros gravados com sucesso"})
