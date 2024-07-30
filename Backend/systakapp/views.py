@@ -532,3 +532,10 @@ def create_financeiro(request):
             )
 
     return Response({"status": "success", "message": "Dados financeiros gravados com sucesso"})
+
+def verificar_documento(request, documento):
+    # Verificar se o documento já foi utilizado
+    documento_existe = Venda.objects.filter(Documento=documento).exists()
+    
+    # Retornar a resposta em JSON
+    return JsonResponse({'usado': documento_existe})

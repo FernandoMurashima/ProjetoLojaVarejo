@@ -374,3 +374,50 @@ button:disabled {
 .product-info button:hover {
   background-color: #ff1a1a; /* Cor de fundo ao passar o mouse */
 }
+
+.confirmacao-venda {
+  background-color: #fff;
+  border: 2px solid #ddd;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 50%;
+  margin: 0 auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  text-align: center;
+}
+
+.confirmacao-venda h2 {
+  margin-bottom: 20px;
+}
+
+.confirmacao-venda p {
+  margin-bottom: 20px;
+}
+
+.confirmacao-venda button {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.confirmacao-venda button:hover {
+  background-color: #218838;
+}
+
+.totals-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.totals-container h2 {
+  margin-left: 20px; /* Ajusta o espaçamento entre os elementos */
+}

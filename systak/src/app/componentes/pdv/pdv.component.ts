@@ -33,6 +33,10 @@ export interface Produto {
   referencia: string;
 }
 
+interface VerificarDocumentoResponse {
+  usado: boolean;
+}
+
 @Component({
   selector: 'app-pdv',
   templateUrl: './pdv.component.html',
@@ -42,6 +46,8 @@ export class PdvComponent implements OnInit {
   clienteCtrl = new FormControl({ value: '', disabled: true });
   lojaCtrl = new FormControl({ value: '', disabled: true });
   vendedorCtrl = new FormControl({ value: '', disabled: true });
+
+  totalItens: number = 0; // Nova variável para armazenar o total de itens
 
   clientesFiltrados: Observable<Cliente[]>;
   clienteInput: string = '';
@@ -69,6 +75,7 @@ export class PdvComponent implements OnInit {
   mostrarDialogoCancelamento: boolean = false;
   senhaCancelamento: string = '';
   numeroParcelas: number = 1;
+  vendaFinalizada: boolean = false; // Nova variável para controlar a exibição da mensagem de confirmação
 
   constructor(
     private lojaService: LojaService,
@@ -302,19 +309,19 @@ export class PdvComponent implements OnInit {
       alert('Selecione um cliente.');
       return;
     }
-
+  
     const codigoBarra = this.productCode;
     console.log('Adicionando produto com código de barra:', codigoBarra);
-
+  
     this.produtoService.buscarPorCodigoBarra(codigoBarra).subscribe(produtoDetalhe => {
       if (produtoDetalhe) {
         console.log('Produto encontrado no ProdutoDetalhe:', produtoDetalhe);
-
+  
         this.produtoService.getProdutoDescricaoPorId(produtoDetalhe.Idproduto).subscribe(produtoCompleto => {
           this.tabelaPrecoItemService.getPreco(codigoBarra).subscribe(precoItem => {
             if (precoItem) {
               console.log('Preço do produto encontrado na TabelaPrecoItem:', precoItem);
-
+  
               this.corService.get(produtoDetalhe.Idcor).subscribe(cor => {
                 this.tamanhoService.get(produtoDetalhe.Idtamanho).subscribe(tamanho => {
                   const novoProduto: Produto = {
@@ -328,13 +335,14 @@ export class PdvComponent implements OnInit {
                     total: this.productQty * Number(precoItem.preco),
                     referencia: produtoCompleto.referencia // Atribuindo a referência correta
                   };
-
+  
                   this.produtos.push(novoProduto);
                   this.totalCompra += novoProduto.total;
+                  this.totalItens += novoProduto.quantidade; // Atualiza o total de itens
                   this.atualizarTotalComDesconto();
                   this.produtoFoto = produtoCompleto.produto_foto || 'https://via.placeholder.com/150';
                   console.log('Produto adicionado à lista:', novoProduto);
-
+  
                   this.productCode = '';
                   this.productQty = 1;
                 });
@@ -349,14 +357,19 @@ export class PdvComponent implements OnInit {
       }
     });
   }
-
+  
   excluirProduto(index: number) {
     const produto = this.produtos[index];
     this.totalCompra -= produto.total;
+    this.totalItens -= produto.quantidade; // Atualiza o total de itens
     this.atualizarTotalComDesconto();
     this.produtos.splice(index, 1);
     console.log(`Produto removido: ${produto.descricao}`);
   }
+  
+
+
+
 
   finalizarVenda() {
     console.log('Finalizando venda...');
@@ -378,63 +391,96 @@ export class PdvComponent implements OnInit {
       return;
     }
 
-    const vendaData = {
-      venda: {
-        Idloja: parseInt(this.selectedLoja.toString(), 10),
-        Idcliente: this.selectedCliente?.Idcliente || 0,
-        Desconto: this.desconto,
-        Cancelada: 'N',
-        Documento: this.documentoFiscal,
-        Valor: this.totalComDesconto,
-        Tipo_documento: 'NFce',
-        Idfuncionario: parseInt(this.selectedVendedor.toString(), 10),
-        comissao: Number((this.totalComDesconto * 0.01).toFixed(2)),
-        acrescimo: 0,
-        tipopag: this.formaPagamento,
-        numeroParcelas: this.formaPagamento === 'CREDITO_PARCELADO' ? this.numeroParcelas : 1
-      },
-      itens: this.produtos.map(item => ({
-        Documento: this.documentoFiscal,
-        CodigodeBarra: item.codigo,
-        codigoproduto: item.referencia,
-        Qtd: item.quantidade,
-        valorunitario: item.preco,
-        Desconto: 0,
-        Total_item: item.total,
-      }))
-    };
+    this.verificarDocumentoFiscal().then(() => {
+      const vendaData = {
+        venda: {
+          Idloja: this.selectedLoja!,
+          Idcliente: this.selectedCliente?.Idcliente || 0,
+          Desconto: this.desconto,
+          Cancelada: 'N',
+          Documento: this.documentoFiscal,
+          Valor: this.totalComDesconto,
+          Tipo_documento: 'NFce',
+          Idfuncionario: this.selectedVendedor!,
+          comissao: Number((this.totalComDesconto * 0.01).toFixed(2)),
+          acrescimo: 0,
+          tipopag: this.formaPagamento,
+          numeroParcelas: this.formaPagamento === 'CREDITO_PARCELADO' ? this.numeroParcelas : 1
+        },
+        itens: this.produtos.map(item => ({
+          Documento: this.documentoFiscal,
+          CodigodeBarra: item.codigo,
+          codigoproduto: item.referencia,
+          Qtd: item.quantidade,
+          valorunitario: item.preco,
+          Desconto: 0,
+          Total_item: item.total,
+        }))
+      };
 
-    console.log('Dados da venda que serão enviados:', vendaData);
+      console.log('Dados da venda que serão enviados:', vendaData);
 
-    this.http.post(`${environment.apiURL}/vendas/create_venda/`, vendaData).subscribe({
-      next: response => {
-        console.log('Venda gravada com sucesso', response);
+      this.http.post(`${environment.apiURL}/vendas/create_venda/`, vendaData).subscribe({
+        next: (response: any) => {
+          console.log('Venda gravada com sucesso', response);
 
-        this.baixarEstoque(vendaData.itens).then(() => {
-          this.codigoService.incrementarCodigo('Nfce').subscribe({
-            next: incrementResponse => {
-              console.log('Código fiscal incrementado com sucesso:', incrementResponse);
-              this.gravarDadosFinanceiros(vendaData.venda, vendaData.itens).then(() => {
-                this.resetVenda();
-                this.exibirPagamento = false;
-              }).catch(financeError => {
-                console.error('Erro ao gravar dados financeiros:', financeError);
-              });
-            },
-            error: incrementError => {
-              console.error('Erro ao incrementar o código fiscal:', incrementError);
-            }
+          this.baixarEstoque(vendaData.itens).then(() => {
+            this.codigoService.incrementarCodigo('Nfce').subscribe({
+              next: (incrementResponse: any) => {
+                console.log('Código fiscal incrementado com sucesso:', incrementResponse);
+                this.gravarDadosFinanceiros(vendaData.venda, vendaData.itens).then(() => {
+                  this.vendaFinalizada = true; // Mostra a mensagem de confirmação
+                  this.exibirPagamento = false;
+                }).catch(financeError => {
+                  console.error('Erro ao gravar dados financeiros:', financeError);
+                });
+              },
+              error: incrementError => {
+                console.error('Erro ao incrementar o código fiscal:', incrementError);
+              }
+            });
+          }).catch(error => {
+            console.error('Erro ao baixar o estoque:', error);
           });
-        }).catch(error => {
-          console.error('Erro ao baixar o estoque:', error);
-        });
-      },
-      error: error => {
-        console.error('Erro ao gravar venda', error);
-        if (error.error) {
-          console.error('Detalhes do erro:', error.error);
+        },
+        error: error => {
+          console.error('Erro ao gravar venda', error);
+          if (error.error) {
+            console.error('Detalhes do erro:', error.error);
+          }
         }
-      }
+      });
+    }).catch(error => {
+      console.error('Erro ao verificar documento fiscal:', error);
+    });
+  }
+
+  verificarDocumentoFiscal(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.http.get<VerificarDocumentoResponse>(`${environment.apiURL}/verificar_documento/${this.documentoFiscal}/`).subscribe({
+        next: response => {
+          if (response.usado) {
+            console.log('Documento fiscal já utilizado, incrementando...');
+            this.codigoService.incrementarCodigo('Nfce').subscribe({
+              next: (incrementResponse: any) => {
+                this.documentoFiscal = incrementResponse.valor_var;
+                console.log('Novo documento fiscal:', this.documentoFiscal);
+                resolve();
+              },
+              error: incrementError => {
+                console.error('Erro ao incrementar o código fiscal:', incrementError);
+                reject(incrementError);
+              }
+            });
+          } else {
+            resolve();
+          }
+        },
+        error: error => {
+          console.error('Erro ao verificar documento fiscal:', error);
+          reject(error);
+        }
+      });
     });
   }
 
@@ -490,7 +536,7 @@ export class PdvComponent implements OnInit {
           case 'DEBITO':
             dataVencimento.setDate(dataVencimento.getDate() + 1);
             break;
-          case 'CREDITO_AVISTA':
+          case 'CREDITO_A_VISTA':
             dataVencimento.setDate(dataVencimento.getDate() + 30);
             break;
           case 'CREDITO_PARCELADO':
@@ -523,5 +569,10 @@ export class PdvComponent implements OnInit {
       console.error('Erro ao gravar dados financeiros:', error);
       alert(`Erro ao gravar dados financeiros: ${error.message || error}`);
     }
+  }
+
+  continuarVenda() {
+    this.vendaFinalizada = false;
+    this.resetVenda();
   }
 }

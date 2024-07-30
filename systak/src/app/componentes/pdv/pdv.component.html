@@ -76,6 +76,7 @@
           <div>Total</div>
           <div>Ações</div>
         </div>
+
         <div *ngFor="let produto of produtos; let i = index">
           <div class="product-info">
             <div>{{ produto.id }}</div>
@@ -91,15 +92,16 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="purchase-summary">
-        <div>
-          <h2>Total da Compra</h2>
         </div>
-        <div>
-          <h2>R$ {{ totalCompra }}</h2>
+        <div class="purchase-summary">
+
+          <div class="totals-container">
+            <h2>Total Itens: {{ totalItens }}</h2>
+            <h2>Total Compra: R$ {{ totalCompra }}</h2>
+          </div>
         </div>
-      </div>
+        
+
     </div>
 
     <!-- Tela de pagamento -->
@@ -136,6 +138,14 @@
 
       <button (click)="confirmarPagamento()">Confirmar Pagamento</button>
     </div>
+
+    <!-- Tela de confirmação após a finalização da venda -->
+    <div *ngIf="vendaFinalizada" class="confirmacao-venda">
+      <h2>Venda Finalizada com Sucesso!</h2>
+      <p>Tecle algo para Continuar!</p>
+      <button (click)="continuarVenda()">Continuar</button>
+    </div>
+
 
     <!-- Diálogo de cancelamento -->
     <div *ngIf="mostrarDialogoCancelamento" class="cancel-dialog">
