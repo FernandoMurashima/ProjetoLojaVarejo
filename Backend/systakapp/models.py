@@ -314,8 +314,8 @@ class Venda(models.Model):
     Valor = models.DecimalField(max_digits=18, decimal_places=2)
     Tipo_documento = models.CharField(max_length=20, null=True, blank=True)
     Idfuncionario = models.ForeignKey(Funcionarios, on_delete=models.CASCADE, default='0')
-    comissao = models.DecimalField(max_digits=18, decimal_places=2)
-    acrescimo = models.DecimalField(max_digits=18, decimal_places=2)
+    comissao = models.DecimalField(max_digits=18, decimal_places=5)
+    acrescimo = models.DecimalField(max_digits=18, decimal_places=5)
     tipopag = models.CharField(max_length=20)
     
 

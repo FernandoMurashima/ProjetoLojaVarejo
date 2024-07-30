@@ -370,6 +370,8 @@ export class PdvComponent implements OnInit {
       return;
     }
 
+    const comissao = parseFloat((this.totalComDesconto * 0.01).toFixed(2));  // Ajuste aqui para garantir duas casas decimais
+
     const vendaData = {
       venda: {
         Idloja: parseInt(this.selectedLoja.toString(), 10),
