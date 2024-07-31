@@ -36,6 +36,13 @@ export interface ProdutoDetalhe {
   Item?: number;
 }
 
+export interface TabelaPrecoItem {
+  codigoproduto: string;
+  codigodebarra: string;
+  preco: number;
+  idtabela: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -83,6 +90,16 @@ export class ProdutoService {
 
   addProdutoDetalhe(produtoDetalhe: ProdutoDetalhe): Observable<ProdutoDetalhe> {
     return this.http.post<ProdutoDetalhe>(`${environment.apiURL}/produtodetalhes/`, produtoDetalhe, { headers: this.getHeaders() });
+  }
+
+  addTabelaPrecoItem(tabelaPrecoItem: TabelaPrecoItem): Observable<TabelaPrecoItem> {
+    console.log('Adicionando item da tabela de preço:', tabelaPrecoItem); // Adiciona log para o item da tabela de preço
+    return this.http.post<TabelaPrecoItem>(`${environment.apiURL}/tabelaprecoitems/`, tabelaPrecoItem, { headers: this.getHeaders() });
+  }
+
+  addEstoque(estoque: any): Observable<any> {
+    console.log('Adicionando estoque:', estoque); // Adiciona log para o estoque
+    return this.http.post<any>(`${environment.apiURL}/estoques/`, estoque, { headers: this.getHeaders() });
   }
 
   getDetalhesByReferencia(referencia: string): Observable<ProdutoDetalhe[]> {

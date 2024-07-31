@@ -401,7 +401,7 @@ class Receber(models.Model):
     data_cadastro = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.Titulo
+        return f'Receber ID: {self.Idreceber} - Documento: {self.Documento}'
 
 class ReceberItens(models.Model):
     Idreceberitens = models.AutoField(primary_key=True)

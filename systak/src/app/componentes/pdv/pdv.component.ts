@@ -230,6 +230,8 @@ export class PdvComponent implements OnInit {
       console.error('Erro ao buscar o código fiscal:', error);
     });
 
+    
+
     this.clienteCtrl.enable();
     this.lojaCtrl.enable();
     this.vendedorCtrl.enable();
@@ -283,6 +285,7 @@ export class PdvComponent implements OnInit {
     this.productQty = 1;
     this.produtos = [];
     this.totalCompra = 0;
+    this.totalItens = 0; // Zera o total de itens
     this.exibirPagamento = false;
     this.produtoFoto = 'https://via.placeholder.com/150';
     this.documentoFiscal = '';

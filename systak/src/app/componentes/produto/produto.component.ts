@@ -485,21 +485,21 @@ export class ProdutoComponent implements OnInit {
       console.error('Cor ou grade não selecionada');
       return;
     }
-
+  
     if (this.coresAdicionadas.has(this.selectedCor)) {
       console.error('Esta cor já foi adicionada.');
       this.errorMessage = 'Esta cor já foi adicionada. Por favor, selecione outra cor.';
       return;
     }
-
+  
     const cor = this.cores.find(cor => cor.Idcor === this.selectedCor);
     const tamanhos = this.tamanhos?.filter(tamanho => tamanho.idgrade === +(this.produto.grade ?? 0));
-
+  
     if (!cor || tamanhos?.length === 0) {
       console.error('Cor selecionada não encontrada ou sem tamanhos associados');
       return;
     }
-
+  
     Promise.all(tamanhos.map(async tamanho => {
       const codigoDeBarras = await this.gerarCodigoDeBarrasParaProduto();
       return {
@@ -509,7 +509,7 @@ export class ProdutoComponent implements OnInit {
       };
     })).then(combinacoes => {
       this.combinacoes = combinacoes;
-      console.log('Combinações geradas:', this.combinacoes);
+      console.log('Combinações geradas:', this.combinacoes); // Exibe as combinações geradas
       this.salvarCombinacoes(); // Chamar método para salvar as combinações
     }).catch(error => {
       console.error('Erro ao gerar combinações:', error);
@@ -538,28 +538,31 @@ export class ProdutoComponent implements OnInit {
           Item: 0
         };
   
+        console.log('ProdutoDetalhe para enviar:', produtoDetalhe);
         await this.produtoService.addProdutoDetalhe(produtoDetalhe).toPromise();
-
+  
         const tabelaPrecoItem: TabelaPrecoItem = {
           codigoproduto: referenciaProduto,
           codigodebarra: combinacao.codigoDeBarras,
           preco: this.produto['preco'],
           idtabela: this.produto['tabela_preco']
         };
-
-        await this.tabelaPrecoItemService.addTabelaPrecoItem(tabelaPrecoItem).toPromise();
-
+  
+        console.log('TabelaPrecoItem para enviar:', tabelaPrecoItem);
+        await this.produtoService.addTabelaPrecoItem(tabelaPrecoItem).toPromise();
+  
         // Gerar estoque para cada loja
         for (const loja of this.lojas) {
           const estoque = {
             CodigodeBarra: combinacao.codigoDeBarras,
             codigoproduto: referenciaProduto,
-            Idloja: loja.Idloja, // Corrigido para usar Idloja
+            Idloja: loja.Idloja,
             Estoque: 0,
             reserva: 0,
             valorestoque: 0
           };
-          await this.estoqueService.addEstoque(estoque).toPromise();
+          console.log('Estoque para enviar:', estoque);
+          await this.produtoService.addEstoque(estoque).toPromise();
         }
       }
       console.log('Combinações, preços e estoque salvos com sucesso.');
@@ -570,6 +573,11 @@ export class ProdutoComponent implements OnInit {
       this.errorMessage = 'Erro ao salvar combinações, preços e estoque. Por favor, tente novamente.';
     }
   }
+  
+  
+
+  
+  
 
   async gerarCodigoDeBarrasParaProduto(): Promise<string> {
     const prefixoPais = '789';

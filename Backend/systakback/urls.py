@@ -73,5 +73,5 @@ urlpatterns = [
     path('tabelaprecoitems/preco/<str:codigo_barra>/', views.get_preco_por_codigo_barra, name='get_preco_por_codigo_barra'),
     path('produtodetalhes/', views.get_produto_detalhe_by_codigo_barra, name='get_produto_detalhe_by_codigo_barra'),
     path('test-post/', views.test_post, name='test_post'),
-    
+     
 ]

@@ -20,6 +20,7 @@ from django.db.models import F
 from django.db import transaction
 from datetime import timedelta
 from django.utils import timezone
+
 from .serializers import (
     UserSerializer, ClienteSerializer, FornecedorSerializer, VendedorSerializer,
     FuncionariosSerializer, TamanhoSerializer, CorSerializer, NaturezaLancamentoSerializer,
@@ -486,6 +487,14 @@ class EstoqueDetail(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Estoque.DoesNotExist:
             return Response({"error": "Estoque não encontrado."}, status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request, *args, **kwargs):
+            serializer = EstoqueSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
