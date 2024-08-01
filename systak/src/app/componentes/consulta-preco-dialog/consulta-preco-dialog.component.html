@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Consulta de Preço</h1>
+<div mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>Código de Barras</mat-label>
+    <input matInput [(ngModel)]="codigoBarra">
+  </mat-form-field>
+  <button mat-button (click)="consultarPreco()">Consultar</button>
+  <div *ngIf="preco !== null">
+    <p>Preço: R$ {{ preco }}</p>
+    <img *ngIf="produtoFoto" [src]="produtoFoto" alt="Foto do Produto">
+  </div>
+  <div *ngIf="errorMessage">
+    <p class="error-message">{{ errorMessage }}</p>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="fecharDialogo()">Fechar</button>
+</div>

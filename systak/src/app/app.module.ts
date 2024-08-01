@@ -22,6 +22,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatDialogModule } from '@angular/material/dialog'; // Importação do MatDialogModule
 
 import { AuthInterceptor } from './service/auth.interceptor';
 import { AuthService } from './service/auth.service';
@@ -53,6 +54,8 @@ import { EstoqueService } from './service/estoque.service';
 import { LojaService } from './service/loja.service';
 import { EstoqueInicialComponent } from './componentes/estoque-inicial/estoque-inicial.component';
 import { TesteProdutoComponent } from './componentes/teste-produto/teste-produto.component';
+import { ClientepadraoComponent } from './componentes/clientepadrao/clientepadrao.component';
+import { ConsultaPrecoDialogComponent } from './componentes/consulta-preco-dialog/consulta-preco-dialog.component';
 
 
 @NgModule({
@@ -86,7 +89,7 @@ import { TesteProdutoComponent } from './componentes/teste-produto/teste-produto
     SubgrupoComponent,
     GrupoDetalheComponent,
     TabelaPrecoComponent,      
-    ProdutoComponent, EstoqueInicialComponent, TesteProdutoComponent,
+    ProdutoComponent, EstoqueInicialComponent, TesteProdutoComponent, ClientepadraoComponent, ConsultaPrecoDialogComponent,
     
   ],
   
@@ -102,6 +105,7 @@ import { TesteProdutoComponent } from './componentes/teste-produto/teste-produto
     MatInputModule,
     MatButtonModule,
     MatAutocompleteModule,
+    MatDialogModule
   ],
   providers: [
     AuthService,

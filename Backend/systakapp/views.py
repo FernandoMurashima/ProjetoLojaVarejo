@@ -382,6 +382,28 @@ def get_preco_por_codigo_barra(request, codigo_barra):
     tabela_preco_item = get_object_or_404(TabelaPrecoItem, codigodebarra=codigo_barra)
     return JsonResponse({'preco': tabela_preco_item.preco})
 
+def get_produto_por_referencia(request, referencia):
+    produto = get_object_or_404(Produto, referencia=referencia)
+    return JsonResponse({
+        'descricao': produto.descricao,
+        'produto_foto': produto.produto_foto
+    })
+
+def get_preco_e_foto_por_codigo_barra(request, codigo_barra):
+    # Buscar o item da tabela de preços pelo código de barras
+    tabela_preco_item = get_object_or_404(TabelaPrecoItem, codigodebarra=codigo_barra)
+    
+    # Buscar o produto pela referência obtida na tabela de preços
+    produto = get_object_or_404(Produto, referencia=tabela_preco_item.codigoproduto)
+    
+    # Montar a resposta com o preço e a foto do produto
+    response_data = {
+        'preco': tabela_preco_item.preco,
+        'codigo_produto': tabela_preco_item.codigoproduto,
+        'produto_foto': produto.produto_foto  # Assumindo que produto_foto já é uma URL
+    }
+    return JsonResponse(response_data)
+
 @csrf_exempt
 def get_produto_detalhe_by_codigo_barra(request):
     if request.method == 'GET':

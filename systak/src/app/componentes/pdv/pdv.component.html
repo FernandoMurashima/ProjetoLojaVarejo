@@ -40,6 +40,8 @@
           </mat-form-field>
           <button (click)="selectCliente()" [disabled]="!selectedCliente" [ngClass]="{ 'selected-button': selectedCliente }">Selecionar</button>
           <button (click)="novoCliente()" [disabled]="!vendaIniciada || !selectedLoja || !selectedVendedor">Novo Cliente</button>
+
+          <button (click)="openConsultaPreco()">Consulta de Preço</button>
         </div>
       </div> 
     </div>

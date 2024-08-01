@@ -27,6 +27,7 @@ import { TabelaPrecoComponent } from './componentes/tabela-preco/tabela-preco.co
 import { EstoqueInicialComponent } from './componentes/estoque-inicial/estoque-inicial.component';
 import { PdvComponent } from './componentes/pdv/pdv.component';
 import { TesteProdutoComponent } from './componentes/teste-produto/teste-produto.component';
+import { ClientepadraoComponent } from './componentes/clientepadrao/clientepadrao.component';
 
 export const DEFAULT_ROUTE = '/index';
 
@@ -63,6 +64,8 @@ const routes: Routes = [
   { path: 'cadastro/produtos', component: ProdutoComponent, canActivate: [AuthGuardService] },
   { path: 'estoque-inicial', component: EstoqueInicialComponent, canActivate: [AuthGuardService] },
   { path: 'vendas/pdv', component: PdvComponent, canActivate: [AuthGuardService]},  
+  { path: 'cadastro/clientes2', component: ClientepadraoComponent, canActivate: [AuthGuardService] },
+
   { path: 'sair', component: LoginComponent }
   
 ];

@@ -20,6 +20,7 @@ import { ClienteComponent } from '../cliente/cliente.component';
 import { ReceberService } from '../../service/receber.service';
 import { ReceberItensService } from '../../service/receberitens.service';
 import { formatDate } from '@angular/common';
+import { ConsultaPrecoDialogComponent } from '../consulta-preco-dialog/consulta-preco-dialog.component';
 
 export interface Produto {
   id: number;
@@ -239,7 +240,7 @@ export class PdvComponent implements OnInit {
 
   novoCliente() {
     const dialogRef = this.dialog.open(ClienteComponent, {
-      width: '800px',  // Definindo a largura do diálogo para o modo de inserção
+      width: '1500px',  // Definindo a largura do diálogo para o modo de inserção
       data: { mode: 'insert' }  // Passando o modo de inserção como dado
     });
   
@@ -578,4 +579,16 @@ export class PdvComponent implements OnInit {
     this.vendaFinalizada = false;
     this.resetVenda();
   }
+
+  openConsultaPreco(): void {
+    const dialogRef = this.dialog.open(ConsultaPrecoDialogComponent, {
+      width: '400px'
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('O diálogo foi fechado');
+    });
+  }
+
+
 }

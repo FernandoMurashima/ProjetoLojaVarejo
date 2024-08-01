@@ -421,3 +421,16 @@ button:disabled {
 .totals-container h2 {
   margin-left: 20px; /* Ajusta o espaçamento entre os elementos */
 }
+
+
+.header2 .consulta-preco-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.header2 .consulta-preco-button:hover {
+  background-color: #0056b3;
+}

@@ -48,7 +48,7 @@ export interface TabelaPrecoItem {
 })
 export class ProdutoService {
   private apiUrl = `${environment.apiURL}/produtos/`;
-
+  private apiUrl1 = `${environment.apiURL}/`;
   constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
@@ -106,6 +106,10 @@ export class ProdutoService {
     return this.http.get<ProdutoDetalhe[]>(`${environment.apiURL}/produtos/detalhes/${referencia}/`, { headers: this.getHeaders() });
   }
 
+  getPrecoECodigoProduto(codigoBarra: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl1}produto/preco-foto/${codigoBarra}/`);
+  }
+
   buscarPorCodigoBarra(codigoBarra: string): Observable<ProdutoDetalhe> {
     console.log(`Buscando ProdutoDetalhe com código de barra: ${codigoBarra}`);
     return this.http.get<ProdutoDetalhe[]>(`${environment.apiURL}/produtodetalhes/?codigoBarra=${codigoBarra}`, { headers: this.getHeaders() }).pipe(
@@ -128,5 +132,9 @@ export class ProdutoService {
   getProdutoDescricaoPorId(idProduto: number): Observable<Produto> {
     console.log(`Buscando descrição do produto com ID: ${idProduto}`);
     return this.http.get<Produto>(`${this.apiUrl}${idProduto}/`, { headers: this.getHeaders() });
+  }
+
+  getProdutoPorReferencia(referencia: string): Observable<Produto> {
+    return this.http.get<Produto>(`${this.apiUrl}referencia/${referencia}/`);
   }
 }
