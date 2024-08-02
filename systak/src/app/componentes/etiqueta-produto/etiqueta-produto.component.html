@@ -1,0 +1,41 @@
+<div style="max-width: 400px; margin: 0 auto; font-family: Arial, sans-serif;">
+  <h2 style="text-align: center; color: #333;">Etiqueta de Produto</h2>
+  <div style="margin-bottom: 20px;">
+    <label for="codigoBarra" style="display: block; font-weight: bold; margin-bottom: 5px;"></label>
+    <input
+      type="text"
+      id="codigoBarra"
+      [(ngModel)]="codigoBarra"
+      placeholder="Digite o código de barra"
+      style="width: calc(100% - 22px); padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;"
+    />
+    <button (click)="buscarProduto()" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
+      Buscar Produto
+    </button>
+  </div>
+
+  <div *ngIf="produto" id="etiqueta" style="border: 1px solid #ddd; padding: 20px; border-radius: 4px; background-color: #f9f9f9;">
+    <div style="text-align: center; margin-bottom: 10px;">
+      <svg id="barcode"></svg>
+    </div>
+    <p style="margin: 5px 0; text-align: center; font-weight: bold;">{{ produto.Codigoproduto }}</p>
+    <p style="margin: 5px 0; text-align: center; font-weight: bold;">{{ produto.descricao }}</p>
+    <p style="margin: 5px 0; text-align: center; font-weight: bold;">{{ produto.cor }} - {{ produto.tamanho }} </p>
+    
+  </div>
+
+  <div *ngIf="produto" style="margin-top: 20px;">
+    <label for="quantidade" style="display: block; font-weight: bold; margin-bottom: 5px;">Quantidade de Etiquetas:</label>
+    <input
+      type="number"
+      id="quantidade"
+      [(ngModel)]="quantidade"
+      min="1"
+      max="100"
+      style="width: calc(100% - 22px); padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;"
+    />
+    <button (click)="imprimirEtiqueta()" style="width: 100%; padding: 10px; background-color: #007BFF; color: white; border: none; border-radius: 4px; cursor: pointer;">
+      Imprimir Etiqueta
+    </button>
+  </div>
+</div>

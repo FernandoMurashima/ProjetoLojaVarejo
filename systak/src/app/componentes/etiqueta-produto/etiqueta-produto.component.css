@@ -1,0 +1,32 @@
+.etiqueta {
+    border: 1px solid #000;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 200px;
+    text-align: center;
+    page-break-inside: avoid; /* Evita quebra de página dentro da etiqueta */
+  }
+  .codigo-barra {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  .detalhes {
+    font-size: 12px;
+  }
+  
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+  
+    #etiqueta, #etiqueta * {
+      visibility: visible;
+    }
+  
+    #etiqueta {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  }
+  

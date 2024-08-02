@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Abertura do PDV</h1>
+<div mat-dialog-content>
+  <p>Por favor, faça login para abrir o PDV.</p>
+  <mat-form-field appearance="fill">
+    <mat-label>Usuário</mat-label>
+    <input matInput [(ngModel)]="username" placeholder="Nome de usuário">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Senha</mat-label>
+    <input matInput [(ngModel)]="password" type="password" placeholder="Senha">
+  </mat-form-field>
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancelar</button>
+  <button mat-button (click)="login()">Entrar</button>
+</div>

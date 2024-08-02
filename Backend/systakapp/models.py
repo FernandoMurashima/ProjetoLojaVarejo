@@ -420,6 +420,36 @@ class ReceberItens(models.Model):
 
     def __str__(self):
         return f'{self.Titulo} - Parcela {self.Parcela}'
+    
+class ReceberCartao(models.Model):
+    TIPO_CARTAO_CHOICES = [
+        ('Débito', 'Débito'),
+        ('Crédito', 'Crédito'),
+    ]
+
+    STATUS_TRANSACAO_CHOICES = [
+        ('Aprovada', 'Aprovada'),
+        ('Negada', 'Negada'),
+        ('Pendente', 'Pendente'),
+        # Adicione outros status conforme necessário
+    ]
+
+    idvenda = models.ForeignKey('Venda', on_delete=models.CASCADE)
+    tipo_cartao = models.CharField(max_length=20, choices=TIPO_CARTAO_CHOICES)
+    data_transacao = models.DateTimeField(default=timezone.now)
+    valor_transacao = models.DecimalField(max_digits=10, decimal_places=2)
+    codigo_autorizacao = models.CharField(max_length=20)
+    bandeira = models.CharField(max_length=50)
+    parcelas = models.IntegerField(default=1)
+    numero_titulo = models.CharField(max_length=20)
+    status_transacao = models.CharField(max_length=20, choices=STATUS_TRANSACAO_CHOICES)
+    mensagem_retorno = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Transação {self.codigo_autorizacao} - {self.status_transacao}"
+   
 
 class Pagar(models.Model):
     Idpagar = models.AutoField(primary_key=True)

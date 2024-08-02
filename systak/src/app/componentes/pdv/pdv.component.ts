@@ -21,6 +21,7 @@ import { ReceberService } from '../../service/receber.service';
 import { ReceberItensService } from '../../service/receberitens.service';
 import { formatDate } from '@angular/common';
 import { ConsultaPrecoDialogComponent } from '../consulta-preco-dialog/consulta-preco-dialog.component';
+import { AberturaPdvComponent } from '../aberturapdv/aberturapdv.component'; // Importar o componente de abertura
 
 export interface Produto {
   id: number;
@@ -77,6 +78,7 @@ export class PdvComponent implements OnInit {
   senhaCancelamento: string = '';
   numeroParcelas: number = 1;
   vendaFinalizada: boolean = false; // Nova variável para controlar a exibição da mensagem de confirmação
+  pdvUser: string = ''; // Armazena o nome do usuário autorizado
 
   constructor(
     private lojaService: LojaService,
@@ -102,6 +104,7 @@ export class PdvComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.openAberturaDialog();  // Abre o diálogo de abertura ao inicializar
     this.loadLojas();
     this.authService.isAuthenticated().subscribe(isAuthenticated => {
       if (isAuthenticated) {
@@ -117,6 +120,22 @@ export class PdvComponent implements OnInit {
 
     this.clienteService.load().subscribe(data => {
       this.clientes = data;
+    });
+  }
+
+  openAberturaDialog(): void {
+    const dialogRef = this.dialog.open(AberturaPdvComponent, {
+      width: '300px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.pdvUser = result;  // Armazena o nome do usuário autorizado
+        console.log('PDV aberto por:', this.pdvUser);
+      } else {
+        console.log('Abertura do PDV cancelada');
+        this.router.navigate(['/home']);
+      }
     });
   }
 
@@ -230,8 +249,6 @@ export class PdvComponent implements OnInit {
     }, error => {
       console.error('Erro ao buscar o código fiscal:', error);
     });
-
-    
 
     this.clienteCtrl.enable();
     this.lojaCtrl.enable();
@@ -371,10 +388,6 @@ export class PdvComponent implements OnInit {
     console.log(`Produto removido: ${produto.descricao}`);
   }
   
-
-
-
-
   finalizarVenda() {
     console.log('Finalizando venda...');
     this.exibirPagamento = true;
@@ -586,9 +599,15 @@ export class PdvComponent implements OnInit {
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      console.log('O diálogo foi fechado');
+      console.log('Resultado do diálogo:', result); // Verifica o valor retornado
+      if (result) {
+        this.pdvUser = result;  // Armazena o nome do usuário autorizado
+        console.log('PDV aberto por:', this.pdvUser);
+        // Continue com a inicialização do PDV aqui, se necessário
+      } else {
+        console.log('Abertura do PDV cancelada');
+        this.router.navigate(['/home']); // Redireciona se o usuário cancelar
+      }
     });
   }
-
-
 }

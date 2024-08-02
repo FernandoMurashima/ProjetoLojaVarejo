@@ -72,6 +72,7 @@ urlpatterns = [
     path('create-user/', views.create_user, name='create_user'),  # Adicionando a nova rota para criação de novos usuários.
     path('tabelaprecoitems/preco/<str:codigo_barra>/', views.get_preco_por_codigo_barra, name='get_preco_por_codigo_barra'),
     path('produtodetalhes/', views.get_produto_detalhe_by_codigo_barra, name='get_produto_detalhe_by_codigo_barra'),
+    path('produtodetalhe/unico/', views.get_produto_detalhe_unico, name='get_produto_detalhe_unico'),
     path('test-post/', views.test_post, name='test_post'),
     path('produto/preco-foto/<str:codigo_barra>/', views.get_preco_e_foto_por_codigo_barra, name='get_preco_e_foto_por_codigo_barra'),
     

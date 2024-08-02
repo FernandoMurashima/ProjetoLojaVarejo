@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { map } from 'rxjs/operators';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { map, catchError, switchMap } from 'rxjs/operators'; // Adicione 'switchMap' aqui
+import { Observable, BehaviorSubject, of } from 'rxjs'; // Adicione 'of' aqui para uso no catchError
 
 interface AuthData {
   token: string;
@@ -51,13 +51,19 @@ export class AuthService {
     return this.authStatus.asObservable();
   }
 
-  public authenticate(username: string, password: string): Observable<any> {
+  public authenticate(username: string, password: string): Observable<User> {
     const url = `${environment.apiURL}/api-token-auth/`;
     const data = { username, password };
-    return this.http.post<AuthData>(url, data).pipe(map((response) => {
-      this.setToken(response.token);
-      return this.loadUserData(); // Carregar dados do usuário após autenticação
-    }));
+    return this.http.post<AuthData>(url, data).pipe(
+      switchMap(response => {
+        this.setToken(response.token);
+        return this.loadUserData(); // Carregar dados do usuário após autenticação
+      }),
+      catchError(error => {
+        console.error('Erro de autenticação no serviço:', error);
+        return of(null as any); // Retorna um observable nulo no caso de erro, evitando problemas de tipo
+      })
+    );
   }
 
   private setToken(value: string): void {
@@ -73,11 +79,17 @@ export class AuthService {
 
   private loadUserData(): Observable<User> {
     const url = `${environment.apiURL}/users/me/`; // Ajustado para o endpoint correto
-    return this.http.get<User>(url).pipe(map((user) => {
-      this.user = user;
-      console.log('Dados do usuário carregados:', this.user); // Log para verificar os dados do usuário
-      return user;
-    }));
+    return this.http.get<User>(url).pipe(
+      map(user => {
+        this.user = user;
+        console.log('Dados do usuário carregados:', this.user); // Log para verificar os dados do usuário
+        return user;
+      }),
+      catchError(error => {
+        console.error('Erro ao carregar dados do usuário:', error);
+        return of(null as any); // Retorna um observable nulo no caso de erro, evitando problemas de tipo
+      })
+    );
   }
 
   public getUser(): User | null {
@@ -89,3 +101,4 @@ export class AuthService {
     return this.loadUserData(); // Método público para carregar dados do usuário
   }
 }
+

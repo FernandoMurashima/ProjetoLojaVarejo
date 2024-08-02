@@ -570,3 +570,38 @@ def verificar_documento(request, documento):
     
     # Retornar a resposta em JSON
     return JsonResponse({'usado': documento_existe})
+
+@csrf_exempt
+def get_produto_detalhe_unico(request):
+    if request.method == 'GET':
+        codigo_barra = request.GET.get('codigoBarra', None)
+        if codigo_barra:
+            try:
+                # Obter o ProdutoDetalhe correspondente ao código de barra
+                produto_detalhe = ProdutoDetalhe.objects.filter(CodigodeBarra=codigo_barra).select_related('Idproduto', 'Idtamanho', 'Idcor').first()
+                
+                if produto_detalhe:
+                    # Obter a descrição do produto a partir do modelo Produto
+                    descricao_produto = produto_detalhe.Idproduto.Descricao
+
+                    # Obter o tamanho e a cor
+                    tamanho = produto_detalhe.Idtamanho.Tamanho if produto_detalhe.Idtamanho else "Tamanho não encontrado"
+                    cor = produto_detalhe.Idcor.Descricao if produto_detalhe.Idcor else "Cor não encontrada"
+
+                    response_data = {
+                        'Idprodutodetalhe': produto_detalhe.Idprodutodetalhe,
+                        'CodigodeBarra': produto_detalhe.CodigodeBarra,
+                        'Codigoproduto': produto_detalhe.Codigoproduto,
+                        'descricao': descricao_produto,
+                        'tamanho': tamanho,
+                        'cor': cor
+                    }
+                    return JsonResponse(response_data, safe=False)
+                else:
+                    return JsonResponse({'error': 'ProdutoDetalhe não encontrado.'}, status=404)
+            except Exception as e:
+                return JsonResponse({'error': str(e)}, status=500)
+        else:
+            return JsonResponse({'error': 'Código de barra não fornecido.'}, status=400)
+    else:
+        return JsonResponse({'error': 'Método não permitido.'}, status=405)

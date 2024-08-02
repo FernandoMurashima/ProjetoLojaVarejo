@@ -43,7 +43,7 @@ import { NcmComponent } from './componentes/ncm/ncm.component';
 import { PdvComponent } from './componentes/pdv/pdv.component';
 import { GrupoComponent } from './componentes/grupo/grupo.component';
 import { SubgrupoComponent } from './componentes/subgrupo/subgrupo.component';
-
+import { AberturaPdvComponent } from './componentes/aberturapdv/aberturapdv.component';
 import { GrupoService } from './service/grupo.service';
 import { SubgrupoService } from './service/subgrupo.service';
 import { TiposDeSubgrupoService } from './service/tiposdesubgrupo.service';
@@ -56,6 +56,8 @@ import { EstoqueInicialComponent } from './componentes/estoque-inicial/estoque-i
 import { TesteProdutoComponent } from './componentes/teste-produto/teste-produto.component';
 import { ClientepadraoComponent } from './componentes/clientepadrao/clientepadrao.component';
 import { ConsultaPrecoDialogComponent } from './componentes/consulta-preco-dialog/consulta-preco-dialog.component';
+import { EtiquetaProdutoComponent } from './componentes/etiqueta-produto/etiqueta-produto.component';
+
 
 
 @NgModule({
@@ -89,7 +91,14 @@ import { ConsultaPrecoDialogComponent } from './componentes/consulta-preco-dialo
     SubgrupoComponent,
     GrupoDetalheComponent,
     TabelaPrecoComponent,      
-    ProdutoComponent, EstoqueInicialComponent, TesteProdutoComponent, ClientepadraoComponent, ConsultaPrecoDialogComponent,
+    ProdutoComponent, 
+    EstoqueInicialComponent, 
+    TesteProdutoComponent, 
+    ClientepadraoComponent, 
+    ConsultaPrecoDialogComponent,
+    AberturaPdvComponent,
+    EtiquetaProdutoComponent,
+    
     
   ],
   
