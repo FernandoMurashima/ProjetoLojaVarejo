@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { map, catchError, switchMap } from 'rxjs/operators'; // Adicione 'switchMap' aqui
-import { Observable, BehaviorSubject, of } from 'rxjs'; // Adicione 'of' aqui para uso no catchError
+import { map, catchError, switchMap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 
 interface AuthData {
   token: string;
@@ -11,7 +11,7 @@ interface AuthData {
 interface User {
   id: number;
   username: string;
-  type: string; // Adicionando o campo type ao modelo de usuário
+  type: string;
 }
 
 @Injectable({
@@ -21,7 +21,7 @@ export class AuthService {
   private token: string | null;
   private tokenKey = 'authToken';
   private authStatus = new BehaviorSubject<boolean>(this.hasToken());
-  private user: User | null = null; // Adicionando um campo para armazenar os dados do usuário
+  private currentUser: User | null = null;
 
   constructor(private http: HttpClient) {
     this.token = sessionStorage.getItem(this.tokenKey);
@@ -33,7 +33,7 @@ export class AuthService {
   logout() {
     sessionStorage.removeItem(this.tokenKey);
     this.token = null;
-    this.user = null;
+    this.currentUser = null;
     this.authStatus.next(false);
     console.log('Usuário deslogado');
   }
@@ -57,11 +57,11 @@ export class AuthService {
     return this.http.post<AuthData>(url, data).pipe(
       switchMap(response => {
         this.setToken(response.token);
-        return this.loadUserData(); // Carregar dados do usuário após autenticação
+        return this.loadUserData();
       }),
       catchError(error => {
         console.error('Erro de autenticação no serviço:', error);
-        return of(null as any); // Retorna um observable nulo no caso de erro, evitando problemas de tipo
+        return of(null as any);
       })
     );
   }
@@ -70,7 +70,7 @@ export class AuthService {
     this.token = value;
     sessionStorage.setItem(this.tokenKey, this.token);
     this.authStatus.next(true);
-    console.log('Token armazenado no sessionStorage:', this.token); // Log para verificar o token
+    console.log('Token armazenado no sessionStorage:', this.token);
   }
 
   private hasToken(): boolean {
@@ -78,27 +78,25 @@ export class AuthService {
   }
 
   private loadUserData(): Observable<User> {
-    const url = `${environment.apiURL}/users/me/`; // Ajustado para o endpoint correto
+    const url = `${environment.apiURL}/users/me/`;
     return this.http.get<User>(url).pipe(
       map(user => {
-        this.user = user;
-        console.log('Dados do usuário carregados:', this.user); // Log para verificar os dados do usuário
+        this.currentUser = user;
+        console.log('Dados do usuário carregados:', this.currentUser);
         return user;
       }),
       catchError(error => {
         console.error('Erro ao carregar dados do usuário:', error);
-        return of(null as any); // Retorna um observable nulo no caso de erro, evitando problemas de tipo
+        return of(null as any);
       })
     );
   }
 
-  public getUser(): User | null {
-    console.log('Obtendo usuário:', this.user); // Log para verificar o usuário retornado
-    return this.user;
+  public refreshUserData(): Observable<User> {
+    return this.loadUserData();
   }
 
-  public refreshUserData(): Observable<User> {
-    return this.loadUserData(); // Método público para carregar dados do usuário
+  public getCurrentUser(): User | null {
+    return this.currentUser;
   }
 }
-

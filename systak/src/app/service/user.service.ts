@@ -59,4 +59,10 @@ export class UserService {
   deleteUser(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}users/${id}/`);
   }
+
+  checkUsernameAvailability(username: string): Observable<{ available: boolean }> {
+    return this.http.get<{ available: boolean }>(`${this.apiUrl}check-username/`, {
+      params: { username }
+    });
+  }
 }

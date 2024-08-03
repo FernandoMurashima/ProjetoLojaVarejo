@@ -1,3 +1,20 @@
+.container {
+    padding: 5px;
+    margin-top: 5px;
+    width: 100%; /* Ajuste conforme necessário */
+    box-sizing: border-box; /* Incluir padding e borda na largura total */
+}
+
+.banner {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 5px;
+    width: 90vw; /* Ajuste conforme necessário */
+    margin: 0; /* Remover margens externas */
+}
+
+
 form {
     padding: 5px;
     width: 100%; /* Ocupar 100% da largura do contêiner */
@@ -41,12 +58,7 @@ form {
 #email-box { grid-row: 6; grid-column: 5; width: 500px; }
 #conta-contabil-box { grid-row: 6; grid-column: 7; width: 250px; }
 
-.container {
-    padding: 5px;
-    margin-top: 5px;
-    width: 100%; /* Ajuste conforme necessário */
-    box-sizing: border-box; /* Incluir padding e borda na largura total */
-}
+
 
 /* Estilização dos itens de entrada */
 .input-item {
@@ -72,14 +84,6 @@ form {
 }
 
 /* Estilização do banner principal */
-.banner {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    padding: 5px;
-    width: 70vw; /* Ajuste conforme necessário */
-    margin: 0; /* Remover margens externas */
-}
 
 .btn01 {
     padding: 20px;

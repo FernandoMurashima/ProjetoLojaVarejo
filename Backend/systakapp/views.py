@@ -20,6 +20,7 @@ from django.db.models import F
 from django.db import transaction
 from datetime import timedelta
 from django.utils import timezone
+from django.views.decorators.http import require_GET
 
 from .serializers import (
     UserSerializer, ClienteSerializer, FornecedorSerializer, VendedorSerializer,
@@ -45,6 +46,8 @@ from .models import (
 import logging
 
 logger = logging.getLogger(__name__)
+
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -605,3 +608,10 @@ def get_produto_detalhe_unico(request):
             return JsonResponse({'error': 'Código de barra não fornecido.'}, status=400)
     else:
         return JsonResponse({'error': 'Método não permitido.'}, status=405)
+
+@require_GET
+def check_username(request):
+    username = request.GET.get('username', None)
+    if username is not None and User.objects.filter(username=username).exists():
+        return JsonResponse({'available': False})
+    return JsonResponse({'available': True})

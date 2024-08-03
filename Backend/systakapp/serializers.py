@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+
 from .models import (
     Loja, Cliente, Fornecedor, Vendedor, Funcionarios, Tamanho, Cor,
     Nat_Lancamento, ContaBancaria, Produto, ProdutoDetalhe, Tabelapreco, Estoque,
@@ -9,13 +10,23 @@ from .models import (
     Codigos, TabelaPrecoItem
 )
 
+User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
-    """
-    User serializer.
-    """
     class Meta:
-        model = get_user_model()
-        fields = '__all__'
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'password', 'type']
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
+    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Este nome de usuário já está em uso.")
+        return value
 
 class LojaSerializer(serializers.ModelSerializer):
     class Meta:
