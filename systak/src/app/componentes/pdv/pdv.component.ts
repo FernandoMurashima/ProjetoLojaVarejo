@@ -79,6 +79,8 @@ export class PdvComponent implements OnInit {
   numeroParcelas: number = 1;
   vendaFinalizada: boolean = false; // Nova variável para controlar a exibição da mensagem de confirmação
   pdvUser: string = ''; // Armazena o nome do usuário autorizado
+  totalPago: number = 0; // Nova variável para rastrear o total pago
+  valorForma: number = 0; // Valor atual para a forma de pagamento
 
   constructor(
     private lojaService: LojaService,
@@ -307,6 +309,8 @@ export class PdvComponent implements OnInit {
     this.exibirPagamento = false;
     this.produtoFoto = 'https://via.placeholder.com/150';
     this.documentoFiscal = '';
+    this.totalPago = 0; // Zera o total pago
+    this.valorForma = 0; // Zera o valor da forma
     console.log('Venda resetada.');
   }
 
@@ -393,6 +397,12 @@ export class PdvComponent implements OnInit {
     this.exibirPagamento = true;
   }
 
+  mostrarTelaPagamento() {
+    // Após clicar em "Pagar", exibe a tela de seleção de pagamento
+    this.exibirPagamento = true;
+    this.totalPago = 0;
+  }
+
   atualizarTotalComDesconto() {
     console.log('Atualizando total com desconto...');
     this.totalComDesconto = this.totalCompra - (this.totalCompra * (this.desconto / 100));
@@ -400,9 +410,22 @@ export class PdvComponent implements OnInit {
   }
 
   confirmarPagamento() {
+    // Adiciona o valor da forma de pagamento ao total pago
+    this.totalPago += this.valorForma;
+
     console.log('Confirmando pagamento com desconto de:', this.desconto);
     console.log('Forma de pagamento selecionada:', this.formaPagamento);
 
+    // Verifica se o total pago cobre o total com desconto
+    if (this.totalPago >= this.totalComDesconto) {
+      this.finalizarProcessoPagamento();
+    } else {
+      alert('O valor pago não cobre o total da venda. Adicione outra forma de pagamento.');
+      this.valorForma = 0; // Reseta o valor da forma para a próxima entrada
+    }
+  }
+
+  finalizarProcessoPagamento() {
     if (this.selectedVendedor === null || this.selectedLoja === null) {
       console.error('Erro: Loja ou vendedor não selecionado');
       return;
