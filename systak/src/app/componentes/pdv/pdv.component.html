@@ -109,55 +109,7 @@
 
     </div>
 
-    <!-- Tela de resumo do pagamento -->
-    <div *ngIf="exibirPagamento" class="pagamento">
-      <h2>Resumo do Pagamento</h2>
-      <div class="form-group">
-        <label for="totalVenda">Total da Venda:</label>
-        <input type="text" id="totalVenda" [value]="totalCompra | currency:'BRL'" disabled>
-      </div>
-      <div class="form-group">
-        <label for="desconto">Desconto (%):</label>
-        <input type="number" id="desconto" [(ngModel)]="desconto" (input)="atualizarTotalComDesconto()" min="0" max="100" step="0.01" placeholder="Digite o desconto (%)">
-      </div>
-      <div class="form-group">
-        <label for="totalComDesconto">Total com Desconto:</label>
-        <input type="text" id="totalComDesconto" [value]="totalComDesconto | currency:'BRL'" disabled>
-      </div>
-      <button (click)="mostrarTelaPagamento()">Pagar</button>
-    </div>
 
-    <!-- Tela de seleção de pagamento -->
-    <div *ngIf="exibirPagamento && totalPago < totalComDesconto" class="pagamento">
-      <h2>Pagamento</h2>
-      <div class="form-group">
-        <label for="valorRestante">Total Restante:</label>
-        <input type="text" id="valorRestante" [value]="(totalComDesconto - totalPago) | currency:'BRL'" disabled>
-      </div>
-      <div class="form-group">
-        <label for="formaPagamento">Forma de Pagamento:</label>
-        <select id="formaPagamento" [(ngModel)]="formaPagamento">
-          <option value="PIX">PIX</option>
-          <option value="DEBITO">Débito</option>
-          <option value="CREDITO_A_VISTA">Crédito à Vista</option>
-          <option value="CREDITO_PARCELADO">Crédito Parcelado</option>
-          <option value="DINHEIRO">Dinheiro</option>
-        </select>
-      </div>
-
-      <!-- Campo para número de parcelas, mostrado apenas se "Crédito Parcelado" for selecionado -->
-      <div class="form-group" *ngIf="formaPagamento === 'CREDITO_PARCELADO'">
-        <label for="numeroParcelas">Número de Parcelas:</label>
-        <input type="number" id="numeroParcelas" [(ngModel)]="numeroParcelas" min="1" max="12" />
-      </div>
-
-      <div class="form-group">
-        <label for="valorForma">Valor da Forma de Pagamento:</label>
-        <input type="number" id="valorForma" [(ngModel)]="valorForma" min="0.01" max="{{ totalComDesconto - totalPago }}" step="0.01" />
-      </div>
-
-      <button (click)="confirmarPagamento()">Confirmar Pagamento</button>
-    </div>
 
     <!-- Tela de confirmação após a finalização da venda -->
     <div *ngIf="vendaFinalizada" class="confirmacao-venda">
@@ -185,3 +137,61 @@
     </div>
   </ng-template>
 </div>
+
+<!-- Tela de resumo do pagamento -->
+<div *ngIf="exibirPagamento && estadoPagamento === 'resumo'" class="pagamento">
+  <h2>Resumo do Pagamento</h2>
+  <div class="form-group">
+    <label for="totalVenda">Total da Venda:</label>
+    <input type="text" id="totalVenda" [value]="totalCompra | currency:'BRL'" disabled>
+  </div>
+  <div class="form-group">
+    <label for="desconto">Desconto (%):</label>
+    <input type="number" id="desconto" [(ngModel)]="desconto" (input)="atualizarTotalComDesconto()" min="0" max="100" step="0.01" placeholder="Digite o desconto (%)">
+  </div>
+  <div class="form-group">
+    <label for="totalComDesconto">Total com Desconto:</label>
+    <input type="text" id="totalComDesconto" [value]="totalComDesconto | currency:'BRL'" disabled>
+  </div>
+  <button (click)="mostrarTelaPagamento()">Pagar</button>
+</div>
+
+<!-- Tela de seleção de pagamento -->
+<div *ngIf="exibirPagamento && estadoPagamento === 'pagamento'" class="pagamento">
+  <h2>Pagamento</h2>
+  <div class="form-group">
+    <label for="valorRestante">Total Restante:</label>
+    <input type="text" id="valorRestante" [value]="(totalComDesconto - totalPago) | currency:'BRL'" disabled>
+  </div>
+  <div class="form-group">
+    <label for="formaPagamento">Forma de Pagamento:</label>
+    <select id="formaPagamento" [(ngModel)]="formaPagamento">
+      <option value="PIX">PIX</option>
+      <option value="DEBITO">Débito</option>
+      <option value="CREDITO_A_VISTA">Crédito à Vista</option>
+      <option value="CREDITO_PARCELADO">Crédito Parcelado</option>
+      <option value="DINHEIRO">Dinheiro</option>
+    </select>
+  </div>
+
+  <!-- Campo para número de parcelas, mostrado apenas se "Crédito Parcelado" for selecionado -->
+  <div class="form-group" *ngIf="formaPagamento === 'CREDITO_PARCELADO'">
+    <label for="numeroParcelas">Número de Parcelas:</label>
+    <input type="number" id="numeroParcelas" [(ngModel)]="numeroParcelas" min="1" max="12" />
+  </div>
+
+  <div class="form-group">
+    <label for="valorForma">Valor da Forma de Pagamento:</label>
+    <input type="number" id="valorForma" [(ngModel)]="valorForma" min="0.01" max="{{ totalComDesconto - totalPago }}" step="0.01" />
+  </div>
+
+  <button (click)="confirmarPagamento()">Confirmar Pagamento</button>
+</div>
+
+<!-- Tela de confirmação após a finalização da venda -->
+<div *ngIf="vendaFinalizada" class="confirmacao-venda">
+  <h2>Venda Finalizada com Sucesso!</h2>
+  <p>Tecle algo para Continuar!</p>
+  <button (click)="continuarVenda()">Continuar</button>
+</div>
+

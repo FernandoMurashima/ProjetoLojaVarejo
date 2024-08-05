@@ -81,6 +81,10 @@ export class PdvComponent implements OnInit {
   pdvUser: string = ''; // Armazena o nome do usuário autorizado
   totalPago: number = 0; // Nova variável para rastrear o total pago
   valorForma: number = 0; // Valor atual para a forma de pagamento
+  estadoPagamento: 'resumo' | 'pagamento' | 'finalizado' = 'resumo'; // Nova variável para controlar o estado do pagamento
+
+  proximaParcelaGlobal: number = 1; // Variável global para controlar o número de parcela
+
 
   constructor(
     private lojaService: LojaService,
@@ -233,6 +237,7 @@ export class PdvComponent implements OnInit {
 
   iniciarVenda() {
     console.log('Iniciando venda...');
+    this.proximaParcelaGlobal = 1
     this.vendaIniciada = true;
     this.botaoVoltarDesativado = true;
     this.selectedLoja = null;
@@ -395,104 +400,18 @@ export class PdvComponent implements OnInit {
   finalizarVenda() {
     console.log('Finalizando venda...');
     this.exibirPagamento = true;
+    this.estadoPagamento = 'resumo'; // Define o estado inicial como 'resumo'
   }
 
   mostrarTelaPagamento() {
-    // Após clicar em "Pagar", exibe a tela de seleção de pagamento
-    this.exibirPagamento = true;
-    this.totalPago = 0;
+    console.log('Botão Pagar clicado');
+    this.estadoPagamento = 'pagamento'; // Altera para o estado de pagamento
   }
 
   atualizarTotalComDesconto() {
     console.log('Atualizando total com desconto...');
     this.totalComDesconto = this.totalCompra - (this.totalCompra * (this.desconto / 100));
     console.log('Total com desconto atualizado:', this.totalComDesconto);
-  }
-
-  confirmarPagamento() {
-    // Adiciona o valor da forma de pagamento ao total pago
-    this.totalPago += this.valorForma;
-
-    console.log('Confirmando pagamento com desconto de:', this.desconto);
-    console.log('Forma de pagamento selecionada:', this.formaPagamento);
-
-    // Verifica se o total pago cobre o total com desconto
-    if (this.totalPago >= this.totalComDesconto) {
-      this.finalizarProcessoPagamento();
-    } else {
-      alert('O valor pago não cobre o total da venda. Adicione outra forma de pagamento.');
-      this.valorForma = 0; // Reseta o valor da forma para a próxima entrada
-    }
-  }
-
-  finalizarProcessoPagamento() {
-    if (this.selectedVendedor === null || this.selectedLoja === null) {
-      console.error('Erro: Loja ou vendedor não selecionado');
-      return;
-    }
-
-    this.verificarDocumentoFiscal().then(() => {
-      const vendaData = {
-        venda: {
-          Idloja: this.selectedLoja!,
-          Idcliente: this.selectedCliente?.Idcliente || 0,
-          Desconto: this.desconto,
-          Cancelada: 'N',
-          Documento: this.documentoFiscal,
-          Valor: this.totalComDesconto,
-          Tipo_documento: 'NFce',
-          Idfuncionario: this.selectedVendedor!,
-          comissao: Number((this.totalComDesconto * 0.01).toFixed(2)),
-          acrescimo: 0,
-          tipopag: this.formaPagamento,
-          numeroParcelas: this.formaPagamento === 'CREDITO_PARCELADO' ? this.numeroParcelas : 1
-        },
-        itens: this.produtos.map(item => ({
-          Documento: this.documentoFiscal,
-          CodigodeBarra: item.codigo,
-          codigoproduto: item.referencia,
-          Qtd: item.quantidade,
-          valorunitario: item.preco,
-          Desconto: 0,
-          Total_item: item.total,
-        }))
-      };
-
-      console.log('Dados da venda que serão enviados:', vendaData);
-
-      this.http.post(`${environment.apiURL}/vendas/create_venda/`, vendaData).subscribe({
-        next: (response: any) => {
-          console.log('Venda gravada com sucesso', response);
-
-          this.baixarEstoque(vendaData.itens).then(() => {
-            this.codigoService.incrementarCodigo('Nfce').subscribe({
-              next: (incrementResponse: any) => {
-                console.log('Código fiscal incrementado com sucesso:', incrementResponse);
-                this.gravarDadosFinanceiros(vendaData.venda, vendaData.itens).then(() => {
-                  this.vendaFinalizada = true; // Mostra a mensagem de confirmação
-                  this.exibirPagamento = false;
-                }).catch(financeError => {
-                  console.error('Erro ao gravar dados financeiros:', financeError);
-                });
-              },
-              error: incrementError => {
-                console.error('Erro ao incrementar o código fiscal:', incrementError);
-              }
-            });
-          }).catch(error => {
-            console.error('Erro ao baixar o estoque:', error);
-          });
-        },
-        error: error => {
-          console.error('Erro ao gravar venda', error);
-          if (error.error) {
-            console.error('Detalhes do erro:', error.error);
-          }
-        }
-      });
-    }).catch(error => {
-      console.error('Erro ao verificar documento fiscal:', error);
-    });
   }
 
   verificarDocumentoFiscal(): Promise<void> {
@@ -551,65 +470,7 @@ export class PdvComponent implements OnInit {
     }
   }
 
-  async gravarDadosFinanceiros(venda: any, itens: any[]): Promise<void> {
-    try {
-      const receberData = {
-        idloja: venda.Idloja,
-        Documento: venda.Documento,
-        TipoRecebimento: venda.tipopag,
-        Valor: venda.Valor,
-        ContaContabil: '',
-        Nat_Lancamento: '',
-        data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US')
-      };
-
-      const receberResponse: any = await this.receberService.createReceber(receberData).toPromise();
-      const idReceber = receberResponse.Idreceber;
-
-      for (let i = 1; i <= venda.numeroParcelas; i++) {
-        let dataVencimento = new Date();
-        switch (venda.tipopag) {
-          case 'PIX':
-          case 'DINHEIRO':
-            dataVencimento = new Date();
-            break;
-          case 'DEBITO':
-            dataVencimento.setDate(dataVencimento.getDate() + 1);
-            break;
-          case 'CREDITO_A_VISTA':
-            dataVencimento.setDate(dataVencimento.getDate() + 30);
-            break;
-          case 'CREDITO_PARCELADO':
-            dataVencimento.setDate(dataVencimento.getDate() + 30 * i);
-            break;
-          default:
-            throw new Error(`Forma de pagamento desconhecida: ${venda.tipopag}`);
-        }
-
-        const receberItensData = {
-          Idreceber: idReceber,
-          Titulo: `${venda.Documento}-${i}`,
-          Parcela: i,
-          Datavencimento: formatDate(dataVencimento, 'yyyy-MM-dd', 'en-US'),
-          Databaixa: null,
-          valor_parcela: venda.tipopag === 'CREDITO_PARCELADO' ? venda.Valor / venda.numeroParcelas : venda.Valor,
-          juros: 0,
-          desconto: 0,
-          Titulo_descontado: 'N',
-          Data_desconto: null,
-          idconta: 1,
-          data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US')
-        };
-
-        await this.receberItensService.createReceberItens(receberItensData).toPromise();
-      }
-
-      console.log('Dados financeiros gravados com sucesso');
-    } catch (error: any) {
-      console.error('Erro ao gravar dados financeiros:', error);
-      alert(`Erro ao gravar dados financeiros: ${error.message || error}`);
-    }
-  }
+  
 
   continuarVenda() {
     this.vendaFinalizada = false;
@@ -633,4 +494,240 @@ export class PdvComponent implements OnInit {
       }
     });
   }
+
+  confirmarPagamento() {
+    console.log('Confirmando pagamento com desconto de:', this.desconto);
+    console.log('Forma de pagamento selecionada:', this.formaPagamento);
+  
+    const valorRestante = this.totalComDesconto - this.totalPago;
+  
+    if (this.valorForma > valorRestante) {
+      alert(`O valor da forma de pagamento excede o valor restante de R$${valorRestante.toFixed(2)}. Ajuste o valor.`);
+      return;
+    }
+  
+    this.totalPago += this.valorForma;
+  
+    console.log('Total pago atualizado:', this.totalPago);
+  
+    this.gravarFormaPagamento().then(() => {
+      if (this.totalPago >= this.totalComDesconto) {
+        this.finalizarProcessoPagamento();
+      } else {
+        alert(`O valor pago não cobre o total da venda. Valor restante: R$${(this.totalComDesconto - this.totalPago).toFixed(2)}.`);
+        this.valorForma = 0;
+      }
+    }).catch(error => {
+      console.error('Erro ao gravar forma de pagamento:', error);
+    });
+  }
+
+  async gravarFormaPagamento(): Promise<void> {
+    try {
+      let parcelas = 1;
+      if (this.formaPagamento === 'CREDITO_PARCELADO') {
+        parcelas = this.numeroParcelas;
+      }
+      const valorParcela = this.valorForma / parcelas;
+  
+      const idReceber = await this.obterOuCriarReceber();
+  
+      // Utilize a variável de instância corretamente
+      for (let i = 0; i < parcelas; i++) {
+        let dataVencimento = new Date();
+        switch (this.formaPagamento) {
+          case 'PIX':
+          case 'DINHEIRO':
+            dataVencimento = new Date();
+            break;
+          case 'DEBITO':
+            dataVencimento.setDate(dataVencimento.getDate() + 1);
+            break;
+          case 'CREDITO_A_VISTA':
+            dataVencimento.setDate(dataVencimento.getDate() + 30);
+            break;
+          case 'CREDITO_PARCELADO':
+            dataVencimento.setDate(dataVencimento.getDate() + 30 * (i + 1));
+            break;
+          default:
+            throw new Error(`Forma de pagamento desconhecida: ${this.formaPagamento}`);
+        }
+  
+        const receberItensData = {
+          Idreceber: idReceber,
+          Titulo: `${this.documentoFiscal}-${this.proximaParcelaGlobal++}`, // Incrementa corretamente
+          Parcela: i + 1,
+          Datavencimento: formatDate(dataVencimento, 'yyyy-MM-dd', 'en-US'),
+          Databaixa: null,
+          valor_parcela: valorParcela,
+          juros: 0,
+          desconto: 0,
+          Titulo_descontado: 'N',
+          Data_desconto: null,
+          idconta: 1,
+          data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US')
+        };
+  
+        console.log('Dados para receberItens:', receberItensData);
+  
+        await this.receberItensService.createReceberItens(receberItensData).toPromise();
+      }
+  
+      console.log(`Forma de pagamento ${this.formaPagamento} gravada com sucesso`);
+    } catch (error: any) {
+      console.error('Erro ao gravar dados financeiros:', error);
+      throw new Error(`Erro ao gravar dados financeiros: ${error.message || error}`);
+    }
+  }
+  
+
+  
+  
+  
+  
+  async obterOuCriarReceber(): Promise<number> {
+    const receberData = {
+      idloja: this.selectedLoja!,
+      Documento: this.documentoFiscal,
+      TipoRecebimento: this.formaPagamento,
+      Valor: this.totalComDesconto,
+      ContaContabil: '',
+      Nat_Lancamento: '',
+      data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US')
+    };
+  
+    const receberResponse: any = await this.receberService.createReceber(receberData).toPromise();
+    return receberResponse.Idreceber;
+  
+  }
+
+  async gravarDadosFinanceiros(venda: any, itens: any[]): Promise<void> {
+    try {
+        const receberData = {
+            idloja: venda.Idloja,
+            Documento: venda.Documento,
+            TipoRecebimento: venda.tipopag,
+            Valor: venda.Valor,
+            ContaContabil: '',
+            Nat_Lancamento: '',
+            data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US')
+        };
+
+        const receberResponse: any = await this.receberService.createReceber(receberData).toPromise();
+        const idReceber = receberResponse.Idreceber;
+
+        for (let i = 1; i <= venda.numeroParcelas; i++) {
+            let dataVencimento = new Date();
+            switch (venda.tipopag) {
+                case 'PIX':
+                case 'DINHEIRO':
+                    dataVencimento = new Date();
+                    break;
+                case 'DEBITO':
+                    dataVencimento.setDate(dataVencimento.getDate() + 1);
+                    break;
+                case 'CREDITO_A_VISTA':
+                    dataVencimento.setDate(dataVencimento.getDate() + 30);
+                    break;
+                case 'CREDITO_PARCELADO':
+                    dataVencimento.setDate(dataVencimento.getDate() + 30 * i);
+                    break;
+                default:
+                    throw new Error(`Forma de pagamento desconhecida: ${venda.tipopag}`);
+            }
+
+            const receberItensData = {
+                Idreceber: idReceber,
+                Titulo: `${venda.Documento}-${i}`,
+                Parcela: i,
+                Datavencimento: formatDate(dataVencimento, 'yyyy-MM-dd', 'en-US'),
+                Databaixa: null,
+                valor_parcela: venda.tipopag === 'CREDITO_PARCELADO' ? venda.Valor / venda.numeroParcelas : venda.Valor,
+                juros: 0,
+                desconto: 0,
+                Titulo_descontado: 'N',
+                Data_desconto: null,
+                idconta: 1,
+                data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US')
+            };
+
+            await this.receberItensService.createReceberItens(receberItensData).toPromise();
+        }
+
+        console.log('Dados financeiros gravados com sucesso');
+    } catch (error: any) {
+        console.error('Erro ao gravar dados financeiros:', error);
+        alert(`Erro ao gravar dados financeiros: ${error.message || error}`);
+    }
+}
+
+finalizarProcessoPagamento() {
+  if (this.selectedVendedor === null || this.selectedLoja === null) {
+      console.error('Erro: Loja ou vendedor não selecionado');
+      return;
+  }
+
+  this.verificarDocumentoFiscal().then(() => {
+      const vendaData = {
+          venda: {
+              Idloja: this.selectedLoja!,
+              Idcliente: this.selectedCliente?.Idcliente || 0,
+              Desconto: this.desconto,
+              Cancelada: 'N',
+              Documento: this.documentoFiscal,
+              Valor: this.totalComDesconto,
+              Tipo_documento: 'NFce',
+              Idfuncionario: this.selectedVendedor!,
+              comissao: Number((this.totalComDesconto * 0.01).toFixed(2)),
+              acrescimo: 0,
+              tipopag: this.formaPagamento,
+              numeroParcelas: this.formaPagamento === 'CREDITO_PARCELADO' ? this.numeroParcelas : 1
+          },
+          itens: this.produtos.map(item => ({
+              Documento: this.documentoFiscal,
+              CodigodeBarra: item.codigo,
+              codigoproduto: item.referencia,
+              Qtd: item.quantidade,
+              valorunitario: item.preco,
+              Desconto: 0,
+              Total_item: item.total,
+          }))
+      };
+
+      console.log('Dados da venda que serão enviados:', vendaData);
+
+      this.http.post(`${environment.apiURL}/vendas/create_venda/`, vendaData).subscribe({
+          next: (response: any) => {
+              console.log('Venda gravada com sucesso', response);
+
+              this.baixarEstoque(vendaData.itens).then(() => {
+                  this.codigoService.incrementarCodigo('Nfce').subscribe({
+                      next: (incrementResponse: any) => {
+                          console.log('Código fiscal incrementado com sucesso:', incrementResponse);
+
+                          // Define o estado de pagamento como finalizado
+                          this.estadoPagamento = 'finalizado'; // Novo estado adicionado
+                          this.vendaFinalizada = true; // Mostra a mensagem de confirmação
+                          this.exibirPagamento = false;
+                      },
+                      error: incrementError => {
+                          console.error('Erro ao incrementar o código fiscal:', incrementError);
+                      }
+                  });
+              }).catch(error => {
+                  console.error('Erro ao baixar o estoque:', error);
+              });
+          },
+          error: error => {
+              console.error('Erro ao gravar venda', error);
+              if (error.error) {
+                  console.error('Detalhes do erro:', error.error);
+              }
+          }
+      });
+  }).catch(error => {
+      console.error('Erro ao verificar documento fiscal:', error);
+  });
+}
+
 }
