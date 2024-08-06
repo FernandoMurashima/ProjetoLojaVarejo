@@ -31,7 +31,7 @@ from .serializers import (
     ReceberSerializer, ReceberItensSerializer, PagarSerializer, PagarItemSerializer,
     CompraSerializer, CompraItemSerializer, PedidoCompraSerializer, PedidoCompraItemSerializer, LojaSerializer, GrupoSerializer,
     UnidadeSerializer, MaterialSerializer, FamiliaSerializer, ColecaoSerializer, GradeSerializer, NcmSerializer, SubGrupoSerializer,
-    GrupoDetalheSerializer, CodigosSerializer, TabelaPrecoItemSerializer
+    GrupoDetalheSerializer, CodigosSerializer, TabelaPrecoItemSerializer, ImpostoSerializer
 )
 
 from .models import (
@@ -40,7 +40,7 @@ from .models import (
     Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos, Inventario,
     InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem, Grade,
     PedidoCompra, PedidoCompraItem, Grupo, Unidade, Material, Familia, Colecao, Ncm, Subgrupo, 
-    GrupoDetalhe, Codigos, TabelaPrecoItem
+    GrupoDetalhe, Codigos, TabelaPrecoItem, Imposto
 )
 
 import logging
@@ -285,6 +285,10 @@ class CodigosViewSet(viewsets.ModelViewSet):
     queryset = Codigos.objects.all()
     serializer_class = CodigosSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+class ImpostoViewSet(viewsets.ModelViewSet):
+    queryset = Imposto.objects.all()
+    serializer_class = ImpostoSerializer
 
 @api_view(['POST'])
 def add_grupo_detalhe(request):
@@ -615,3 +619,4 @@ def check_username(request):
     if username is not None and User.objects.filter(username=username).exists():
         return JsonResponse({'available': False})
     return JsonResponse({'available': True})
+

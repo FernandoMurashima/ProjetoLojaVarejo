@@ -577,3 +577,11 @@ class Codigos(models.Model):
     def __str__(self):
          return f'{self.variavel}: {self.valor}'
 
+class Imposto(models.Model):
+    icms = models.DecimalField(max_digits=5, decimal_places=2)
+    pis = models.DecimalField(max_digits=5, decimal_places=2)
+    cofins = models.DecimalField(max_digits=5, decimal_places=2)
+    csll = models.DecimalField(max_digits=5, decimal_places=2)
+
+    def __str__(self):
+        return f"ICMS: {self.icms}%, PIS: {self.pis}%, COFINS: {self.cofins}%, CSLL: {self.csll}%"
