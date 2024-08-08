@@ -45,6 +45,7 @@ interface VerificarDocumentoResponse {
   styleUrls: ['./pdv.component.css']
 })
 export class PdvComponent implements OnInit {
+  receberId: number | null = null;
   clienteCtrl = new FormControl({ value: '', disabled: true });
   lojaCtrl = new FormControl({ value: '', disabled: true });
   vendedorCtrl = new FormControl({ value: '', disabled: true });
@@ -573,8 +574,31 @@ export class PdvComponent implements OnInit {
       throw new Error(`Erro ao gravar dados financeiros: ${error.message || error}`);
     }
   }
-  
+
   async obterOuCriarReceber(): Promise<number> {
+    if (this.receberId !== null) {
+        return this.receberId;
+    }
+
+    const receberData = {
+        idloja: this.selectedLoja!,
+        Documento: this.documentoFiscal,
+        TipoRecebimento: this.formaPagamento,
+        Valor: this.totalComDesconto,
+        ContaContabil: '',
+        Nat_Lancamento: '',
+        data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US')
+    };
+
+    const receberResponse: any = await this.receberService.createReceber(receberData).toPromise();
+    this.receberId = receberResponse.Idreceber;
+    return receberResponse.Idreceber;
+}
+
+
+
+  
+/*   async obterOuCriarReceber(): Promise<number> {
     const receberData = {
       idloja: this.selectedLoja!,
       Documento: this.documentoFiscal,
@@ -587,7 +611,7 @@ export class PdvComponent implements OnInit {
   
     const receberResponse: any = await this.receberService.createReceber(receberData).toPromise();
     return receberResponse.Idreceber;
-  }
+  } */
 
   async gravarDadosFinanceiros(venda: any, itens: any[]): Promise<void> {
     try {
