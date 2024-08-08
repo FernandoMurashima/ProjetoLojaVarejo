@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import make_password
 from rest_framework import viewsets, permissions, generics
+from decimal import Decimal, ROUND_HALF_UP
 import json
 
 from rest_framework.response import Response
@@ -463,7 +464,7 @@ def test_post(request):
     return JsonResponse({'status': 'success', 'message': 'POST request received'})
 
 
-@csrf_exempt
+""" @csrf_exempt
 @api_view(['POST'])
 def create_venda(request):
     print("create_venda called")  # Log para garantir que a função está sendo chamada
@@ -482,7 +483,7 @@ def create_venda(request):
                 venda.delete()
                 return Response(item_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(venda_serializer.data, status=status.HTTP_201_CREATED)
-    return Response(venda_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(venda_serializer.errors, status=status.HTTP_400_BAD_REQUEST) """
 
 class EstoqueDetail(APIView):
 
@@ -620,3 +621,73 @@ def check_username(request):
         return JsonResponse({'available': False})
     return JsonResponse({'available': True})
 
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_venda(request):
+    print("create_venda called")  # Log para garantir que a função está sendo chamada
+    venda_data = request.data.get('venda')
+    itens_data = request.data.get('itens')
+
+    try:
+        # Carregar alíquotas dos impostos para a loja selecionada
+        loja_id = venda_data['Idloja']
+        impostos = Imposto.objects.get(idloja=loja_id)
+
+        # Calcular as alíquotas
+        Aicms = float(impostos.icms) / 100
+        Apis = float(impostos.pis) / 100
+        Acofins = float(impostos.cofins) / 100
+        Acsll = float(impostos.csll) / 100
+
+        venda_serializer = VendaSerializer(data=venda_data)
+        if venda_serializer.is_valid():
+            venda = venda_serializer.save()
+
+            # Inicializar totais de impostos para a venda
+            total_icms = Decimal('0.0')
+            total_pis = Decimal('0.0')
+            total_cofins = Decimal('0.0')
+            total_csll = Decimal('0.0')
+
+            for item_data in itens_data:
+                # Calcular valores dos impostos para cada item
+                valor_total_item = Decimal(item_data['Total_item'])
+                iicms = (valor_total_item * Decimal(Aicms)).quantize(Decimal('0.00001'), rounding=ROUND_HALF_UP)
+                ipis = (valor_total_item * Decimal(Apis)).quantize(Decimal('0.00001'), rounding=ROUND_HALF_UP)
+                icofins = (valor_total_item * Decimal(Acofins)).quantize(Decimal('0.00001'), rounding=ROUND_HALF_UP)
+                icsll = (valor_total_item * Decimal(Acsll)).quantize(Decimal('0.00001'), rounding=ROUND_HALF_UP)
+
+                # Atualizar item_data com os valores dos impostos
+                item_data['iicms'] = iicms
+                item_data['ipis'] = ipis
+                item_data['icofins'] = icofins
+                item_data['icsll'] = icsll
+
+                # Incrementar os totais de impostos
+                total_icms += iicms
+                total_pis += ipis
+                total_cofins += icofins
+                total_csll += icsll
+
+                item_data['Idvenda'] = venda.Idvenda
+                item_serializer = VendaItemSerializer(data=item_data)
+                if item_serializer.is_valid():
+                    item_serializer.save()
+                else:
+                    venda.delete()
+                    return Response(item_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            # Atualizar venda com os totais de impostos
+            venda.ticms = total_icms.quantize(Decimal('0.00001'), rounding=ROUND_HALF_UP)
+            venda.tpis = total_pis.quantize(Decimal('0.00001'), rounding=ROUND_HALF_UP)
+            venda.tcofins = total_cofins.quantize(Decimal('0.00001'), rounding=ROUND_HALF_UP)
+            venda.tcsll = total_csll.quantize(Decimal('0.00001'), rounding=ROUND_HALF_UP)
+            venda.save()
+
+            return Response(venda_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(venda_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Imposto.DoesNotExist:
+        return Response({"error": "Impostos não encontrados para a loja selecionada."}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

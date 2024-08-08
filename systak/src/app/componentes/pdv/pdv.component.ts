@@ -21,7 +21,7 @@ import { ReceberService } from '../../service/receber.service';
 import { ReceberItensService } from '../../service/receberitens.service';
 import { formatDate } from '@angular/common';
 import { ConsultaPrecoDialogComponent } from '../consulta-preco-dialog/consulta-preco-dialog.component';
-import { AberturaPdvComponent } from '../aberturapdv/aberturapdv.component'; // Importar o componente de abertura
+import { AberturaPdvComponent } from '../aberturapdv/aberturapdv.component';
 
 export interface Produto {
   id: number;
@@ -49,7 +49,7 @@ export class PdvComponent implements OnInit {
   lojaCtrl = new FormControl({ value: '', disabled: true });
   vendedorCtrl = new FormControl({ value: '', disabled: true });
 
-  totalItens: number = 0; // Nova variável para armazenar o total de itens
+  totalItens: number = 0;
 
   clientesFiltrados: Observable<Cliente[]>;
   clienteInput: string = '';
@@ -77,14 +77,12 @@ export class PdvComponent implements OnInit {
   mostrarDialogoCancelamento: boolean = false;
   senhaCancelamento: string = '';
   numeroParcelas: number = 1;
-  vendaFinalizada: boolean = false; // Nova variável para controlar a exibição da mensagem de confirmação
-  pdvUser: string = ''; // Armazena o nome do usuário autorizado
-  totalPago: number = 0; // Nova variável para rastrear o total pago
-  valorForma: number = 0; // Valor atual para a forma de pagamento
-  estadoPagamento: 'resumo' | 'pagamento' | 'finalizado' = 'resumo'; // Nova variável para controlar o estado do pagamento
-
-  proximaParcelaGlobal: number = 1; // Variável global para controlar o número de parcela
-
+  vendaFinalizada: boolean = false;
+  pdvUser: string = '';
+  totalPago: number = 0;
+  valorForma: number = 0;
+  estadoPagamento: 'resumo' | 'pagamento' | 'finalizado' = 'resumo';
+  proximaParcelaGlobal: number = 1;
 
   constructor(
     private lojaService: LojaService,
@@ -310,12 +308,12 @@ export class PdvComponent implements OnInit {
     this.productQty = 1;
     this.produtos = [];
     this.totalCompra = 0;
-    this.totalItens = 0; // Zera o total de itens
+    this.totalItens = 0;
     this.exibirPagamento = false;
     this.produtoFoto = 'https://via.placeholder.com/150';
     this.documentoFiscal = '';
-    this.totalPago = 0; // Zera o total pago
-    this.valorForma = 0; // Zera o valor da forma
+    this.totalPago = 0;
+    this.valorForma = 0;
     console.log('Venda resetada.');
   }
 
@@ -368,7 +366,7 @@ export class PdvComponent implements OnInit {
   
                   this.produtos.push(novoProduto);
                   this.totalCompra += novoProduto.total;
-                  this.totalItens += novoProduto.quantidade; // Atualiza o total de itens
+                  this.totalItens += novoProduto.quantidade;
                   this.atualizarTotalComDesconto();
                   this.produtoFoto = produtoCompleto.produto_foto || 'https://via.placeholder.com/150';
                   console.log('Produto adicionado à lista:', novoProduto);
@@ -391,7 +389,7 @@ export class PdvComponent implements OnInit {
   excluirProduto(index: number) {
     const produto = this.produtos[index];
     this.totalCompra -= produto.total;
-    this.totalItens -= produto.quantidade; // Atualiza o total de itens
+    this.totalItens -= produto.quantidade;
     this.atualizarTotalComDesconto();
     this.produtos.splice(index, 1);
     console.log(`Produto removido: ${produto.descricao}`);
@@ -400,12 +398,12 @@ export class PdvComponent implements OnInit {
   finalizarVenda() {
     console.log('Finalizando venda...');
     this.exibirPagamento = true;
-    this.estadoPagamento = 'resumo'; // Define o estado inicial como 'resumo'
+    this.estadoPagamento = 'resumo';
   }
 
   mostrarTelaPagamento() {
     console.log('Botão Pagar clicado');
-    this.estadoPagamento = 'pagamento'; // Altera para o estado de pagamento
+    this.estadoPagamento = 'pagamento';
   }
 
   atualizarTotalComDesconto() {
@@ -470,8 +468,6 @@ export class PdvComponent implements OnInit {
     }
   }
 
-  
-
   continuarVenda() {
     this.vendaFinalizada = false;
     this.resetVenda();
@@ -483,14 +479,13 @@ export class PdvComponent implements OnInit {
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      console.log('Resultado do diálogo:', result); // Verifica o valor retornado
+      console.log('Resultado do diálogo:', result);
       if (result) {
-        this.pdvUser = result;  // Armazena o nome do usuário autorizado
+        this.pdvUser = result;
         console.log('PDV aberto por:', this.pdvUser);
-        // Continue com a inicialização do PDV aqui, se necessário
       } else {
         console.log('Abertura do PDV cancelada');
-        this.router.navigate(['/home']); // Redireciona se o usuário cancelar
+        this.router.navigate(['/home']);
       }
     });
   }
@@ -532,7 +527,6 @@ export class PdvComponent implements OnInit {
   
       const idReceber = await this.obterOuCriarReceber();
   
-      // Utilize a variável de instância corretamente
       for (let i = 0; i < parcelas; i++) {
         let dataVencimento = new Date();
         switch (this.formaPagamento) {
@@ -555,7 +549,7 @@ export class PdvComponent implements OnInit {
   
         const receberItensData = {
           Idreceber: idReceber,
-          Titulo: `${this.documentoFiscal}-${this.proximaParcelaGlobal++}`, // Incrementa corretamente
+          Titulo: `${this.documentoFiscal}-${this.proximaParcelaGlobal++}`,
           Parcela: i + 1,
           Datavencimento: formatDate(dataVencimento, 'yyyy-MM-dd', 'en-US'),
           Databaixa: null,
@@ -580,11 +574,6 @@ export class PdvComponent implements OnInit {
     }
   }
   
-
-  
-  
-  
-  
   async obterOuCriarReceber(): Promise<number> {
     const receberData = {
       idloja: this.selectedLoja!,
@@ -598,7 +587,6 @@ export class PdvComponent implements OnInit {
   
     const receberResponse: any = await this.receberService.createReceber(receberData).toPromise();
     return receberResponse.Idreceber;
-  
   }
 
   async gravarDadosFinanceiros(venda: any, itens: any[]): Promise<void> {
@@ -705,9 +693,8 @@ finalizarProcessoPagamento() {
                       next: (incrementResponse: any) => {
                           console.log('Código fiscal incrementado com sucesso:', incrementResponse);
 
-                          // Define o estado de pagamento como finalizado
-                          this.estadoPagamento = 'finalizado'; // Novo estado adicionado
-                          this.vendaFinalizada = true; // Mostra a mensagem de confirmação
+                          this.estadoPagamento = 'finalizado';
+                          this.vendaFinalizada = true;
                           this.exibirPagamento = false;
                       },
                       error: incrementError => {

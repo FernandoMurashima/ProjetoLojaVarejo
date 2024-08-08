@@ -317,7 +317,10 @@ class Venda(models.Model):
     comissao = models.DecimalField(max_digits=18, decimal_places=5)
     acrescimo = models.DecimalField(max_digits=18, decimal_places=5)
     tipopag = models.CharField(max_length=20)
-    
+    ticms = models.DecimalField(max_digits=18, decimal_places=5, default= 0.00)
+    tpis = models.DecimalField(max_digits=18, decimal_places=5, default= 0.00)
+    tcofins = models.DecimalField(max_digits=18, decimal_places=5, default= 0.00)
+    tcsll = models.DecimalField(max_digits=18, decimal_places=5, default= 0.00)
 
     def __str__(self):
         return f'{self.Documento} - {self.Valor}'
@@ -332,6 +335,10 @@ class VendaItem(models.Model):
     valorunitario = models.DecimalField(max_digits=18, decimal_places=2)
     Desconto = models.DecimalField(max_digits=18, decimal_places=2)
     Total_item = models.DecimalField(max_digits=18, decimal_places=2)
+    iicms = models.DecimalField(max_digits=18, decimal_places=5, default= 0.00)
+    ipis = models.DecimalField(max_digits=18, decimal_places=5, default= 0.00)
+    icofins = models.DecimalField(max_digits=18, decimal_places=5, default= 0.00)
+    icsll = models.DecimalField(max_digits=18, decimal_places=5, default= 0.00)
     
     def __str__(self):
         return f'{self.Idvenda} - {self.Total_item}'
@@ -394,7 +401,7 @@ class Receber(models.Model):
     Idreceber = models.AutoField(primary_key=True)
     idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
     Documento = models.CharField(max_length=10, default='0000000000')
-    TipoRecebimento = models.CharField(max_length=20, blank=True)
+ 
     Valor = models.DecimalField(max_digits=18, decimal_places=2)
     ContaContabil = models.CharField(max_length=50, blank=True)
     Nat_Lancamento = models.CharField(max_length=50, blank=True)
@@ -578,6 +585,7 @@ class Codigos(models.Model):
          return f'{self.variavel}: {self.valor}'
 
 class Imposto(models.Model):
+    idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
     icms = models.DecimalField(max_digits=5, decimal_places=2)
     pis = models.DecimalField(max_digits=5, decimal_places=2)
     cofins = models.DecimalField(max_digits=5, decimal_places=2)
