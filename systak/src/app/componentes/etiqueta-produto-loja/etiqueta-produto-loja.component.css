@@ -1,0 +1,44 @@
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #etiquetasImprimir, #etiquetasImprimir * {
+    visibility: visible;
+  }
+
+  #etiquetasImprimir {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Limita a quantidade de etiquetas por página */
+  #etiquetasImprimir {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    page-break-inside: avoid;
+  }
+
+  #etiquetasImprimir > div {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Limitar 5 linhas de etiquetas por página */
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  #etiquetasImprimir {
+    margin: 0;
+  }
+
+  #etiquetasImprimir > div:nth-child(15n+1) {
+    page-break-before: always;
+  }
+}

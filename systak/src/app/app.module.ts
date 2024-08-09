@@ -57,6 +57,7 @@ import { TesteProdutoComponent } from './componentes/teste-produto/teste-produto
 import { ClientepadraoComponent } from './componentes/clientepadrao/clientepadrao.component';
 import { ConsultaPrecoDialogComponent } from './componentes/consulta-preco-dialog/consulta-preco-dialog.component';
 import { EtiquetaProdutoComponent } from './componentes/etiqueta-produto/etiqueta-produto.component';
+import { EtiquetaProdutoLojaComponent } from './componentes/etiqueta-produto-loja/etiqueta-produto-loja.component';
 
 
 
@@ -98,6 +99,7 @@ import { EtiquetaProdutoComponent } from './componentes/etiqueta-produto/etiquet
     ConsultaPrecoDialogComponent,
     AberturaPdvComponent,
     EtiquetaProdutoComponent,
+    EtiquetaProdutoLojaComponent,
     
     
   ],

@@ -1,0 +1,45 @@
+<div style="font-family: Arial, sans-serif; margin: 0 auto; max-width: 210mm;">
+  <h2 style="text-align: center; color: #333;">Etiquetas de Produtos</h2>
+
+  <div style="text-align: center; margin-bottom: 20px;">
+    <label for="colecaoSelect" style="margin-right: 10px;">Selecione a Coleção:</label>
+    <select
+      id="colecaoSelect"
+      [(ngModel)]="colecaoId"
+      style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;"
+    >
+      <option *ngFor="let colecao of colecoes" [value]="colecao.Idcolecao">{{ colecao.Descricao }}</option>
+    </select>
+    <button
+      (click)="buscarProdutosPorColecao()"
+      style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;"
+    >
+      Selecionar
+    </button>
+    <button
+      (click)="imprimirEtiquetas()"
+      style="padding: 10px 20px; background-color: #007BFF; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;"
+    >
+      Imprimir Etiquetas
+    </button>
+    <button
+      (click)="voltar()"
+      style="padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;"
+    >
+      Voltar
+    </button>
+  </div>
+
+  <!-- Div para isolar a área de impressão -->
+  <div id="etiquetasImprimir">
+    <div
+      *ngFor="let produto of produtos; let i = index"
+      style="width: 32%; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 4px; background-color: #f9f9f9; text-align: center; break-inside: avoid;"
+    >
+      <svg id="barcode-{{ i }}"></svg>
+      <p style="margin: 5px 0; font-weight: bold;">{{ produto.Codigoproduto }}</p>
+      <p style="margin: 5px 0;">{{ produto.descricao }}</p>
+      <p style="margin: 5px 0;">{{ produto.tamanho }} - {{ produto.cor }}</p>
+    </div>
+  </div>
+</div>

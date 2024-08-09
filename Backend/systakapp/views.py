@@ -691,3 +691,42 @@ def create_venda(request):
         return Response({"error": "Impostos não encontrados para a loja selecionada."}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def produtos_por_colecao(request, colecao_id):
+    try:
+        produtos = Produto.objects.filter(colecao=colecao_id)
+        referencias = produtos.values_list('referencia', flat=True)
+        detalhes = ProdutoDetalhe.objects.filter(Codigoproduto__in=referencias)
+        detalhes_list = list(detalhes.values(
+            'Idprodutodetalhe',
+            'CodigodeBarra',
+            'Codigoproduto',
+            'Idproduto__Descricao',
+            'Idtamanho__Tamanho',
+            'Idcor__Descricao'
+        ))
+
+        # Renomeando os campos
+        detalhes_renomeados = [
+            {
+                'Idprodutodetalhe': detalhe['Idprodutodetalhe'],
+                'CodigodeBarra': detalhe['CodigodeBarra'],
+                'Codigoproduto': detalhe['Codigoproduto'],
+                'descricao': detalhe['Idproduto__Descricao'],  # Renomeando para 'descricao'
+                'tamanho': detalhe['Idtamanho__Tamanho'],      # Renomeando para 'tamanho'
+                'cor': detalhe['Idcor__Descricao']             # Renomeando para 'cor'
+            }
+            for detalhe in detalhes_list
+        ]
+
+        return JsonResponse(detalhes_renomeados, safe=False)
+    except ProdutoDetalhe.DoesNotExist:
+        return JsonResponse({'error': 'Nenhum produto encontrado para esta coleção'}, status=404)
+
+def listar_colecoes(request):
+    try:
+        colecoes = Colecao.objects.all().values('Idcolecao', 'Descricao')
+        return JsonResponse(list(colecoes), safe=False)
+    except Colecao.DoesNotExist:
+        return JsonResponse({'error': 'Nenhuma coleção encontrada'}, status=404)

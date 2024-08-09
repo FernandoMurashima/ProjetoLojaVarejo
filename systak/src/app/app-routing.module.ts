@@ -29,6 +29,7 @@ import { PdvComponent } from './componentes/pdv/pdv.component';
 import { TesteProdutoComponent } from './componentes/teste-produto/teste-produto.component';
 import { ClientepadraoComponent } from './componentes/clientepadrao/clientepadrao.component';
 import { EtiquetaProdutoComponent } from './componentes/etiqueta-produto/etiqueta-produto.component';
+import { EtiquetaProdutoLojaComponent } from './componentes/etiqueta-produto-loja/etiqueta-produto-loja.component';
 
 export const DEFAULT_ROUTE = '/index';
 
@@ -67,6 +68,8 @@ const routes: Routes = [
   { path: 'vendas/pdv', component: PdvComponent, canActivate: [AuthGuardService]},  
   { path: 'cadastro/clientes2', component: ClientepadraoComponent, canActivate: [AuthGuardService] },
   { path: 'cadastro/etiquetas', component: EtiquetaProdutoComponent, canActivate: [AuthGuardService] },
+  { path: 'cadastro/etiquetas2', component: EtiquetaProdutoLojaComponent }, // Adicione a rota para o novo componente
+  // outras rotas
 
   { path: 'sair', component: LoginComponent }
   

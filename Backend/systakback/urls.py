@@ -77,5 +77,8 @@ urlpatterns = [
     path('test-post/', views.test_post, name='test_post'),
     path('produto/preco-foto/<str:codigo_barra>/', views.get_preco_e_foto_por_codigo_barra, name='get_preco_e_foto_por_codigo_barra'),
     path('check-username/', views.check_username, name='check-username'),
+    path('produtos/colecao/<int:colecao_id>/', views.produtos_por_colecao, name='produtos_por_colecao'),
+    path('colecoes/', views.listar_colecoes, name='listar_colecoes'),
+    
 ]
 

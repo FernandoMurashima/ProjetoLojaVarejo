@@ -585,11 +585,18 @@ export class ProdutoComponent implements OnInit {
 
     try {
       const empresaCodigoResponse = await this.codigoService.incrementEmpresaCodigo().toPromise();
-      const numeroProduto = String(empresaCodigoResponse.novo_valor).padStart(4, '0');
+      const numeroProduto = String(empresaCodigoResponse.novo_valor).padStart(5, '0');
       const codigoParcial = `${prefixoPais}${prefixoEmpresa}${numeroProduto}`;
 
       const digitoVerificador = this.calcularDigitoVerificador(codigoParcial);
+
+      console.log('Código de barras gerado:', codigoParcial);
+      console.log('Digito verificador calculado:', digitoVerificador);
+      console.log('Código de barras com digito verificador:', codigoParcial + digitoVerificador);
+      
       return `${codigoParcial}${digitoVerificador}`;
+      
+
     } catch (error) {
       console.error('Erro ao gerar código de barras:', error);
       return '';
