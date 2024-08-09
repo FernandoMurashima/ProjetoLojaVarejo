@@ -236,6 +236,8 @@ export class PdvComponent implements OnInit {
 
   iniciarVenda() {
     console.log('Iniciando venda...');
+    this.receberId = null;  // Redefinir o ID de receber ao iniciar uma nova venda
+    console.log('Novo valor de receberId:', this.receberId);  // Log para verificar o novo valor de receberId
     this.proximaParcelaGlobal = 1
     this.vendaIniciada = true;
     this.botaoVoltarDesativado = true;
@@ -577,6 +579,7 @@ export class PdvComponent implements OnInit {
 
   async obterOuCriarReceber(): Promise<number> {
     if (this.receberId !== null) {
+        console.log('Valor atual de receberId:', this.receberId); 
         return this.receberId;
     }
 
@@ -592,6 +595,7 @@ export class PdvComponent implements OnInit {
 
     const receberResponse: any = await this.receberService.createReceber(receberData).toPromise();
     this.receberId = receberResponse.Idreceber;
+    console.log('Novo valor de receberId após criação:', this.receberId);
     return receberResponse.Idreceber;
 }
 
