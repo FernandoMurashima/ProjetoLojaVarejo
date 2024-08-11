@@ -54,13 +54,13 @@ urlpatterns = [
     path('api-token-auth/', auth_views.obtain_auth_token),
     path('api-token-auth/', auth_views.obtain_auth_token, name='api_token_auth'),
     path('users/me/', views.get_user_data, name='get_user_data'),
-    path('vendas/create_venda/', views.create_venda, name='create_venda'),
+    
     path('codigos/incrementar/', views.incrementar_codigo, name='incrementar_codigo'),
     path('estoques/', views.EstoqueDetail.as_view(), name='estoque-detail'),
     path('recebers/create_receber/', views.create_financeiro, name='create_financeiro'),  # Nova rota para create_financeiro
     path('recebers/create_financeiro/', views.create_financeiro, name='create_financeiro'),  # Nova rota para create_financeiro
     path('verificar_documento/<str:documento>/', views.verificar_documento, name='verificar_documento'),
-    # path('vendas/', include('vendas.urls')),  # Inclua o caminho para o aplicativo vendas
+    path('vendas/create_venda/', views.create_venda, name='create_venda'),
     path('', include(router.urls)),
     path('grupos/<int:grupo_id>/codigo/', views.get_codigo_grupo, name='get_codigo_grupo'),
     path('colecoes/<int:colecao_id>/update_contador/', views.update_contador, name='update_contador'),

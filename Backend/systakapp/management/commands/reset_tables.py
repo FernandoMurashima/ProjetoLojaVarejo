@@ -11,6 +11,8 @@ class Command(BaseCommand):
             'systakapp_venda',
             'systakapp_receberitens',
             'systakapp_receber'
+
+            
         ]
 
         for table in tables_to_reset:
