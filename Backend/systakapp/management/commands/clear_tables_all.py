@@ -1,7 +1,7 @@
 # systak/management/commands/clear_tables.py
 
 from django.core.management.base import BaseCommand
-from systakapp.models import (
+from Backend.systakapp.models_desen import (
     # Loja, Cliente, Fornecedor, Vendedor, Funcionarios, Tamanho, Cor, ContaBancaria, 
     Produto, ProdutoDetalhe, Tabelapreco, TabelaPrecoItem,
     Estoque, Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos,

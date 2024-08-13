@@ -678,6 +678,13 @@ export class PdvComponent implements OnInit {
 }
 
 finalizarProcessoPagamento() {
+
+  if (!this.validateFields()) {
+    console.error('Erro: Campos obrigatórios não preenchidos');
+    return;
+  }
+
+
   if (this.selectedVendedor === null || this.selectedLoja === null) {
       console.error('Erro: Loja ou vendedor não selecionado');
       return;
@@ -743,6 +750,34 @@ finalizarProcessoPagamento() {
   }).catch(error => {
       console.error('Erro ao verificar documento fiscal:', error);
   });
+}
+
+// Adicionando a função de validação
+validateFields(): boolean {
+  const missingFields = [];
+
+  if (!this.selectedLoja) {
+      missingFields.push('Loja');
+  }
+  if (!this.selectedVendedor) {
+      missingFields.push('Vendedor');
+  }
+  if (!this.selectedCliente) {
+      missingFields.push('Cliente');
+  }
+  if (this.produtos.length === 0) {
+      missingFields.push('Produtos');
+  }
+  if (!this.formaPagamento) {
+      missingFields.push('Forma de Pagamento');
+  }
+
+  if (missingFields.length > 0) {
+      alert(`Por favor, preencha os seguintes campos obrigatórios: ${missingFields.join(', ')}`);
+      return false;
+  }
+
+  return true;
 }
 
 }

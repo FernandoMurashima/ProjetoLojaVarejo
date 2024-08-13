@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.db import connection, transaction
-from systakapp.models import Estoque
+from Backend.systakapp.models_desen import Estoque
 
 class Command(BaseCommand):
     help = 'Reset tables and set estoque to 100'

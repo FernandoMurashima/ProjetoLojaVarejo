@@ -27,7 +27,7 @@ from .serializers import (
     GrupoDetalheSerializer, CodigosSerializer, TabelaPrecoItemSerializer
 )
 
-from .models import (
+from .models_desen import (
     User, Loja, Cliente, Fornecedor, Vendedor, Funcionarios, Tamanho, Cor,
     Nat_Lancamento, ContaBancaria, Produto, ProdutoDetalhe, Tabelapreco, Estoque,
     Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos, Inventario,
