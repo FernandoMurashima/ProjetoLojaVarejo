@@ -14,7 +14,7 @@ class User(AbstractUser):
         GERENTE = 'Gerente', _('Gerente')
         ADMIN = 'Admin', _('Admin')
 
-    type = models.CharField(max_length=10, choices=Type.choices, default=Type.REGULAR)
+    type = models.CharField(max_length=10, choices=Type.choices, default='Regular')
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):

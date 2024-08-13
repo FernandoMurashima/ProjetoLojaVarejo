@@ -64,7 +64,7 @@
     <div class="content">
       <div class="product-input">
         <label for="product-code">Código de Barras:</label>
-        <input type="text" id="product-code" [(ngModel)]="productCode" [disabled]="!vendaIniciada || !selectedLoja || !selectedVendedor || !selectedCliente">
+        <input type="text" id="product-code" [(ngModel)]="productCode" [disabled]="!vendaIniciada || !selectedLoja || !selectedVendedor || !selectedCliente" autocomplete="off">
         <label for="product-qty">Quantidade:</label>
         <input type="number" id="product-qty" [(ngModel)]="productQty" min="1" [disabled]="!vendaIniciada || !selectedLoja || !selectedVendedor || !selectedCliente">
         <button (click)="adicionarProduto()" [disabled]="!vendaIniciada || !selectedLoja || !selectedVendedor || !selectedCliente">Adicionar Produto</button>
@@ -143,15 +143,15 @@
   <h2>Resumo do Pagamento</h2>
   <div class="form-group">
     <label for="totalVenda">Total da Venda:</label>
-    <input type="text" id="totalVenda" [value]="totalCompra | currency:'BRL'" disabled>
+    <input type="text" id="totalVenda" [value]="totalCompra | currency:'BRL'" disabled autocomplete="off">
   </div>
   <div class="form-group">
     <label for="desconto">Desconto (%):</label>
-    <input type="number" id="desconto" [(ngModel)]="desconto" (input)="atualizarTotalComDesconto()" min="0" max="100" step="0.01" placeholder="Digite o desconto (%)">
+    <input type="number" id="desconto" [(ngModel)]="desconto" (input)="atualizarTotalComDesconto()" min="0" max="100" step="0.01" placeholder="Digite o desconto (%)" autocomplete="off">
   </div>
   <div class="form-group">
     <label for="totalComDesconto">Total com Desconto:</label>
-    <input type="text" id="totalComDesconto" [value]="totalComDesconto | currency:'BRL'" disabled>
+    <input type="text" id="totalComDesconto" [value]="totalComDesconto | currency:'BRL'" disabled autocomplete="off">
   </div>
   <button (click)="mostrarTelaPagamento()">Pagar</button>
 </div>
@@ -161,11 +161,11 @@
   <h2>Pagamento</h2>
   <div class="form-group">
     <label for="valorRestante">Total Restante:</label>
-    <input type="text" id="valorRestante" [value]="(totalComDesconto - totalPago) | currency:'BRL'" disabled>
+    <input type="text" id="valorRestante" [value]="(totalComDesconto - totalPago) | currency:'BRL'" disabled autocomplete="off">
   </div>
   <div class="form-group">
     <label for="formaPagamento">Forma de Pagamento:</label>
-    <select id="formaPagamento" [(ngModel)]="formaPagamento">
+    <select id="formaPagamento" [(ngModel)]="formaPagamento" autocomplete="off">
       <option value="PIX">PIX</option>
       <option value="DEBITO">Débito</option>
       <option value="CREDITO_A_VISTA">Crédito à Vista</option>
@@ -177,7 +177,7 @@
   <!-- Campo para número de parcelas, mostrado apenas se "Crédito Parcelado" for selecionado -->
   <div class="form-group" *ngIf="formaPagamento === 'CREDITO_PARCELADO'">
     <label for="numeroParcelas">Número de Parcelas:</label>
-    <input type="number" id="numeroParcelas" [(ngModel)]="numeroParcelas" min="1" max="12" />
+    <input type="number" id="numeroParcelas" [(ngModel)]="numeroParcelas" min="1" max=""  autocomplete="off">
   </div>
 
   <div class="form-group">

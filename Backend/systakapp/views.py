@@ -369,7 +369,10 @@ def create_user(request):
     data = request.data
     username = data.get('username')
     password = data.get('password')
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
     email = data.get('email')
+    user_type = data.get('type', 'Regular')  # Define 'Regular' como valor padrão se não for fornecido
 
     if not username or not password or not email:
         return JsonResponse({'error': 'Missing fields'}, status=status.HTTP_400_BAD_REQUEST)
@@ -377,14 +380,22 @@ def create_user(request):
     if User.objects.filter(username=username).exists():
         return JsonResponse({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
+    # Criando o usuário com os dados fornecidos
     user = User(
         username=username,
         email=email,
-        password=make_password(password)  # Hashing the password
+        first_name=first_name,
+        last_name=last_name,
+        password=make_password(password),  # Hashing the password
+        type=user_type
     )
     user.save()
 
-    return JsonResponse({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
+    # Opcional: Use o serializer para retornar os dados do usuário criado
+    serializer = UserSerializer(user)
+    
+    return JsonResponse({'message': 'User created successfully', 'user': serializer.data}, status=status.HTTP_201_CREATED)
+
 
 def get_preco_por_codigo_barra(request, codigo_barra):
     tabela_preco_item = get_object_or_404(TabelaPrecoItem, codigodebarra=codigo_barra)
@@ -730,3 +741,5 @@ def listar_colecoes(request):
         return JsonResponse(list(colecoes), safe=False)
     except Colecao.DoesNotExist:
         return JsonResponse({'error': 'Nenhuma coleção encontrada'}, status=404)
+
+

@@ -109,40 +109,83 @@ export class PdvComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.openAberturaDialog();  // Abre o diálogo de abertura ao inicializar
-    this.loadLojas();
     this.authService.isAuthenticated().subscribe(isAuthenticated => {
-      if (isAuthenticated) {
-        this.authService.refreshUserData().subscribe(user => {
-          this.user = user;
-          console.log('Usuário autenticado:', this.user);
-          this.checkAuthorization();
-        });
-      } else {
-        console.log('Usuário não está autenticado');
-      }
+        if (isAuthenticated) {
+            this.authService.refreshUserData().subscribe(user => {
+                this.user = user;
+                console.log('Usuário autenticado:', this.user);
+                this.checkAuthorization();
+                if (this.isAuthorized) {
+                    this.pdvUser = this.user.username;
+                    console.log('PDV aberto por:', this.pdvUser);
+                } else {
+                    this.openLoginDialog();  // Usuário autenticado, mas não autorizado
+                }
+            });
+        } else {
+            console.log('Usuário não está autenticado');
+            this.openLoginDialog();  // Usuário não autenticado
+        }
     });
 
+    this.loadLojas();
     this.clienteService.load().subscribe(data => {
-      this.clientes = data;
+        this.clientes = data;
     });
+}
+
+
+openAberturaDialog(): void {
+  if (this.isAuthorized && this.user) {
+      this.pdvUser = this.user.username;
+      console.log('Usuário já autorizado:', this.pdvUser);
+      return;  // Se o usuário já está autorizado, não precisa abrir o diálogo
   }
 
-  openAberturaDialog(): void {
-    const dialogRef = this.dialog.open(AberturaPdvComponent, {
+  const dialogRef = this.dialog.open(AberturaPdvComponent, {
       width: '300px'
-    });
+  });
 
-    dialogRef.afterClosed().subscribe(result => {
+  dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.pdvUser = result;  // Armazena o nome do usuário autorizado
-        console.log('PDV aberto por:', this.pdvUser);
+          this.pdvUser = result;  // Armazena o nome do usuário autorizado
+          console.log('PDV aberto por:', this.pdvUser);
       } else {
-        console.log('Abertura do PDV cancelada');
-        this.router.navigate(['/home']);
+          console.log('Abertura do PDV cancelada');
+          this.router.navigate(['/home']);
       }
-    });
-  }
+  });
+}
+
+
+openLoginDialog(): void {
+  const dialogRef = this.dialog.open(AberturaPdvComponent, {
+      width: '300px'
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+          this.authService.refreshUserData().subscribe(user => {
+              this.user = user;
+              console.log('Usuário autenticado:', this.user);
+              this.checkAuthorization();
+              if (this.isAuthorized) {
+                  this.pdvUser = this.user.username;
+                  console.log('PDV aberto por:', this.pdvUser);
+              } else {
+                  alert('Usuário não autorizado. Tente novamente.');
+                  this.openLoginDialog();  // Reabre a tela de login para tentar outro usuário
+              }
+          });
+      } else {
+          console.log('Abertura do PDV cancelada');
+          this.router.navigate(['/home']);
+      }
+  });
+}
+
+
+
 
   loadLojas() {
     this.lojaService.load().subscribe(data => {
@@ -195,23 +238,22 @@ export class PdvComponent implements OnInit {
 
   checkAuthorization() {
     if (this.user) {
-      console.log('Tipo de usuário:', this.user.type);
-      if (this.user.type !== 'Regular') {
-        this.isAuthorized = true;
-        console.log('Usuário autorizado para usar o PDV');
-      } else {
-        this.isAuthorized = false;
-        alert('Usuário não autorizado');
-        this.router.navigate(['/login']);
-        console.log('Usuário não autorizado para usar o PDV');
-      }
+        console.log('Tipo de usuário:', this.user.type);
+        if (this.user.type !== 'Regular') {
+            this.isAuthorized = true;
+            console.log('Usuário autorizado para usar o PDV');
+        } else {
+            this.isAuthorized = false;
+            console.log('Usuário não autorizado para usar o PDV');
+        }
     } else {
-      this.isAuthorized = false;
-      alert('Erro ao verificar autorização do usuário');
-      this.router.navigate(['/login']);
-      console.log('Erro: usuário não encontrado');
+        this.isAuthorized = false;
+        console.log('Erro: usuário não encontrado');
     }
-  }
+}
+
+
+  
 
   selectCliente() {
     if (this.selectedCliente) {
@@ -223,6 +265,10 @@ export class PdvComponent implements OnInit {
       console.log('Nenhum cliente selecionado.');
     }
   }
+
+
+
+
 
   onClienteSelected(cliente: Cliente) {
     this.selectedCliente = cliente;
