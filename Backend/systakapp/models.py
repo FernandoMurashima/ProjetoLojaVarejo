@@ -340,13 +340,13 @@ class VendaItem(models.Model):
 
 class MovimentacaoFinanceira(models.Model):
     Idmovfin = models.BigAutoField(primary_key=True)
-    tipo = models.CharField(max_length=1)
-    data_movimento = models.DateField()
-    idreceberitem = models.IntegerField(null=True, blank=True)
-    idpagaritem = models.IntegerField(null=True, blank=True)
-    valor = models.DecimalField(max_digits=18, decimal_places=2)
-    data_baixa = models.DateField()
     Idconta = models.ForeignKey(ContaBancaria, on_delete=models.CASCADE)
+    data_movimento = models.DateField()
+    Titulo = models.CharField(max_length=10, default='00000000-0')
+    TipoMov = models.CharField(max_length=1, default='C')
+    TipoFluxo = models.CharField(max_length=1, default='R')
+    valor = models.DecimalField(max_digits=18, decimal_places=2)
+    data_baixa = models.DateField(null=True, blank=True)
     data_cadastro = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -354,18 +354,15 @@ class MovimentacaoFinanceira(models.Model):
 
 class MovimentacaoProdutos(models.Model):
     Idmovprod = models.BigAutoField(primary_key=True)
+    Idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
     Data_mov = models.DateField()
-    idproduto = models.ForeignKey(Produto, on_delete=models.CASCADE)
-    Idprodutodetalhe = models.ForeignKey(ProdutoDetalhe, on_delete=models.CASCADE)
-    Documento = models.CharField(max_length=20)
-    Tipo = models.CharField(max_length=2)
+    Documento = models.CharField(max_length=20, default='0000000000')
+    Tipo = models.CharField(max_length=1, default='V')
     Qtd = models.IntegerField()
     Valor = models.DecimalField(max_digits=18, decimal_places=2)
-    Idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
-    idvendaitem = models.IntegerField(null=True, blank=True)
-    idcompraitem = models.IntegerField(null=True, blank=True)
     data_cadastro = models.DateTimeField(default=timezone.now)
-
+    CodigodeBarra = models.CharField(max_length=20, default='0000000000000')
+    codigoproduto = models.CharField(max_length=11, default='00.00.00000')
     def __str__(self):
         return f'{self.Documento} - {self.Qtd}'
 
