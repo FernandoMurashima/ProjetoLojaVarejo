@@ -40,9 +40,11 @@ export class FuncionarioComponent implements OnInit {
       fim: null,
       categoria: '',
       data_cadastro: new Date(),
-      idloja: 0
+      idloja: 0,
+      meta: 0 // Novo campo adicionado
     };
   }
+  
 
   setAction(action: string) {
     console.log('Ação definida:', action);
@@ -97,7 +99,8 @@ export class FuncionarioComponent implements OnInit {
         fim: this.formatarData(this.funcionario.fim),
         categoria: this.funcionario.categoria,
         data_cadastro: this.funcionario.data_cadastro,
-        idloja: this.funcionario.idloja
+        idloja: this.funcionario.idloja,
+        meta: this.funcionario.meta // Novo campo adicionado
       };
 
       // Ajuste para campos de data vazios

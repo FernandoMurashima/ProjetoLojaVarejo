@@ -13,6 +13,7 @@ export interface Funcionario {
   categoria: string;
   data_cadastro: Date;
   idloja: number;
+  meta: number;
 }
 
 type FuncionarioCreate = Omit<Funcionario, 'Idfuncionario'>;

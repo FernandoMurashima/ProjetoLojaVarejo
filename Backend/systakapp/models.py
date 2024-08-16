@@ -118,6 +118,7 @@ class Funcionarios(models.Model):
     inicio = models.DateField(null=True, blank=True)
     fim = models.DateField(null=True, blank=True)
     categoria = models.CharField(max_length=15, null=True, blank=True)
+    meta = models.DecimalField(max_digits=10, decimal_places=2, default=0.00) 
     data_cadastro = models.DateTimeField(default=timezone.now)
     idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
 
