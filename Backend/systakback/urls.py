@@ -60,6 +60,7 @@ urlpatterns = [
     path('recebers/create_receber/', views.create_financeiro, name='create_financeiro'),  # Nova rota para create_financeiro
     path('recebers/create_financeiro/', views.create_financeiro, name='create_financeiro'),  # Nova rota para create_financeiro
     path('verificar_documento/<str:documento>/', views.verificar_documento, name='verificar_documento'),
+    path('vendas_por_vendedor/', views.vendas_por_vendedor, name='vendas_por_vendedor'),
     path('vendas/create_venda/', views.create_venda, name='create_venda'),
     path('', include(router.urls)),
     path('grupos/<int:grupo_id>/codigo/', views.get_codigo_grupo, name='get_codigo_grupo'),

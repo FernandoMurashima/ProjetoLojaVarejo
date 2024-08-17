@@ -5,6 +5,9 @@ from rest_framework import viewsets, permissions, generics
 from decimal import Decimal, ROUND_HALF_UP
 import json
 
+from django.shortcuts import render
+from django.db.models import Sum, Count
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, action, permission_classes
@@ -742,4 +745,49 @@ def listar_colecoes(request):
     except Colecao.DoesNotExist:
         return JsonResponse({'error': 'Nenhuma coleção encontrada'}, status=404)
 
+def vendas_por_vendedor(request):
+    loja_id = request.GET.get('loja_id')
+    data_inicio = request.GET.get('data_inicio')
+    data_fim = request.GET.get('data_fim')
 
+    # Filtrar vendedores ativos da loja selecionada
+    vendedores = Funcionarios.objects.filter(
+        categoria='vendedor',
+        fim__isnull=True,
+        idloja_id=loja_id
+    )
+
+    resultado_vendas = []
+
+    for vendedor in vendedores:
+        # Total de vendas por vendedor no período
+        total_vendas = Venda.objects.filter(
+            Idfuncionario=vendedor,
+            Data__range=[data_inicio, data_fim]
+        ).aggregate(Sum('Valor'))['Valor__sum'] or 0
+
+        # Número de vendas por vendedor no período
+        num_vendas = Venda.objects.filter(
+            Idfuncionario=vendedor,
+            Data__range=[data_inicio, data_fim]
+        ).count()
+
+        # Número de peças vendidas
+        documentos = Venda.objects.filter(
+            Idfuncionario=vendedor,
+            Data__range=[data_inicio, data_fim]
+        ).values_list('Documento', flat=True)
+
+        num_pecas = VendaItem.objects.filter(
+            Documento__in=documentos
+        ).aggregate(Sum('Qtd'))['Qtd__sum'] or 0
+
+        resultado_vendas.append({
+            'vendedor': vendedor.nomefuncionario,
+            'total_vendas': total_vendas,
+            'num_vendas': num_vendas,
+            'num_pecas': num_pecas
+        })
+    return JsonResponse({'resultado_vendas': resultado_vendas})
+
+    #return render(request, 'vendas_por_vendedor.html', {'resultado_vendas': resultado_vendas})

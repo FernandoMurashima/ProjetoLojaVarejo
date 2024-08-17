@@ -58,6 +58,7 @@ import { ClientepadraoComponent } from './componentes/clientepadrao/clientepadra
 import { ConsultaPrecoDialogComponent } from './componentes/consulta-preco-dialog/consulta-preco-dialog.component';
 import { EtiquetaProdutoComponent } from './componentes/etiqueta-produto/etiqueta-produto.component';
 import { EtiquetaProdutoLojaComponent } from './componentes/etiqueta-produto-loja/etiqueta-produto-loja.component';
+import { VendasPorVendedorComponent } from './componentes/vendas-por-vendedor/vendas-por-vendedor.component';
 
 
 
@@ -100,6 +101,7 @@ import { EtiquetaProdutoLojaComponent } from './componentes/etiqueta-produto-loj
     AberturaPdvComponent,
     EtiquetaProdutoComponent,
     EtiquetaProdutoLojaComponent,
+    VendasPorVendedorComponent,
     
     
   ],

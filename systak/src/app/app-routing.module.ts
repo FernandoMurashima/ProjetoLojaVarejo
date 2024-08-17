@@ -30,6 +30,7 @@ import { TesteProdutoComponent } from './componentes/teste-produto/teste-produto
 import { ClientepadraoComponent } from './componentes/clientepadrao/clientepadrao.component';
 import { EtiquetaProdutoComponent } from './componentes/etiqueta-produto/etiqueta-produto.component';
 import { EtiquetaProdutoLojaComponent } from './componentes/etiqueta-produto-loja/etiqueta-produto-loja.component';
+import { VendasPorVendedorComponent } from './componentes/vendas-por-vendedor/vendas-por-vendedor.component';
 
 export const DEFAULT_ROUTE = '/index';
 
@@ -69,6 +70,8 @@ const routes: Routes = [
   { path: 'cadastro/clientes2', component: ClientepadraoComponent, canActivate: [AuthGuardService] },
   { path: 'cadastro/etiquetas', component: EtiquetaProdutoComponent, canActivate: [AuthGuardService] },
   { path: 'cadastro/etiquetas2', component: EtiquetaProdutoLojaComponent }, // Adicione a rota para o novo componente
+  { path: 'vendas/vendas-por-vendedor', component: VendasPorVendedorComponent },
+  
   // outras rotas
 
   { path: 'sair', component: LoginComponent }
