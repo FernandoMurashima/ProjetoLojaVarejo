@@ -5,6 +5,7 @@ from rest_framework import viewsets, permissions, generics
 from decimal import Decimal, ROUND_HALF_UP
 import json
 
+
 from django.shortcuts import render
 from django.db.models import Sum, Count
 
@@ -25,6 +26,8 @@ from django.db import transaction
 from datetime import timedelta
 from django.utils import timezone
 from django.views.decorators.http import require_GET
+from django.utils.timezone import make_aware
+from datetime import datetime, time
 
 from .serializers import (
     UserSerializer, ClienteSerializer, FornecedorSerializer, VendedorSerializer,
@@ -745,11 +748,28 @@ def listar_colecoes(request):
     except Colecao.DoesNotExist:
         return JsonResponse({'error': 'Nenhuma coleção encontrada'}, status=404)
 
+
 def vendas_por_vendedor(request):
     loja_id = request.GET.get('loja_id')
     data_inicio = request.GET.get('data_inicio')
     data_fim = request.GET.get('data_fim')
 
+    # Obter o nome da loja
+    try:
+        loja = Loja.objects.get(pk=loja_id)
+        nome_loja = loja.nome_loja
+    except Loja.DoesNotExist:
+        return JsonResponse({'error': 'Loja não encontrada'}, status=404)
+
+    # Converter as datas para objetos datetime
+    data_inicio = datetime.strptime(data_inicio, '%Y-%m-%d')
+    
+    if data_fim:
+        data_fim = datetime.combine(datetime.strptime(data_fim, '%Y-%m-%d'), time.max)
+        data_fim = make_aware(data_fim)
+    else:
+        data_fim = make_aware(datetime.combine(data_inicio, time.max))
+    
     # Filtrar vendedores ativos da loja selecionada
     vendedores = Funcionarios.objects.filter(
         categoria='vendedor',
@@ -782,12 +802,16 @@ def vendas_por_vendedor(request):
             Documento__in=documentos
         ).aggregate(Sum('Qtd'))['Qtd__sum'] or 0
 
+        # Adiciona o campo `meta` ao resultado
         resultado_vendas.append({
             'vendedor': vendedor.nomefuncionario,
             'total_vendas': total_vendas,
             'num_vendas': num_vendas,
-            'num_pecas': num_pecas
+            'num_pecas': num_pecas,
+            'meta': vendedor.meta  # Incluindo o campo meta
         })
-    return JsonResponse({'resultado_vendas': resultado_vendas})
 
-    #return render(request, 'vendas_por_vendedor.html', {'resultado_vendas': resultado_vendas})
+    return JsonResponse({
+        'nome_loja': nome_loja,  # Incluindo o nome da loja
+        'resultado_vendas': resultado_vendas
+    })

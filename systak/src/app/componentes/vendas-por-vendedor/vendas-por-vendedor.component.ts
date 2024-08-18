@@ -8,11 +8,12 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./vendas-por-vendedor.component.css']
 })
 export class VendasPorVendedorComponent implements OnInit {
-  lojas: any[] = []; // Carregue as lojas da sua API
+  lojas: any[] = [];
   lojaId: string = '';
   dataInicio: string = '';
   dataFim: string = '';
   resultadoVendas: any[] = [];
+  nomeLoja: string = '';  // Variável para armazenar o nome da loja
 
   constructor(private http: HttpClient) { }
 
@@ -21,20 +22,24 @@ export class VendasPorVendedorComponent implements OnInit {
   }
 
   loadLojas(): void {
-    const apiUrl = `${environment.apiURL}/lojas/`; // Usando a URL da API do environment
+    const apiUrl = `${environment.apiURL}/lojas/`;
     this.http.get<any[]>(apiUrl).subscribe(data => {
       this.lojas = data;
     });
   }
 
   consultarVendas(): void {
-    // Monta a URL correta usando a baseURL do environment
-    const url = `${environment.apiURL}/vendas_por_vendedor/?loja_id=${this.lojaId}&data_inicio=${this.dataInicio}&data_fim=${this.dataFim}`;
+    let url = `${environment.apiURL}/vendas_por_vendedor/?loja_id=${this.lojaId}&data_inicio=${this.dataInicio}`;
+
+    if (this.dataFim) {
+      url += `&data_fim=${this.dataFim}`;
+    }
+
     this.http.get<any>(url).subscribe(data => {
+        this.nomeLoja = data.nome_loja;  // Armazena o nome da loja
         this.resultadoVendas = data.resultado_vendas;
     }, error => {
         console.error('Erro ao buscar vendas:', error);
     });
-}
-
+  }
 }
