@@ -585,3 +585,36 @@ class Imposto(models.Model):
 
     def __str__(self):
         return f"ICMS: {self.icms}%, PIS: {self.pis}%, COFINS: {self.cofins}%, CSLL: {self.csll}%"
+
+class Caixa(models.Model):
+    idcaixa = models.AutoField(primary_key=True)
+    idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
+    data = models.DateField()
+    saldoanterior = models.DecimalField(max_digits=10, decimal_places=2)
+    saldofinal = models.DecimalField(max_digits=10, decimal_places=2)
+    despesas = models.DecimalField(max_digits=10, decimal_places=2)
+    pix = models.DecimalField(max_digits=10, decimal_places=2)
+    debito = models.DecimalField(max_digits=10, decimal_places=2)
+    credito = models.DecimalField(max_digits=10, decimal_places=2)
+    parcelado = models.DecimalField(max_digits=10, decimal_places=2)
+    dinheiro = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=1, default='A')
+    enviado = models.BooleanField(default=False)
+    usuario = models.CharField(max_length=100, default='none')
+
+    def __str__(self):
+        return f"Caixa {self.idcaixa} - {self.data}"
+
+class Despesa(models.Model):
+    iddespesa = models.AutoField(primary_key=True)
+    idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
+    data = models.DateField()
+    descricao = models.CharField(max_length=200)
+    autorizado = models.CharField(max_length=20)
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    recibo = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"Despesa {self.iddespesa} - {self.descricao}"
+    
+        

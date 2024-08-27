@@ -38,7 +38,7 @@ from .serializers import (
     ReceberSerializer, ReceberItensSerializer, PagarSerializer, PagarItemSerializer,
     CompraSerializer, CompraItemSerializer, PedidoCompraSerializer, PedidoCompraItemSerializer, LojaSerializer, GrupoSerializer,
     UnidadeSerializer, MaterialSerializer, FamiliaSerializer, ColecaoSerializer, GradeSerializer, NcmSerializer, SubGrupoSerializer,
-    GrupoDetalheSerializer, CodigosSerializer, TabelaPrecoItemSerializer, ImpostoSerializer
+    GrupoDetalheSerializer, CodigosSerializer, TabelaPrecoItemSerializer, ImpostoSerializer, DespesaSerializer, CaixaSerializer
 )
 
 from .models import (
@@ -47,7 +47,7 @@ from .models import (
     Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos, Inventario,
     InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem, Grade,
     PedidoCompra, PedidoCompraItem, Grupo, Unidade, Material, Familia, Colecao, Ncm, Subgrupo, 
-    GrupoDetalhe, Codigos, TabelaPrecoItem, Imposto
+    GrupoDetalhe, Codigos, TabelaPrecoItem, Imposto, Despesa, Caixa
 )
 
 import logging
@@ -292,7 +292,21 @@ class CodigosViewSet(viewsets.ModelViewSet):
     queryset = Codigos.objects.all()
     serializer_class = CodigosSerializer
     permission_classes = [permissions.IsAuthenticated]
+class CaixaListCreateView(generics.ListCreateAPIView):
+    queryset = Caixa.objects.all()
+    serializer_class = CaixaSerializer
 
+class CaixaRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Caixa.objects.all()
+    serializer_class = CaixaSerializer
+
+class DespesaListCreateView(generics.ListCreateAPIView):
+    queryset = Despesa.objects.all()
+    serializer_class = DespesaSerializer
+
+class DespesaRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Despesa.objects.all()
+    serializer_class = DespesaSerializer
 class ImpostoViewSet(viewsets.ModelViewSet):
     queryset = Imposto.objects.all()
     serializer_class = ImpostoSerializer

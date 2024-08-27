@@ -7,7 +7,7 @@ from .models import (
     Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos, Inventario,
     InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem,
     PedidoCompra, PedidoCompraItem, Grupo, Unidade, Material, Familia, Colecao, Grade, Ncm, Subgrupo, GrupoDetalhe,
-    Codigos, TabelaPrecoItem, Imposto
+    Codigos, TabelaPrecoItem, Imposto, Caixa, Despesa
 )
 
 User = get_user_model()
@@ -235,3 +235,13 @@ class ImpostoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Imposto
         fields = '__all__'
+
+class CaixaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Caixa
+        fields = '__all__'
+
+class DespesaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Despesa
+        fields = '__all__'        
