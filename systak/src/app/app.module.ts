@@ -60,6 +60,7 @@ import { EtiquetaProdutoComponent } from './componentes/etiqueta-produto/etiquet
 import { EtiquetaProdutoLojaComponent } from './componentes/etiqueta-produto-loja/etiqueta-produto-loja.component';
 import { VendasPorVendedorComponent } from './componentes/vendas-por-vendedor/vendas-por-vendedor.component';
 import { DespesaComponent } from './componentes/despesa/despesa.component';
+import { CaixaComponent } from './componentes/caixa/caixa.component';
 
 
 
@@ -104,6 +105,7 @@ import { DespesaComponent } from './componentes/despesa/despesa.component';
     EtiquetaProdutoLojaComponent,
     VendasPorVendedorComponent,
     DespesaComponent,
+    CaixaComponent,
     
     
   ],

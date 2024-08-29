@@ -47,6 +47,7 @@ router.register(r'grupos', views.GrupoViewSet)
 router.register(r'grupodetalhes', views.GrupoDetalheViewSet)
 router.register(r'subgrupos', views.SubGrupoViewSet)
 router.register(r'codigos', views.CodigosViewSet)
+router.register(r'caixas', views.CaixaViewSet)
 
 
 urlpatterns = [
@@ -83,8 +84,7 @@ urlpatterns = [
     path('colecoes/', views.listar_colecoes, name='listar_colecoes'),
     path('despesas/', views.DespesaListCreateView.as_view(), name='despesa-list-create'),
     path('despesas/<int:pk>/', views.DespesaRetrieveUpdateDestroyView.as_view(), name='despesa-detail'),
-    path('caixas/', views.CaixaListCreateView.as_view(), name='caixa-list-create'),
-    path('caixas/<int:pk>/', views.CaixaRetrieveUpdateDestroyView.as_view(), name='caixa-detail'),
+
     
 ]
 

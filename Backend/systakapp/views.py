@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import viewsets, permissions, generics
 from decimal import Decimal, ROUND_HALF_UP
 import json
-
+from django.db import models
 
 from django.shortcuts import render
 from django.db.models import Sum, Count
@@ -292,13 +292,79 @@ class CodigosViewSet(viewsets.ModelViewSet):
     queryset = Codigos.objects.all()
     serializer_class = CodigosSerializer
     permission_classes = [permissions.IsAuthenticated]
-class CaixaListCreateView(generics.ListCreateAPIView):
+class CaixaViewSet(viewsets.ModelViewSet):
     queryset = Caixa.objects.all()
     serializer_class = CaixaSerializer
 
-class CaixaRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Caixa.objects.all()
-    serializer_class = CaixaSerializer
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        idloja = data.get('idloja')
+        data_caixa_str = data.get('data', timezone.now().date())
+        
+        # Converter a string data_caixa_str em um objeto datetime.date
+        data_caixa = datetime.strptime(data_caixa_str, '%Y-%m-%d').date()
+
+        # Obter a instância de Loja correspondente ao Idloja
+        loja = Loja.objects.get(Idloja=idloja)
+
+        # Calcular o saldo anterior
+        saldo_anterior = self.calcular_saldo_anterior(loja, data_caixa)
+
+        # Calcular as vendas do dia nas diversas formas de pagamento
+        pix = self.calcular_total_vendas(loja, data_caixa, 'PIX')
+        debito = self.calcular_total_vendas(loja, data_caixa, 'DEBITO')
+        credito = self.calcular_total_vendas(loja, data_caixa, 'CREDITO_A_VISTA')
+        parcelado = self.calcular_total_vendas(loja, data_caixa, 'CREDITO_PARCELADO')
+        dinheiro = self.calcular_total_vendas(loja, data_caixa, 'DINHEIRO')
+
+        # Calcular o total de despesas do dia
+        despesas = self.calcular_total_despesas(loja, data_caixa)
+
+        # Calcular saldo final
+        saldo_final = saldo_anterior + pix + debito + credito + parcelado + dinheiro - despesas
+
+        caixa = Caixa.objects.create(
+            idloja=loja,
+            data=data_caixa,
+            saldoanterior=saldo_anterior,
+            saldofinal=saldo_final,
+            despesas=despesas,
+            pix=pix,
+            debito=debito,
+            credito=credito,
+            parcelado=parcelado,
+            dinheiro=dinheiro,
+            usuario=request.user.username
+        )
+
+        serializer = self.get_serializer(caixa)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def calcular_saldo_anterior(self, loja, data_caixa):
+        dia_anterior = data_caixa - timedelta(days=1)
+        while True:
+            caixa_anterior = Caixa.objects.filter(idloja=loja, data=dia_anterior).first()
+            if caixa_anterior:
+                return caixa_anterior.saldofinal
+            elif dia_anterior < data_caixa - timedelta(days=30):  # Limitar a busca a um mês
+                break
+            dia_anterior -= timedelta(days=1)
+        return 0
+
+    def calcular_total_vendas(self, loja, data_caixa, forma_pagamento):
+        total_vendas = Venda.objects.filter(
+            Idloja=loja,
+            Data=data_caixa,
+            tipopag=forma_pagamento
+        ).aggregate(total=models.Sum('Valor'))['total']
+        return total_vendas or 0
+
+    def calcular_total_despesas(self, loja, data_caixa):
+        total_despesas = Despesa.objects.filter(
+            idloja=loja,
+            data=data_caixa
+        ).aggregate(total=models.Sum('valor'))['total']
+        return total_despesas or 0
 
 class DespesaListCreateView(generics.ListCreateAPIView):
     queryset = Despesa.objects.all()
