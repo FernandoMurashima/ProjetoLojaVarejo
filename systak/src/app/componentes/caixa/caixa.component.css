@@ -1,0 +1,98 @@
+/* Centralizar o título h1 no topo */
+h1 {
+    text-align: center;
+    margin-bottom: 40px; /* Espaçamento abaixo do título */
+}
+
+/* Centralizar o conteúdo restante verticalmente e horizontalmente */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /*height: calc(100vh - 100px);  Altura total menos o espaço para o título */
+    text-align: center;
+}
+
+/* Estilização do formulário */
+.form-inline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 800px; /* Largura máxima do formulário */
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 20px;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.btn-submit {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-submit:hover {
+    background-color: #0056b3;
+}
+
+/* Estilização dos totais do caixa */
+.totais-caixa {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 800px; /* Largura máxima para os totais */
+    margin-top: 20px;
+}
+
+.total-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px; /* Reduzido para diminuir a altura */
+    margin: 5px; /* Reduzido para diminuir o espaçamento */
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px; /* Define a largura dos itens principais */
+}
+
+.forma-pagamento {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.forma-pagamento .total-item {
+    width: 150px; /* Largura fixa para os itens de forma de pagamento */
+    margin: 5px; /* Reduzido para diminuir o espaçamento */
+}
+
+.total-item div {
+    margin: 2px 0; /* Reduzido para diminuir a altura dos itens */
+    font-size: 16px;
+    font-weight: bold;
+}

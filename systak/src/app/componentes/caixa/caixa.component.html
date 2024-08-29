@@ -1,58 +1,59 @@
 <div>
-  <h1>Gerenciamento de Caixa</h1>
-  <form (submit)="abrirCaixa()">
-    <label for="idLoja">ID da Loja:</label>
-    <input type="number" [(ngModel)]="idLoja" name="idLoja" required>
+  <h1>Caixa</h1>
+  <div class="container">
+    <form (submit)="abrirCaixa()" class="form-inline">
+      <div class="form-group">
+        <label for="idLoja">Loja:</label>
+        <input type="number" [(ngModel)]="idLoja" name="idLoja" required>
+      </div>
 
-    <label for="dataCaixa">Data do Caixa:</label>
-    <input type="date" [(ngModel)]="dataCaixa" name="dataCaixa" required>
+      <div class="form-group">
+        <label for="dataCaixa">Data do Caixa:</label>
+        <input type="date" [(ngModel)]="dataCaixa" name="dataCaixa" required>
+      </div>
 
-    <label for="senhaGerente">Senha do Gerente (se necessário):</label>
-    <input type="password" [(ngModel)]="senhaGerente" name="senhaGerente">
+      <button type="submit" class="btn-submit">Abrir Caixa</button>
+    </form>
 
-    <button type="submit">Abrir Caixa</button>
-  </form>
-
-  <div *ngIf="caixa">
-    <h2>Totais do Caixa</h2>
-    <table>
-      <tr>
-        <td><strong>Saldo Anterior:</strong></td>
-        <td>{{ caixa.saldoanterior | currency }}</td>
-      </tr>
-      <tr>
-        <td><strong>Despesas:</strong></td>
-        <td>{{ caixa.despesas | currency }}</td>
-      </tr>
-      <tr>
-        <td><strong>Pix:</strong></td>
-        <td>{{ caixa.pix | currency }}</td>
-      </tr>
-      <tr>
-        <td><strong>Débito:</strong></td>
-        <td>{{ caixa.debito | currency }}</td>
-      </tr>
-      <tr>
-        <td><strong>Crédito:</strong></td>
-        <td>{{ caixa.credito | currency }}</td>
-      </tr>
-      <tr>
-        <td><strong>Parcelado:</strong></td>
-        <td>{{ caixa.parcelado | currency }}</td>
-      </tr>
-      <tr>
-        <td><strong>Dinheiro:</strong></td>
-        <td>{{ caixa.dinheiro | currency }}</td>
-      </tr>
-      <tr>
-        <td><strong>Saldo Final:</strong></td>
-        <td>{{ caixa.saldofinal | currency }}</td>
-      </tr>
-      <tr>
-        <td><strong>Status:</strong></td>
-        <td>{{ caixa.status === 'A' ? 'Aberto' : 'Fechado' }}</td>
-      </tr>
-    </table>
+    <div *ngIf="caixa" class="totais-caixa">
+      <div class="total-item">
+        <div><strong>Saldo Anterior</strong></div>
+        <div>{{ caixa.saldoanterior | currency }}</div>
+      </div>
+      <div class="total-item">
+        <div><strong>Despesas</strong></div>
+        <div>{{ caixa.despesas | currency }}</div>
+      </div>
+      <div class="forma-pagamento">
+        <div class="total-item">
+          <div><strong>Pix</strong></div>
+          <div>{{ caixa.pix | currency }}</div>
+        </div>
+        <div class="total-item">
+          <div><strong>Débito</strong></div>
+          <div>{{ caixa.debito | currency }}</div>
+        </div>
+        <div class="total-item">
+          <div><strong>Crédito</strong></div>
+          <div>{{ caixa.credito | currency }}</div>
+        </div>
+        <div class="total-item">
+          <div><strong>Parcelado</strong></div>
+          <div>{{ caixa.parcelado | currency }}</div>
+        </div>
+        <div class="total-item">
+          <div><strong>Dinheiro</strong></div>
+          <div>{{ caixa.dinheiro | currency }}</div>
+        </div>
+      </div>
+      <div class="total-item">
+        <div><strong>Saldo Final</strong></div>
+        <div>{{ caixa.saldofinal | currency }}</div>
+      </div>
+      <div class="total-item">
+        <div><strong>Status</strong></div>
+        <div>{{ caixa.status === 'A' ? 'Aberto' : 'Fechado' }}</div>
+      </div>
+    </div>
   </div>
 </div>
-
