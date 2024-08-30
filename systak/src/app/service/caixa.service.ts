@@ -8,7 +8,6 @@ import { environment } from '../../environments/environment';
 })
 export class CaixaService {
 
-  
   private apiUrl = `${environment.apiURL}/caixas/`;
 
   constructor(private http: HttpClient) { }
@@ -17,5 +16,9 @@ export class CaixaService {
     return this.http.post(this.apiUrl, data);
   }
 
-  // Outros métodos, como fecharCaixa, consultarCaixa, etc.
+  fecharCaixa(id: number): Observable<any> {
+    return this.http.patch(`${this.apiUrl}${id}/`, { status: 'F' });  // Faz um PATCH para atualizar o status
+  }
+
+  // Outros métodos, como consultarCaixa, etc.
 }

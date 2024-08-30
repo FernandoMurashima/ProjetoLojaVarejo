@@ -96,3 +96,17 @@ h1 {
     font-size: 16px;
     font-weight: bold;
 }
+
+.btn-voltar {
+    background-color: #f44336; /* Cor vermelha */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .btn-voltar:hover {
+    background-color: #d32f2f; /* Cor mais escura ao passar o mouse */
+  }
+  

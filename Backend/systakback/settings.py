@@ -150,7 +150,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'  # Altere para o timezone local desejado
+USE_TZ = False  # Se preferir desativar a utilização de timezone UTC
 
 USE_I18N = True
 

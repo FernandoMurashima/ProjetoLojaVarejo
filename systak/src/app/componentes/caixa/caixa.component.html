@@ -1,9 +1,9 @@
 <div>
-  <h1>Caixa</h1>
+  <h1>Gerenciamento de Caixa</h1>
   <div class="container">
     <form (submit)="abrirCaixa()" class="form-inline">
       <div class="form-group">
-        <label for="idLoja">Loja:</label>
+        <label for="idLoja">ID da Loja:</label>
         <input type="number" [(ngModel)]="idLoja" name="idLoja" required>
       </div>
 
@@ -16,6 +16,7 @@
     </form>
 
     <div *ngIf="caixa" class="totais-caixa">
+      <!-- Exibição dos totais do caixa -->
       <div class="total-item">
         <div><strong>Saldo Anterior</strong></div>
         <div>{{ caixa.saldoanterior | currency }}</div>
@@ -54,6 +55,12 @@
         <div><strong>Status</strong></div>
         <div>{{ caixa.status === 'A' ? 'Aberto' : 'Fechado' }}</div>
       </div>
+
+      <!-- Botão Fechar Caixa -->
+      <button class="btn-fechar" (click)="confirmarFecharCaixa()">Fechar Caixa</button>
+      <button class="btn-voltar" (click)="voltar()">Voltar</button>
+
     </div>
   </div>
 </div>
+
