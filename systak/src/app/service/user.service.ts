@@ -49,7 +49,7 @@ export class UserService {
   }
 
   addUser(user: UserCreate): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}create-user/`, user);  // Certifique-se de que este é um POST
+    return this.http.post<User>(`${this.apiUrl}create-user/`, user);
   }
 
   updateUser(id: number, user: User): Observable<User> {
@@ -66,3 +66,4 @@ export class UserService {
     });
   }
 }
+

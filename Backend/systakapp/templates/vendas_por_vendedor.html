@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendas por Vendedor</title>
+</head>
+<body>
+    <h1>Vendas por Vendedor</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nome do Vendedor</th>
+                <th>Total da Venda</th>
+                <th>Número de Vendas</th>
+                <th>Número de Peças Vendidas</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venda in resultado_vendas %}
+            <tr>
+                <td>{{ venda.vendedor }}</td>
+                <td>{{ venda.total_vendas }}</td>
+                <td>{{ venda.num_vendas }}</td>
+                <td>{{ venda.num_pecas }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

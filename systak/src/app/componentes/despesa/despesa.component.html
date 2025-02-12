@@ -1,0 +1,204 @@
+<div class="container mt-3">
+    <div class="op01" *ngIf="!action">
+      <div class="banner">Despesas</div>
+      <button class="btn btn-dark action-button" (click)="setAction('cadastrar')">Cadastrar Nova Despesa</button>
+      <button class="btn btn-dark action-button" (click)="setAction('consultar')">Consultar Despesas</button>
+      <button class="btn btn-dark action-button" (click)="setAction('editar')">Editar Despesa</button>
+      <button class="btn btn-dark action-button" (click)="setAction('excluir')">Excluir Despesa</button>
+      <button class="btn btn-dark action-button" (click)="goToIndex()">Voltar</button>
+    </div>
+  
+    <!-- Início do cadastro -->
+    <div *ngIf="action === 'cadastrar'">
+      <div class="banner">CADASTRO DE DESPESA</div>
+      <form #despesaForm="ngForm" (ngSubmit)="addDespesa()">
+        <div class="principal">
+          <div class="field-group">
+            <div class="input-item" id="loja-box">
+              <label for="loja">Loja:</label>
+              <select id="loja" name="loja" [(ngModel)]="despesa.idloja" #loja="ngModel" required>
+                <option value="" disabled selected></option>
+                <option *ngFor="let loja of lojas" [value]="loja.Idloja">{{ loja.nome_loja }}</option>
+              </select>
+            </div>
+            <div class="input-item" id="descricao-box">
+              <label for="descricao">Descrição:</label>
+              <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="despesa.descricao" #descricao="ngModel" required maxlength="200">
+            </div>
+          </div>
+  
+          <div class="field-group2">
+            <div class="input-item" id="data-box">
+              <label for="data">Data:</label>
+              <input type="date" id="data" name="data" [(ngModel)]="despesa.data" #data="ngModel" required>
+            </div>
+            <div class="input-item" id="valor-box">
+              <label for="valor">Valor:</label>
+              <input type="number" id="valor" name="valor" [(ngModel)]="despesa.valor" #valor="ngModel" required>
+            </div>
+          </div>
+  
+          <div class="field-group3">
+            <div class="input-item" id="autorizado-box">
+              <label for="autorizado">Autorizado por:</label>
+              <input type="text" id="autorizado" name="autorizado" [(ngModel)]="despesa.autorizado" #autorizado="ngModel" required maxlength="20">
+            </div>
+            <div class="input-item" id="recibo-box">
+              <label for="recibo">Recibo:</label>
+              <input type="text" id="recibo" name="recibo" [(ngModel)]="despesa.recibo" #recibo="ngModel" maxlength="20">
+            </div>
+          </div>
+  
+          <div id="success-message" *ngIf="successMessage">Despesa adicionada com sucesso!</div>
+        </div>
+  
+        <div class="btn01">
+          <button type="submit" class="btn btn-primary">Salvar</button>
+          <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+    <!-- Fim do cadastro -->
+  
+    <!-- Início do consultar -->
+    <div *ngIf="action === 'consultar'">
+      <div *ngIf="!despesaSelecionada">
+        <label for="despesa">Selecione uma Despesa</label>
+        <select id="despesa" (change)="onDespesaChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione uma despesa</option>
+          <option *ngFor="let despesa of despesas" [value]="despesa.iddespesa">{{ despesa.descricao }} - {{ despesa.data }}</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+  
+      <div *ngIf="despesaSelecionada">
+        <div class="banner">CONSULTA DE DESPESA</div>
+        <form>
+          <div class="principal">
+            <div class="field-group">
+              <div class="input-item" id="loja-box">
+                <label for="loja">Loja:</label>
+                <select id="loja" name="loja" [(ngModel)]="despesaSelecionada.idloja" #loja="ngModel" disabled>
+                  <option *ngFor="let loja of lojas" [value]="loja.Idloja">{{ loja.nome_loja }}</option>
+                </select>
+              </div>
+              <div class="input-item" id="descricao-box">
+                <label for="descricao">Descrição:</label>
+                <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="despesaSelecionada.descricao" #descricao="ngModel" disabled>
+              </div>
+            </div>
+  
+            <div class="field-group2">
+              <div class="input-item" id="data-box">
+                <label for="data">Data:</label>
+                <input type="date" id="data" name="data" [(ngModel)]="despesaSelecionada.data" #data="ngModel" disabled>
+              </div>
+              <div class="input-item" id="valor-box">
+                <label for="valor">Valor:</label>
+                <input type="number" id="valor" name="valor" [(ngModel)]="despesaSelecionada.valor" #valor="ngModel" disabled>
+              </div>
+            </div>
+  
+            <div class="field-group3">
+              <div class="input-item" id="autorizado-box">
+                <label for="autorizado">Autorizado por:</label>
+                <input type="text" id="autorizado" name="autorizado" [(ngModel)]="despesaSelecionada.autorizado" #autorizado="ngModel" disabled>
+              </div>
+              <div class="input-item" id="recibo-box">
+                <label for="recibo">Recibo:</label>
+                <input type="text" id="recibo" name="recibo" [(ngModel)]="despesaSelecionada.recibo" #recibo="ngModel" disabled>
+              </div>
+            </div>
+  
+            <div class="btn01">
+              <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Fim do consultar -->
+  
+    <!-- Início do Editar -->
+    <div *ngIf="action === 'editar'">
+      <div *ngIf="!despesaSelecionada">
+        <label for="despesa">Selecione uma Despesa</label>
+        <select id="despesa" (change)="onDespesaChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione uma despesa</option>
+          <option *ngFor="let despesa of despesas" [value]="despesa.iddespesa">{{ despesa.descricao }} - {{ despesa.data }}</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+  
+      <div *ngIf="despesaSelecionada">
+        <div class="banner">ALTERAÇÃO DE DESPESA</div>
+        <form #despesaForm="ngForm" (ngSubmit)="updateDespesa()">
+          <div class="principal">
+            <div class="field-group">
+              <div class="input-item" id="loja-box">
+                <label for="loja">Loja:</label>
+                <select id="loja" name="loja" [(ngModel)]="despesa.idloja" #loja="ngModel" required>
+                  <option *ngFor="let loja of lojas" [value]="loja.Idloja">{{ loja.nome_loja }}</option>
+                </select>
+              </div>
+              <div class="input-item" id="descricao-box">
+                <label for="descricao">Descrição:</label>
+                <input class="input-caixa" type="text" id="descricao" name="descricao" [(ngModel)]="despesa.descricao" #descricao="ngModel" required maxlength="200">
+              </div>
+            </div>
+  
+            <div class="field-group2">
+              <div class="input-item" id="data-box">
+                <label for="data">Data:</label>
+                <input type="date" id="data" name="data" [(ngModel)]="despesa.data" #data="ngModel" required>
+              </div>
+              <div class="input-item" id="valor-box">
+                <label for="valor">Valor:</label>
+                <input type="number" id="valor" name="valor" [(ngModel)]="despesa.valor" #valor="ngModel" required>
+              </div>
+            </div>
+  
+            <div class="field-group3">
+              <div class="input-item" id="autorizado-box">
+                <label for="autorizado">Autorizado por:</label>
+                <input type="text" id="autorizado" name="autorizado" [(ngModel)]="despesa.autorizado" #autorizado="ngModel" required maxlength="20">
+              </div>
+              <div class="input-item" id="recibo-box">
+                <label for="recibo">Recibo:</label>
+                <input type="text" id="recibo" name="recibo" [(ngModel)]="despesa.recibo" #recibo="ngModel" maxlength="20">
+              </div>
+            </div>
+  
+            <div id="success-message" *ngIf="successMessage">Despesa atualizada com sucesso!</div>
+  
+            <div class="btn01">
+              <button type="submit" class="btn btn-primary">Salvar</button>
+              <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Fim do Editar -->
+    
+    <!-- Início do Excluir -->
+    <div *ngIf="action === 'excluir'">
+      <h2>Excluir Despesa</h2>
+      <div *ngIf="despesaSelecionada">
+        <p>Tem certeza que deseja excluir a despesa {{ despesaSelecionada.descricao }} de {{ despesaSelecionada.data }}?</p>
+        <button type="button" class="btn btn-danger" (click)="deleteDespesa()">Excluir</button>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+      </div>
+      <div *ngIf="!despesaSelecionada">
+        <label for="despesa">Selecione uma Despesa</label>
+        <select id="despesa" (change)="onDespesaChange($event)" class="form-control">
+          <option value="" disabled selected>Selecione uma despesa</option>
+          <option *ngFor="let despesa of despesas" [value]="despesa.iddespesa">{{ despesa.descricao }} - {{ despesa.data }}</option>
+        </select>
+        <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+      </div>
+    </div>
+    <!-- Fim do Excluir -->
+  
+  </div>
+  

@@ -112,16 +112,15 @@ DATABASES = {
         'HOST': 'localhost',  # ou o IP do seu servidor MySQL
         'PORT': '3306',  # Porta padrão do MySQL
     }
-}
-
+} 
 
 #DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
-#        'NAME': 'Fgv',
+#        'NAME' : 'systak',
 #        'USER': 'postgres',
 #        'PASSWORD': '12345678',
-#        'HOST': 'fgv.ckamvv5ipsd8.us-east-1.rds.amazonaws.com',
+#        'HOST': 'localhost',
 #        'PORT': '5432',
 #    }
 #}
@@ -150,7 +149,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'  # Altere para o timezone local desejado
+USE_TZ = False  # Se preferir desativar a utilização de timezone UTC
 
 USE_I18N = True
 

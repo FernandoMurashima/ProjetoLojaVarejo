@@ -13,6 +13,8 @@
     <div class="banner">CADASTRO DE USUÁRIO</div>
     <form #userForm="ngForm" (ngSubmit)="addUser()">
       <div class="principal">
+        <!-- Campos do formulário de cadastro -->
+        <!-- O conteúdo desta parte do formulário será mantido inalterado -->
         <div class="field-group">
           <div class="input-item" id="username-box">
             <label for="username">Username:</label>
@@ -20,7 +22,7 @@
                    (ngModelChange)="onUsernameChange($event)">
             <span *ngIf="!usernameAvailable" class="text-danger">Nome de usuário indisponível</span>
           </div>
-  
+
           <div class="input-item" id="type-box">
             <label for="type">Type:</label>
             <select id="type" name="type" [(ngModel)]="typeInput" #type="ngModel" required autocomplete="off">
@@ -30,7 +32,7 @@
               <option value="Caixa">Caixa</option>
             </select>
           </div>
-  
+
           <div class="input-item" id="first_name-box">
             <label for="first_name">First Name:</label>
             <input type="text" id="first_name" name="first_name" [(ngModel)]="firstNameInput" #first_name="ngModel" maxlength="150" autocomplete="off" autocapitalize="words">
@@ -44,18 +46,18 @@
             <input type="email" id="email" name="email" [(ngModel)]="emailInput" #email="ngModel" required maxlength="254" autocomplete="off">
           </div>
         </div>
-  
+
         <div class="field-group5">
           <div class="input-item" id="password-box">
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" [(ngModel)]="passwordInput" #password="ngModel" required autocomplete="new-password">
           </div>
         </div>
-  
+
         <div id="success-message" *ngIf="successMessage">{{ successMessage }}</div>
         <div id="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
       </div>
-  
+
       <div class="btn01">
         <button type="submit" class="btn btn-primary" [disabled]="!usernameAvailable">Salvar</button>
         <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
@@ -65,129 +67,135 @@
   
   <!-- Fim do cadastro -->
 
-  <!-- Consultar -->
-  <div *ngIf="action === 'consultar'">
-    <div *ngIf="!userSelecionado">
-      <label for="user">Selecione um Usuário</label>
-      <select id="user" (change)="onUserChange($event)" class="form-control">
-        <option value="" disabled selected>Selecione um usuário</option>
-        <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
-      </select>
-      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
-    </div>
+ <!-- Consultar -->
+ <div *ngIf="action === 'consultar'">
+  <div *ngIf="!userSelecionado">
+    <label for="user">Selecione um Usuário</label>
+    <select id="user" (change)="onUserChange($event)" class="form-control">
+      <option value="" disabled selected>Selecione um usuário</option>
+      <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
+    </select>
+    <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+  </div>
 
-    <div *ngIf="userSelecionado">
-      <div class="banner">CONSULTA DE USUÁRIO</div>
-      <form>
-        <div class="principal">
-          <div class="field-group">
-            <div class="input-item" id="username-box">
-              <label for="username">Username:</label>
-              <input class="input-caixa" type="text" id="username" name="username" [(ngModel)]="userSelecionado.username" #username="ngModel" disabled autocomplete="off">
-            </div>
-            <div class="input-item" id="first_name-box">
-              <label for="first_name">First Name:</label>
-              <input type="text" id="first_name" name="first_name" [(ngModel)]="userSelecionado.first_name" #first_name="ngModel" disabled>
-            </div>
-            <div class="input-item" id="last_name-box">
-              <label for="last_name">Last Name:</label>
-              <input type="text" id="last_name" name="last_name" [(ngModel)]="userSelecionado.last_name" #last_name="ngModel" disabled>
-            </div>
-            <div class="input-item" id="email-box">
-              <label for="email">Email:</label>
-              <input type="email" id="email" name="email" [(ngModel)]="userSelecionado.email" #email="ngModel" disabled>
-            </div>
+  <div *ngIf="userSelecionado">
+    <div class="banner">CONSULTA DE USUÁRIO</div>
+    <form>
+      <div class="principal">
+        <div class="field-group">
+          <div class="input-item" id="username-box">
+            <label for="username">Username:</label>
+            <input class="input-caixa" type="text" id="username" name="username" [(ngModel)]="userSelecionado.username" #username="ngModel" disabled autocomplete="off">
           </div>
 
-          <div class="field-group5">
-            <div class="input-item" id="type-box">
-              <label for="type">Type:</label>
-              <input type="text" id="type" name="type" [(ngModel)]="userSelecionado.type" #type="ngModel" disabled>
-            </div>
+          <div class="input-item" id="type-box">
+            <label for="type">Type:</label>
+            <input type="text" id="type" name="type" [(ngModel)]="userSelecionado.type" #type="ngModel" disabled>
           </div>
 
-          <div class="btn01">
-            <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
+          <div class="input-item" id="first_name-box">
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" [(ngModel)]="userSelecionado.first_name" #first_name="ngModel" disabled>
+          </div>
+          <div class="input-item" id="last_name-box">
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" [(ngModel)]="userSelecionado.last_name" #last_name="ngModel" disabled>
+          </div>
+          <div class="input-item" id="email-box">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" [(ngModel)]="userSelecionado.email" #email="ngModel" disabled>
           </div>
         </div>
-      </form>
-    </div>
-  </div>
-  <!-- Fim do consultar -->
 
-  <!-- Editar -->
-  <div *ngIf="action === 'editar'">
-    <div *ngIf="!userSelecionado">
-      <label for="user">Selecione um Usuário</label>
-      <select id="user" (change)="onUserChange($event)" class="form-control">
-        <option value="" disabled selected>Selecione um usuário</option>
-        <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
-      </select>
-      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
-    </div>
-
-    <div *ngIf="userSelecionado">
-      <div class="banner">ALTERAÇÃO DE USUÁRIO</div>
-      <form #userForm="ngForm" (ngSubmit)="updateUser()">
-        <div class="principal">
-          <div class="field-group">
-            <div class="input-item" id="username-box">
-              <label for="username">Username:</label>
-              <input class="input-caixa" type="text" id="username" name="username" [(ngModel)]="user.username" #username="ngModel" required maxlength="150">
-            </div>
-            <div class="input-item" id="first_name-box">
-              <label for="first_name">First Name:</label>
-              <input type="text" id="first_name" name="first_name" [(ngModel)]="user.first_name" #first_name="ngModel" maxlength="150">
-            </div>
-            <div class="input-item" id="last_name-box">
-              <label for="last_name">Last Name:</label>
-              <input type="text" id="last_name" name="last_name" [(ngModel)]="user.last_name" #last_name="ngModel" maxlength="150">
-            </div>
-            <div class="input-item" id="email-box">
-              <label for="email">Email:</label>
-              <input type="email" id="email" name="email" [(ngModel)]="user.email" #email="ngModel" required maxlength="254">
-            </div>
-          </div>
-
-          <div class="field-group5">
-            <div class="input-item" id="type-box">
-              <label for="type">Type:</label>
-              <select id="type" name="type" [(ngModel)]="user.type" #type="ngModel" required>
-                <option value="Regular">Regular</option>
-                <option value="Admin">Admin</option>
-              </select>
-            </div>
-          </div>
-
-          <div id="success-message" *ngIf="successMessage">{{ successMessage }}</div>
-          <div id="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+        <div class="field-group5">
+ 
         </div>
 
         <div class="btn01">
-          <button type="submit" class="btn btn-primary">Salvar</button>
-          <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="resetAction()">Voltar</button>
         </div>
-      </form>
-    </div>
+      </div>
+    </form>
   </div>
-  <!-- Fim do editar -->
+</div>
+<!-- Fim do consultar -->
 
-  <!-- Excluir -->
-  <div *ngIf="action === 'excluir'">
-    <h2>Excluir Usuário</h2>
-    <div *ngIf="userSelecionado">
-      <p>Tem certeza que deseja excluir o usuário {{ userSelecionado.username }}?</p>
-      <button type="button" class="btn btn-danger" (click)="deleteUser()">Excluir</button>
-      <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
-    </div>
-    <div *ngIf="!userSelecionado">
-      <label for="user">Selecione um Usuário</label>
-      <select id="user" (change)="onUserChange($event)" class="form-control">
-        <option value="" disabled selected>Selecione um usuário</option>
-        <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
-      </select>
-      <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
-    </div>
+<!-- Editar -->
+<div *ngIf="action === 'editar'">
+  <div *ngIf="!userSelecionado">
+    <label for="user">Selecione um Usuário</label>
+    <select id="user" (change)="onUserChange($event)" class="form-control">
+      <option value="" disabled selected>Selecione um usuário</option>
+      <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
+    </select>
+    <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
   </div>
-  <!-- Fim do excluir -->
+
+  <div *ngIf="userSelecionado">
+    <div class="banner">ALTERAÇÃO DE USUÁRIO</div>
+    <form #userForm="ngForm" (ngSubmit)="updateUser()">
+      <div class="principal">
+        <div class="field-group">
+          <div class="input-item" id="username-box">
+            <label for="username">Username:</label>
+            <input class="input-caixa" type="text" id="username" name="username" [(ngModel)]="user.username" #username="ngModel" required maxlength="150">
+          </div>
+          <div class="input-item" id="type-box">
+            <label for="type">Type:</label>
+            <select id="type" name="type" [(ngModel)]="user.type" #type="ngModel" required>
+              <option value="Regular">Regular</option>
+              <option value="Admin">Admin</option>
+              <option value="Gerente">Gerente</option>
+              <option value="Caixa">Caixa</option>
+            </select>
+          </div>
+          <div class="input-item" id="first_name-box">
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" [(ngModel)]="user.first_name" #first_name="ngModel" maxlength="150">
+          </div>
+          <div class="input-item" id="last_name-box">
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" [(ngModel)]="user.last_name" #last_name="ngModel" maxlength="150">
+          </div>
+          <div class="input-item" id="email-box">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" [(ngModel)]="user.email" #email="ngModel" required maxlength="254">
+          </div>
+        </div>
+
+        <div class="field-group5">
+
+        </div>
+
+        <div id="success-message" *ngIf="successMessage">{{ successMessage }}</div>
+        <div id="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+      </div>
+
+      <div class="btn01">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <button type="button" class="btn btn-primary" (click)="resetAction()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Fim do editar -->
+
+<!-- Excluir -->
+<div *ngIf="action === 'excluir'">
+  <h2>Excluir Usuário</h2>
+  <div *ngIf="userSelecionado">
+    <p>Tem certeza que deseja excluir o usuário {{ userSelecionado.username }}?</p>
+    <button type="button" class="btn btn-danger" (click)="deleteUser()">Excluir</button>
+    <button type="button" class="btn btn-secondary" (click)="resetAction()">Cancelar</button>
+  </div>
+  <div *ngIf="!userSelecionado">
+    <label for="user">Selecione um Usuário</label>
+    <select id="user" (change)="onUserChange($event)" class="form-control">
+      <option value="" disabled selected>Selecione um usuário</option>
+      <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
+    </select>
+    <button type="button" class="btn btn-secondary" (click)="resetAction()">Voltar</button>
+  </div>
+</div>
+<!-- Fim do excluir -->
 </div>

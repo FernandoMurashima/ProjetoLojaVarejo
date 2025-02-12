@@ -1,0 +1,116 @@
+form {
+    padding: 5px;
+    width: 100%; /* Ocupar 100% da largura do contêiner */
+    box-sizing: border-box; /* Incluir padding e borda na largura total */
+    margin: 0; /* Remover margens externas */
+    margin-bottom: 5px;
+}
+
+/* Estilização dos grupos de campos */
+.field-group,
+.field-group2,
+.field-group22,
+.field-group3,
+.field-group333,
+.field-group4,
+.field-group44,
+.field-group5 {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr); /* 10 colunas */
+    gap: 10px;
+}
+
+/* Posicionamento específico dos campos */
+#loja-box       { grid-row: 1; grid-column: 1; width: 100px; }
+#descricao-box  { grid-row: 1; grid-column: 2; width: 750px; }
+#data-box       { grid-row: 2; grid-column: 1; width: 150px; }
+#valor-box      { grid-row: 2; grid-column: 2; width: 400px; }
+#autorizado-box { grid-row: 3; grid-column: 1; width: 500px; }
+#recibo-box     { grid-row: 4; grid-column: 1; width: 500px; }
+
+
+.container {
+    padding: 5px;
+    margin-top: 5px;
+    width: 100%; /* Ajuste conforme necessário */
+    box-sizing: border-box; /* Incluir padding e borda na largura total */
+}
+
+/* Estilização das opções */
+.op01 {
+    border: 2px solid;
+    width: 98.7vw;
+}
+
+.banner {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 5px;
+    border: 2px solid;
+    margin: 0; /* Remover margens externas */
+    width: 98.5vw;
+}
+
+/* Estilização dos itens de entrada */
+.input-item {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilização dos inputs */
+.input-caixa, input {
+    width: 100%; /* Faz os inputs preencherem seus contêineres */
+    padding: 4px 8px; /* Ajusta o padding para diminuir a altura */
+    font-size: 14px; /* Opcional: Ajusta o tamanho da fonte */
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
+}
+
+/* Estilização dos botões */
+.button {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    padding: 5px;
+    margin: 10px 0; /* Remover margem à esquerda e direita */
+}
+
+/* Estilização do banner principal */
+
+
+.btn01 {
+    padding: 20px;
+    width: 70vw;
+    margin-top: 20px; /* Espaçamento superior para separar os botões das caixas de input */
+    display: flex;
+    justify-content: flex-start; /* Ajusta os botões à esquerda */
+    gap: 20px; /* Espaçamento entre os botões */
+}
+
+/* Estilização dos botões primários */
+.btn01 .btn-primary {
+    padding: 5px;
+    margin-top: 5px;
+    margin-right: 40px;
+}
+
+
+
+/* Estilização dos botões de ação */
+.action-button {
+    margin: 10px;
+    margin-right: auto;
+    margin-left: 200px;
+}
+
+/* Estilização individual dos botões */
+.botao {
+    padding: 10px 20px;
+}
+
+/* Estilização do banner e botões */
+.banner,
+.buttons {
+    grid-column: 1 / -1; /* Faz com que o banner e botões ocupem todas as colunas */
+}
+

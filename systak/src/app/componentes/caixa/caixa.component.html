@@ -1,0 +1,66 @@
+<div>
+  <h1>Gerenciamento de Caixa</h1>
+  <div class="container">
+    <form (submit)="abrirCaixa()" class="form-inline">
+      <div class="form-group">
+        <label for="idLoja">ID da Loja:</label>
+        <input type="number" [(ngModel)]="idLoja" name="idLoja" required>
+      </div>
+
+      <div class="form-group">
+        <label for="dataCaixa">Data do Caixa:</label>
+        <input type="date" [(ngModel)]="dataCaixa" name="dataCaixa" required>
+      </div>
+
+      <button type="submit" class="btn-submit">Abrir Caixa</button>
+    </form>
+
+    <div *ngIf="caixa" class="totais-caixa">
+      <!-- Exibição dos totais do caixa -->
+      <div class="total-item">
+        <div><strong>Saldo Anterior</strong></div>
+        <div>{{ caixa.saldoanterior | currency }}</div>
+      </div>
+      <div class="total-item">
+        <div><strong>Despesas</strong></div>
+        <div>{{ caixa.despesas | currency }}</div>
+      </div>
+      <div class="forma-pagamento">
+        <div class="total-item">
+          <div><strong>Pix</strong></div>
+          <div>{{ caixa.pix | currency }}</div>
+        </div>
+        <div class="total-item">
+          <div><strong>Débito</strong></div>
+          <div>{{ caixa.debito | currency }}</div>
+        </div>
+        <div class="total-item">
+          <div><strong>Crédito</strong></div>
+          <div>{{ caixa.credito | currency }}</div>
+        </div>
+        <div class="total-item">
+          <div><strong>Parcelado</strong></div>
+          <div>{{ caixa.parcelado | currency }}</div>
+        </div>
+        <div class="total-item">
+          <div><strong>Dinheiro</strong></div>
+          <div>{{ caixa.dinheiro | currency }}</div>
+        </div>
+      </div>
+      <div class="total-item">
+        <div><strong>Saldo Final</strong></div>
+        <div>{{ caixa.saldofinal | currency }}</div>
+      </div>
+      <div class="total-item">
+        <div><strong>Status</strong></div>
+        <div>{{ caixa.status === 'A' ? 'Aberto' : 'Fechado' }}</div>
+      </div>
+
+      <!-- Botão Fechar Caixa -->
+      <button class="btn-fechar" (click)="confirmarFecharCaixa()">Fechar Caixa</button>
+      <button class="btn-voltar" (click)="voltar()">Voltar</button>
+
+    </div>
+  </div>
+</div>
+

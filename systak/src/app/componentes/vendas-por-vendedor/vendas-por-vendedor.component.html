@@ -1,0 +1,58 @@
+<div class="banner">
+    <h2>Vendas por Vendedor</h2>
+    <form (ngSubmit)="consultarVendas()" #consultaForm="ngForm" class="form-inline">
+        
+        <div class="form-group">
+            <label for="loja">Selecione a Loja:</label>
+            <select id="loja" name="loja_id" [(ngModel)]="lojaId" required>
+                <option *ngFor="let loja of lojas" [value]="loja.Idloja">{{ loja.nome_loja }}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="data_inicio">Data Início:</label>
+            <input type="date" id="data_inicio" name="data_inicio" [(ngModel)]="dataInicio" required>
+        </div>
+        <div class="form-group">
+            <label for="data_fim">Data Fim:</label>
+            <input type="date" id="data_fim" name="data_fim" [(ngModel)]="dataFim">
+        </div>
+        <button type="submit" class="btn" [disabled]="!consultaForm.valid">Consultar</button>
+    </form>
+</div>
+
+
+
+<div class="container">
+
+    <div *ngIf="nomeLoja">
+        <h2>Vendas da Loja: {{ nomeLoja }}</h2> <!-- Exibindo o nome da loja -->
+    </div>
+    
+    <div class="resultado" *ngIf="resultadoVendas.length > 0">
+  
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome do Vendedor</th>
+                    <th>Meta Mês</th>
+                    <th>Meta dia</th>
+                    <th>Total</th>
+                    <th>Vendas</th>
+                    <th>Peças Vendidas</th>
+                    <th>P.A</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let venda of resultadoVendas">
+                    <td>{{ venda.vendedor }}</td>
+                    <td>{{venda.meta | currency:'BRL':'symbol':'1.2-2'}}</td>
+                    <td>{{venda.meta / 30 | currency:'BRL':'symbol':'1.2-2'}}</td>
+                    <td>{{ venda.total_vendas | currency:'BRL':'symbol':'1.2-2'}}</td>
+                    <td>{{ venda.num_vendas }}</td>
+                    <td>{{ venda.num_pecas }}</td>
+                    <td>{{ venda.num_pecas / venda.num_vendas }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

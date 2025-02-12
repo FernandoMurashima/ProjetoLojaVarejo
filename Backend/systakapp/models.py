@@ -14,7 +14,7 @@ class User(AbstractUser):
         GERENTE = 'Gerente', _('Gerente')
         ADMIN = 'Admin', _('Admin')
 
-    type = models.CharField(max_length=10, choices=Type.choices, default=Type.REGULAR)
+    type = models.CharField(max_length=10, choices=Type.choices, default='Regular')
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -118,6 +118,7 @@ class Funcionarios(models.Model):
     inicio = models.DateField(null=True, blank=True)
     fim = models.DateField(null=True, blank=True)
     categoria = models.CharField(max_length=15, null=True, blank=True)
+    meta = models.DecimalField(max_digits=10, decimal_places=2, default=0.00) 
     data_cadastro = models.DateTimeField(default=timezone.now)
     idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
 
@@ -340,13 +341,13 @@ class VendaItem(models.Model):
 
 class MovimentacaoFinanceira(models.Model):
     Idmovfin = models.BigAutoField(primary_key=True)
-    tipo = models.CharField(max_length=1)
-    data_movimento = models.DateField()
-    idreceberitem = models.IntegerField(null=True, blank=True)
-    idpagaritem = models.IntegerField(null=True, blank=True)
-    valor = models.DecimalField(max_digits=18, decimal_places=2)
-    data_baixa = models.DateField()
     Idconta = models.ForeignKey(ContaBancaria, on_delete=models.CASCADE)
+    data_movimento = models.DateField()
+    Titulo = models.CharField(max_length=10, default='00000000-0')
+    TipoMov = models.CharField(max_length=1, default='C')
+    TipoFluxo = models.CharField(max_length=1, default='R')
+    valor = models.DecimalField(max_digits=18, decimal_places=2)
+    data_baixa = models.DateField(null=True, blank=True)
     data_cadastro = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -354,18 +355,15 @@ class MovimentacaoFinanceira(models.Model):
 
 class MovimentacaoProdutos(models.Model):
     Idmovprod = models.BigAutoField(primary_key=True)
+    Idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
     Data_mov = models.DateField()
-    idproduto = models.ForeignKey(Produto, on_delete=models.CASCADE)
-    Idprodutodetalhe = models.ForeignKey(ProdutoDetalhe, on_delete=models.CASCADE)
-    Documento = models.CharField(max_length=20)
-    Tipo = models.CharField(max_length=2)
+    Documento = models.CharField(max_length=20, default='0000000000')
+    Tipo = models.CharField(max_length=1, default='V')
     Qtd = models.IntegerField()
     Valor = models.DecimalField(max_digits=18, decimal_places=2)
-    Idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
-    idvendaitem = models.IntegerField(null=True, blank=True)
-    idcompraitem = models.IntegerField(null=True, blank=True)
     data_cadastro = models.DateTimeField(default=timezone.now)
-
+    CodigodeBarra = models.CharField(max_length=20, default='0000000000000')
+    codigoproduto = models.CharField(max_length=11, default='00.00.00000')
     def __str__(self):
         return f'{self.Documento} - {self.Qtd}'
 
@@ -587,3 +585,36 @@ class Imposto(models.Model):
 
     def __str__(self):
         return f"ICMS: {self.icms}%, PIS: {self.pis}%, COFINS: {self.cofins}%, CSLL: {self.csll}%"
+
+class Caixa(models.Model):
+    idcaixa = models.AutoField(primary_key=True)
+    idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
+    data = models.DateField()
+    saldoanterior = models.DecimalField(max_digits=10, decimal_places=2)
+    saldofinal = models.DecimalField(max_digits=10, decimal_places=2)
+    despesas = models.DecimalField(max_digits=10, decimal_places=2)
+    pix = models.DecimalField(max_digits=10, decimal_places=2)
+    debito = models.DecimalField(max_digits=10, decimal_places=2)
+    credito = models.DecimalField(max_digits=10, decimal_places=2)
+    parcelado = models.DecimalField(max_digits=10, decimal_places=2)
+    dinheiro = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=1, default='A')
+    enviado = models.BooleanField(default=False)
+    usuario = models.CharField(max_length=100, default='none')
+
+    def __str__(self):
+        return f"Caixa {self.idcaixa} - {self.data}"
+
+class Despesa(models.Model):
+    iddespesa = models.AutoField(primary_key=True)
+    idloja = models.ForeignKey(Loja, on_delete=models.CASCADE)
+    data = models.DateField()
+    descricao = models.CharField(max_length=200)
+    autorizado = models.CharField(max_length=20)
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    recibo = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"Despesa {self.iddespesa} - {self.descricao}"
+    
+        

@@ -47,6 +47,8 @@ router.register(r'grupos', views.GrupoViewSet)
 router.register(r'grupodetalhes', views.GrupoDetalheViewSet)
 router.register(r'subgrupos', views.SubGrupoViewSet)
 router.register(r'codigos', views.CodigosViewSet)
+router.register(r'caixas', views.CaixaViewSet)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -60,6 +62,7 @@ urlpatterns = [
     path('recebers/create_receber/', views.create_financeiro, name='create_financeiro'),  # Nova rota para create_financeiro
     path('recebers/create_financeiro/', views.create_financeiro, name='create_financeiro'),  # Nova rota para create_financeiro
     path('verificar_documento/<str:documento>/', views.verificar_documento, name='verificar_documento'),
+    path('vendas_por_vendedor/', views.vendas_por_vendedor, name='vendas_por_vendedor'),
     path('vendas/create_venda/', views.create_venda, name='create_venda'),
     path('', include(router.urls)),
     path('grupos/<int:grupo_id>/codigo/', views.get_codigo_grupo, name='get_codigo_grupo'),
@@ -79,6 +82,9 @@ urlpatterns = [
     path('check-username/', views.check_username, name='check-username'),
     path('produtos/colecao/<int:colecao_id>/', views.produtos_por_colecao, name='produtos_por_colecao'),
     path('colecoes/', views.listar_colecoes, name='listar_colecoes'),
+    path('despesas/', views.DespesaListCreateView.as_view(), name='despesa-list-create'),
+    path('despesas/<int:pk>/', views.DespesaRetrieveUpdateDestroyView.as_view(), name='despesa-detail'),
+
     
 ]
 

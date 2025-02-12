@@ -22,6 +22,8 @@ import { ReceberItensService } from '../../service/receberitens.service';
 import { formatDate } from '@angular/common';
 import { ConsultaPrecoDialogComponent } from '../consulta-preco-dialog/consulta-preco-dialog.component';
 import { AberturaPdvComponent } from '../aberturapdv/aberturapdv.component';
+import { MovimentacaoFinanceiraService, MovimentacaoFinanceira } from '../../service/movimentacao-financeira.service';
+import { MovimentacaoProdutosService, MovimentacaoProdutos } from '../../service/movimentacao-produtos.service';
 
 export interface Produto {
   id: number;
@@ -100,7 +102,9 @@ export class PdvComponent implements OnInit {
     private http: HttpClient,
     public dialog: MatDialog,
     private receberService: ReceberService,
-    private receberItensService: ReceberItensService
+    private receberItensService: ReceberItensService,
+    private movimentacaoFinanceiraService: MovimentacaoFinanceiraService,
+    private movimentacaoProdutosService: MovimentacaoProdutosService,
   ) {
     this.clientesFiltrados = this.clienteCtrl.valueChanges.pipe(
       startWith(''),
@@ -109,40 +113,80 @@ export class PdvComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.openAberturaDialog();  // Abre o diálogo de abertura ao inicializar
-    this.loadLojas();
     this.authService.isAuthenticated().subscribe(isAuthenticated => {
-      if (isAuthenticated) {
-        this.authService.refreshUserData().subscribe(user => {
-          this.user = user;
-          console.log('Usuário autenticado:', this.user);
-          this.checkAuthorization();
-        });
-      } else {
-        console.log('Usuário não está autenticado');
-      }
+        if (isAuthenticated) {
+            this.authService.refreshUserData().subscribe(user => {
+                this.user = user;
+                console.log('Usuário autenticado:', this.user);
+                this.checkAuthorization();
+                if (this.isAuthorized) {
+                    this.pdvUser = this.user.username;
+                    console.log('PDV aberto por:', this.pdvUser);
+                } else {
+                    this.openLoginDialog();  // Usuário autenticado, mas não autorizado
+                }
+            });
+        } else {
+            console.log('Usuário não está autenticado');
+            this.openLoginDialog();  // Usuário não autenticado
+        }
     });
 
+    this.loadLojas();
     this.clienteService.load().subscribe(data => {
-      this.clientes = data;
+        this.clientes = data;
     });
+}
+
+
+openAberturaDialog(): void {
+  if (this.isAuthorized && this.user) {
+      this.pdvUser = this.user.username;
+      console.log('Usuário já autorizado:', this.pdvUser);
+      return;  // Se o usuário já está autorizado, não precisa abrir o diálogo
   }
 
-  openAberturaDialog(): void {
-    const dialogRef = this.dialog.open(AberturaPdvComponent, {
+  const dialogRef = this.dialog.open(AberturaPdvComponent, {
       width: '300px'
-    });
+  });
 
-    dialogRef.afterClosed().subscribe(result => {
+  dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.pdvUser = result;  // Armazena o nome do usuário autorizado
-        console.log('PDV aberto por:', this.pdvUser);
+          this.pdvUser = result;  // Armazena o nome do usuário autorizado
+          console.log('PDV aberto por:', this.pdvUser);
       } else {
-        console.log('Abertura do PDV cancelada');
-        this.router.navigate(['/home']);
+          console.log('Abertura do PDV cancelada');
+          this.router.navigate(['/home']);
       }
-    });
-  }
+  });
+}
+
+
+openLoginDialog(): void {
+  const dialogRef = this.dialog.open(AberturaPdvComponent, {
+      width: '300px'
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+          this.authService.refreshUserData().subscribe(user => {
+              this.user = user;
+              console.log('Usuário autenticado:', this.user);
+              this.checkAuthorization();
+              if (this.isAuthorized) {
+                  this.pdvUser = this.user.username;
+                  console.log('PDV aberto por:', this.pdvUser);
+              } else {
+                  alert('Usuário não autorizado. Tente novamente.');
+                  this.openLoginDialog();  // Reabre a tela de login para tentar outro usuário
+              }
+          });
+      } else {
+          console.log('Abertura do PDV cancelada');
+          this.router.navigate(['/home']);
+      }
+  });
+}
 
   loadLojas() {
     this.lojaService.load().subscribe(data => {
@@ -195,23 +239,19 @@ export class PdvComponent implements OnInit {
 
   checkAuthorization() {
     if (this.user) {
-      console.log('Tipo de usuário:', this.user.type);
-      if (this.user.type !== 'Regular') {
-        this.isAuthorized = true;
-        console.log('Usuário autorizado para usar o PDV');
-      } else {
-        this.isAuthorized = false;
-        alert('Usuário não autorizado');
-        this.router.navigate(['/login']);
-        console.log('Usuário não autorizado para usar o PDV');
-      }
+        console.log('Tipo de usuário:', this.user.type);
+        if (this.user.type !== 'Regular') {
+            this.isAuthorized = true;
+            console.log('Usuário autorizado para usar o PDV');
+        } else {
+            this.isAuthorized = false;
+            console.log('Usuário não autorizado para usar o PDV');
+        }
     } else {
-      this.isAuthorized = false;
-      alert('Erro ao verificar autorização do usuário');
-      this.router.navigate(['/login']);
-      console.log('Erro: usuário não encontrado');
+        this.isAuthorized = false;
+        console.log('Erro: usuário não encontrado');
     }
-  }
+}
 
   selectCliente() {
     if (this.selectedCliente) {
@@ -522,60 +562,66 @@ export class PdvComponent implements OnInit {
 
   async gravarFormaPagamento(): Promise<void> {
     try {
-      let parcelas = 1;
-      if (this.formaPagamento === 'CREDITO_PARCELADO') {
-        parcelas = this.numeroParcelas;
-      }
-      const valorParcela = this.valorForma / parcelas;
-  
-      const idReceber = await this.obterOuCriarReceber();
-  
-      for (let i = 0; i < parcelas; i++) {
-        let dataVencimento = new Date();
-        switch (this.formaPagamento) {
-          case 'PIX':
-          case 'DINHEIRO':
-            dataVencimento = new Date();
-            break;
-          case 'DEBITO':
-            dataVencimento.setDate(dataVencimento.getDate() + 1);
-            break;
-          case 'CREDITO_A_VISTA':
-            dataVencimento.setDate(dataVencimento.getDate() + 30);
-            break;
-          case 'CREDITO_PARCELADO':
-            dataVencimento.setDate(dataVencimento.getDate() + 30 * (i + 1));
-            break;
-          default:
-            throw new Error(`Forma de pagamento desconhecida: ${this.formaPagamento}`);
+        let parcelas = 1;
+        if (this.formaPagamento === 'CREDITO_PARCELADO') {
+            parcelas = this.numeroParcelas;
         }
-  
-        const receberItensData = {
-          Idreceber: idReceber,
-          Titulo: `${this.documentoFiscal}-${this.proximaParcelaGlobal++}`,
-          Parcela: i + 1,
-          Datavencimento: formatDate(dataVencimento, 'yyyy-MM-dd', 'en-US'),
-          Databaixa: null,
-          valor_parcela: valorParcela,
-          juros: 0,
-          desconto: 0,
-          Titulo_descontado: 'N',
-          Data_desconto: null,
-          idconta: 1,
-          data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US')
-        };
-  
-        console.log('Dados para receberItens:', receberItensData);
-  
-        await this.receberItensService.createReceberItens(receberItensData).toPromise();
-      }
-  
-      console.log(`Forma de pagamento ${this.formaPagamento} gravada com sucesso`);
+        const valorParcela = this.valorForma / parcelas;
+
+        const idReceber = await this.obterOuCriarReceber();
+        const itensDeReceber: any[] = [];
+
+        for (let i = 0; i < parcelas; i++) {
+            let dataVencimento = new Date();
+            switch (this.formaPagamento) {
+                case 'PIX':
+                case 'DINHEIRO':
+                    dataVencimento = new Date();
+                    break;
+                case 'DEBITO':
+                    dataVencimento.setDate(dataVencimento.getDate() + 1);
+                    break;
+                case 'CREDITO_A_VISTA':
+                    dataVencimento.setDate(dataVencimento.getDate() + 30);
+                    break;
+                case 'CREDITO_PARCELADO':
+                    dataVencimento.setDate(dataVencimento.getDate() + 30 * (i + 1));
+                    break;
+                default:
+                    throw new Error(`Forma de pagamento desconhecida: ${this.formaPagamento}`);
+            }
+
+            const receberItensData = {
+                Idreceber: idReceber,
+                Titulo: `${this.documentoFiscal}-${this.proximaParcelaGlobal++}`,
+                Parcela: i + 1,
+                Datavencimento: formatDate(dataVencimento, 'yyyy-MM-dd', 'en-US'),
+                Databaixa: null,
+                valor_parcela: valorParcela,
+                juros: 0,
+                desconto: 0,
+                Titulo_descontado: 'N',
+                Data_desconto: null,
+                idconta: 1,
+                data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US')
+            };
+
+            console.log('Dados para receberItens:', receberItensData);
+
+            await this.receberItensService.createReceberItens(receberItensData).toPromise();
+            itensDeReceber.push(receberItensData);
+        }
+
+        console.log(`Forma de pagamento ${this.formaPagamento} gravada com sucesso`);
+
+        // Gravar movimentações financeiras
+        await this.gravarMovimentacaoFinanceira(idReceber, itensDeReceber);
+
     } catch (error: any) {
-      console.error('Erro ao gravar dados financeiros:', error);
-      throw new Error(`Erro ao gravar dados financeiros: ${error.message || error}`);
+        console.error('Erro ao gravar dados financeiros:', error);
+        throw new Error(`Erro ao gravar dados financeiros: ${error.message || error}`);
     }
-  }
+}
 
   async obterOuCriarReceber(): Promise<number> {
     if (this.receberId !== null) {
@@ -599,82 +645,49 @@ export class PdvComponent implements OnInit {
     return receberResponse.Idreceber;
 }
 
+async gravarMovimentacaoFinanceira(idReceber: number, receberItens: any[]): Promise<void> {
+  for (const item of receberItens) {
+      const movimentacaoData: MovimentacaoFinanceira = {
+          Idconta: item.idconta,
+          data_movimento: item.Datavencimento,
+          Titulo: item.Titulo,
+          TipoMov: 'V',
+          TipoFluxo: 'R',
+          valor: item.valor_parcela,
+          data_baixa: null,
+          data_cadastro: item.data_cadastro
+      };
 
+      try {
+          await this.movimentacaoFinanceiraService.createMovimentacao(movimentacaoData).toPromise();
+          console.log('Movimentação financeira gravada com sucesso:', movimentacaoData);
+      } catch (error) {
+          console.error('Erro ao gravar movimentação financeira:', error);
+      }
+  }
+}
 
-  
-/*   async obterOuCriarReceber(): Promise<number> {
-    const receberData = {
-      idloja: this.selectedLoja!,
-      Documento: this.documentoFiscal,
-      TipoRecebimento: this.formaPagamento,
-      Valor: this.totalComDesconto,
-      ContaContabil: '',
-      Nat_Lancamento: '',
-      data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US')
-    };
-  
-    const receberResponse: any = await this.receberService.createReceber(receberData).toPromise();
-    return receberResponse.Idreceber;
-  } */
+async gravarMovimentacaoProdutos(itens: any[], documento: string, idLoja: number): Promise<void> {
+  for (const item of itens) {
+      const movimentacaoProdutoData = {
+          Idloja: idLoja,
+          Data_mov: formatDate(new Date(), 'yyyy-MM-dd', 'en-US'),
+          Documento: documento,
+          Tipo: 'V',
+          Qtd: item.Qtd,
+          Valor: item.Total_item,
+          data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US'),
+          CodigodeBarra: item.CodigodeBarra,
+          codigoproduto: item.codigoproduto
+      };
 
-  async gravarDadosFinanceiros(venda: any, itens: any[]): Promise<void> {
-    try {
-        const receberData = {
-            idloja: venda.Idloja,
-            Documento: venda.Documento,
-            TipoRecebimento: venda.tipopag,
-            Valor: venda.Valor,
-            ContaContabil: '',
-            Nat_Lancamento: '',
-            data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US')
-        };
-
-        const receberResponse: any = await this.receberService.createReceber(receberData).toPromise();
-        const idReceber = receberResponse.Idreceber;
-
-        for (let i = 1; i <= venda.numeroParcelas; i++) {
-            let dataVencimento = new Date();
-            switch (venda.tipopag) {
-                case 'PIX':
-                case 'DINHEIRO':
-                    dataVencimento = new Date();
-                    break;
-                case 'DEBITO':
-                    dataVencimento.setDate(dataVencimento.getDate() + 1);
-                    break;
-                case 'CREDITO_A_VISTA':
-                    dataVencimento.setDate(dataVencimento.getDate() + 30);
-                    break;
-                case 'CREDITO_PARCELADO':
-                    dataVencimento.setDate(dataVencimento.getDate() + 30 * i);
-                    break;
-                default:
-                    throw new Error(`Forma de pagamento desconhecida: ${venda.tipopag}`);
-            }
-
-            const receberItensData = {
-                Idreceber: idReceber,
-                Titulo: `${venda.Documento}-${i}`,
-                Parcela: i,
-                Datavencimento: formatDate(dataVencimento, 'yyyy-MM-dd', 'en-US'),
-                Databaixa: null,
-                valor_parcela: venda.tipopag === 'CREDITO_PARCELADO' ? venda.Valor / venda.numeroParcelas : venda.Valor,
-                juros: 0,
-                desconto: 0,
-                Titulo_descontado: 'N',
-                Data_desconto: null,
-                idconta: 1,
-                data_cadastro: formatDate(new Date(), 'yyyy-MM-ddTHH:mm:ss', 'en-US')
-            };
-
-            await this.receberItensService.createReceberItens(receberItensData).toPromise();
-        }
-
-        console.log('Dados financeiros gravados com sucesso');
-    } catch (error: any) {
-        console.error('Erro ao gravar dados financeiros:', error);
-        alert(`Erro ao gravar dados financeiros: ${error.message || error}`);
-    }
+      try {
+          await this.movimentacaoProdutosService.createMovimentacao(movimentacaoProdutoData).toPromise();
+          console.log('Movimentação de produto gravada com sucesso:', movimentacaoProdutoData);
+      } catch (error) {
+          console.error('Erro ao gravar movimentação de produto:', error);
+      }
+  }
 }
 
 finalizarProcessoPagamento() {
@@ -683,7 +696,6 @@ finalizarProcessoPagamento() {
     console.error('Erro: Campos obrigatórios não preenchidos');
     return;
   }
-
 
   if (this.selectedVendedor === null || this.selectedLoja === null) {
       console.error('Erro: Loja ou vendedor não selecionado');
@@ -720,24 +732,24 @@ finalizarProcessoPagamento() {
       console.log('Dados da venda que serão enviados:', vendaData);
 
       this.http.post(`${environment.apiURL}/vendas/create_venda/`, vendaData).subscribe({
-          next: (response: any) => {
+          next: async (response: any) => {
               console.log('Venda gravada com sucesso', response);
 
-              this.baixarEstoque(vendaData.itens).then(() => {
-                  this.codigoService.incrementarCodigo('Nfce').subscribe({
-                      next: (incrementResponse: any) => {
-                          console.log('Código fiscal incrementado com sucesso:', incrementResponse);
+              await this.baixarEstoque(vendaData.itens);
+              
+              await this.gravarMovimentacaoProdutos(vendaData.itens, vendaData.venda.Documento, vendaData.venda.Idloja);
 
-                          this.estadoPagamento = 'finalizado';
-                          this.vendaFinalizada = true;
-                          this.exibirPagamento = false;
-                      },
-                      error: incrementError => {
-                          console.error('Erro ao incrementar o código fiscal:', incrementError);
-                      }
-                  });
-              }).catch(error => {
-                  console.error('Erro ao baixar o estoque:', error);
+              this.codigoService.incrementarCodigo('Nfce').subscribe({
+                  next: (incrementResponse: any) => {
+                      console.log('Código fiscal incrementado com sucesso:', incrementResponse);
+
+                      this.estadoPagamento = 'finalizado';
+                      this.vendaFinalizada = true;
+                      this.exibirPagamento = false;
+                  },
+                  error: incrementError => {
+                      console.error('Erro ao incrementar o código fiscal:', incrementError);
+                  }
               });
           },
           error: error => {
@@ -779,5 +791,4 @@ validateFields(): boolean {
 
   return true;
 }
-
 }

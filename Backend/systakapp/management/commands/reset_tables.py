@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.db import connection, transaction
-from Backend.systakapp.models_desen import Estoque
+from systakapp.models import Estoque
 
 class Command(BaseCommand):
     help = 'Reset tables and set estoque to 100'
@@ -10,9 +10,9 @@ class Command(BaseCommand):
             'systakapp_vendaitem',
             'systakapp_venda',
             'systakapp_receberitens',
-            'systakapp_receber'
-
-            
+            'systakapp_receber',
+            'systakapp_movimentacaofinanceira',
+            'systakapp_movimentacaoprodutos'
         ]
 
         for table in tables_to_reset:
@@ -25,8 +25,8 @@ class Command(BaseCommand):
         with connection.cursor() as cursor:
             try:
                 cursor.execute(f'DELETE FROM {table_name};')
-                cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{table_name}';")
-                self.stdout.write(self.style.SUCCESS(f'Deleted data from table {table_name} and reset sequence.'))
+                cursor.execute(f'ALTER TABLE {table_name} AUTO_INCREMENT = 1;')
+                self.stdout.write(self.style.SUCCESS(f'Deleted data from table {table_name} and reset auto-increment.'))
             except Exception as e:
                 self.stdout.write(self.style.ERROR(f'Error resetting table {table_name}: {e}'))
 
@@ -37,5 +37,6 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('Updated estoque to 100 in systakapp_estoque.'))
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'Error updating estoque: {e}'))
+
 
 

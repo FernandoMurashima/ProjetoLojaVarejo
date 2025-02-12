@@ -21,7 +21,7 @@ export class UserComponent implements OnInit {
   firstNameInput: string = '';
   lastNameInput: string = '';
   emailInput: string = '';
-  typeInput: string = 'Regular';
+  typeInput: string = '';
 
   // Verificação de disponibilidade de nome de usuário
   usernameAvailable: boolean = true;
@@ -103,20 +103,25 @@ export class UserComponent implements OnInit {
     this.userService.load().subscribe({
       next: (data) => {
         this.users = data;
-        console.log('Users loaded:', this.users);
+
+        /* this.users = this.users.map((user, index) => ({ ...user, id: index + 1 })); */
+
+
+        console.log('Users loaded:', this.users); // Verifique se os IDs estão aqui
+        this.users.forEach(user => console.log(`User ID: ${user.id}, Username: ${user.username}`));
       },
       error: (error) => {
         console.error('Erro ao carregar usuários', error);
       }
     });
   }
-
+  
   addUser() {
     if (!this.usernameAvailable) {
       this.errorMessage = 'O nome de usuário já está em uso. Escolha outro antes de salvar.';
       return;
     }
-
+  
     if (window.confirm('Confirma a inclusão do novo usuário?')) {
       const userParaEnviar: UserCreate = {
         username: this.usernameInput,
@@ -131,9 +136,10 @@ export class UserComponent implements OnInit {
         last_login: this.user.last_login,
         type: this.typeInput
       };
-
+  
+      console.log('Tipo selecionado:', this.typeInput);
       console.log('Dados sendo enviados para o backend:', userParaEnviar);
-
+  
       this.userService.addUser(userParaEnviar).subscribe({
         next: (data) => {
           this.successMessage = 'Usuário adicionado com sucesso!';
@@ -142,7 +148,6 @@ export class UserComponent implements OnInit {
         },
         error: (error) => {
           console.error('Erro ao cadastrar usuário:', error);
-          console.error('Detalhes do erro:', error.error);
           if (error.status === 400 && error.error && error.error.username) {
             this.errorMessage = 'Erro: O nome de usuário já existe. Por favor, escolha outro.';
           } else {
@@ -155,12 +160,18 @@ export class UserComponent implements OnInit {
 
   onUserChange(event: Event) {
     const selectedId = (event.target as HTMLSelectElement).value;
+    console.log("Selected user ID:", selectedId);
     this.userSelecionado = this.users.find(u => u.id === +selectedId) ?? undefined;
-
+  
     if (this.userSelecionado) {
       this.user = { ...this.userSelecionado };
+      console.log("Usuário selecionado:", this.userSelecionado);
+    } else {
+      console.error("Usuário não encontrado para o ID:", selectedId);
     }
   }
+  
+
 
   updateUser() {
     if (window.confirm('Confirma a alteração do usuário?')) {
@@ -195,7 +206,6 @@ export class UserComponent implements OnInit {
     }
   }
 
-  // Método para configurar a verificação de disponibilidade de nome de usuário
   setupUsernameCheck() {
     this.usernameCheck$.pipe(
       debounceTime(300),

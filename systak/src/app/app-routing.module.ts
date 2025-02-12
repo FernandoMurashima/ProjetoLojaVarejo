@@ -30,6 +30,9 @@ import { TesteProdutoComponent } from './componentes/teste-produto/teste-produto
 import { ClientepadraoComponent } from './componentes/clientepadrao/clientepadrao.component';
 import { EtiquetaProdutoComponent } from './componentes/etiqueta-produto/etiqueta-produto.component';
 import { EtiquetaProdutoLojaComponent } from './componentes/etiqueta-produto-loja/etiqueta-produto-loja.component';
+import { VendasPorVendedorComponent } from './componentes/vendas-por-vendedor/vendas-por-vendedor.component';
+import { DespesaComponent } from './componentes/despesa/despesa.component';
+import { CaixaComponent } from './componentes/caixa/caixa.component';
 
 export const DEFAULT_ROUTE = '/index';
 
@@ -68,7 +71,12 @@ const routes: Routes = [
   { path: 'vendas/pdv', component: PdvComponent, canActivate: [AuthGuardService]},  
   { path: 'cadastro/clientes2', component: ClientepadraoComponent, canActivate: [AuthGuardService] },
   { path: 'cadastro/etiquetas', component: EtiquetaProdutoComponent, canActivate: [AuthGuardService] },
-  { path: 'cadastro/etiquetas2', component: EtiquetaProdutoLojaComponent }, // Adicione a rota para o novo componente
+  { path: 'cadastro/etiquetas2', component: EtiquetaProdutoLojaComponent, canActivate: [AuthGuardService] }, // Adicione a rota para o novo componente
+  { path: 'vendas/vendas-por-vendedor', component: VendasPorVendedorComponent, canActivate: [AuthGuardService] },
+  { path: 'vendas/despesas', component: DespesaComponent, canActivate: [AuthGuardService] },
+  { path: 'vendas/caixa', component: CaixaComponent, canActivate: [AuthGuardService] }, // Nova rota adicionada
+  
+  
   // outras rotas
 
   { path: 'sair', component: LoginComponent }

@@ -24,8 +24,41 @@
           </div>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/financeiro">Financeiro</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="estoqueDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Financeiro
+          </a>
+          <div class="dropdown-menu" aria-labelledby="estoqueDropdown">
+            <div class="dropdown-submenu">
+              <a class="dropdown-item dropdown-toggle" href="#">Contas a Receber</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" routerLink="/financeiro">Consulta</a>
+                <a class="dropdown-item" routerLink="/financeiro">Cadastro</a>
+                <a class="dropdown-item" routerLink="/financeiro">Baixa</a>
+                <a class="dropdown-item" routerLink="/financeiro">Negociação</a> 
+                <a class="dropdown-item" routerLink="/financeiro">Relatórios</a> 
+              </div>
+            </div>
+            <div class="dropdown-submenu">
+              <a class="dropdown-item dropdown-toggle" href="#">Contas a Pagar</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" routerLink="/financeiro">Consulta</a>
+                <a class="dropdown-item" routerLink="/financeiro">Cadastro</a>
+                <a class="dropdown-item" routerLink="/financeiro">Baixa</a>
+                <a class="dropdown-item" routerLink="/financeiro">Negociação</a>
+                <a class="dropdown-item" routerLink="/financeiro">Relatórios</a> 
+              </div>
+            </div>
+            <div class="dropdown-submenu">
+              <a class="dropdown-item dropdown-toggle" href="#">Operacional</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" routerLink="/financeiro">Conciliação</a>
+                <a class="dropdown-item" routerLink="/financeiro">Planejamento</a>
+              </div>
+            </div>
+          </div>
+
+
         </li>
 
         <li class="nav-item dropdown">
@@ -34,7 +67,10 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="vendaDropdown">
             <a class="dropdown-item" routerLink="/vendas/pdv">PDV</a>
+            <a class="dropdown-item" routerLink="/vendas/caixa">Caixa</a>
+            <a class="dropdown-item" routerLink="/vendas/despesas">Despesas</a>
             <a class="dropdown-item" routerLink="/vendas/tabela-preco">Tabela de Preço</a>
+            <a class="dropdown-item" routerLink="vendas/vendas-por-vendedor">Venda por Vendedor</a>
           </div>
         </li>
 
@@ -77,8 +113,31 @@
           </div>
         </li>
 
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="estoqueDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Compras
+          </a>
+          <div class="dropdown-menu" aria-labelledby="estoqueDropdown">
+            <div class="dropdown-submenu">
+              <a class="dropdown-item dropdown-toggle" href="#">Pedidos</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" routerLink="/financeiro">Cadastro</a>
+                <a class="dropdown-item" routerLink="/financeiro">Recebimento</a>
+                <a class="dropdown-item" routerLink="/financeiro">Relatórios</a> 
+              </div>
+            </div>
+            <div class="dropdown-submenu">
+              <a class="dropdown-item dropdown-toggle" href="#">Orçamento</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" routerLink="/financeiro">Cadastro</a>
+                <a class="dropdown-item" routerLink="/financeiro">Aprovação</a>
+                <a class="dropdown-item" routerLink="/financeiro">Relatórios</a> 
+              </div>
+            </div>
+          </div>
+
         <li class="nav-item">
-          <a class="nav-link" routerLink="/relatorios">Relatórios</a>
+          <a class="nav-link" routerLink="/relatorios">Dashboards</a>
         </li>
 
         <li class="nav-item dropdown">
@@ -87,7 +146,7 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="configuradoresDropdown">
             <a class="dropdown-item" routerLink="/configuradores/natureza-lancamentos">Natureza</a>
-            <a class="dropdown-item" routerLink="configuradores/teste-produto">Teste</a>
+      
             
             
           </div>

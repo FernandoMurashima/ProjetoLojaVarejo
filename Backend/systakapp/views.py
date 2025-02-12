@@ -4,6 +4,10 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import viewsets, permissions, generics
 from decimal import Decimal, ROUND_HALF_UP
 import json
+from django.db import models
+
+from django.shortcuts import render
+from django.db.models import Sum, Count
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -22,6 +26,8 @@ from django.db import transaction
 from datetime import timedelta
 from django.utils import timezone
 from django.views.decorators.http import require_GET
+from django.utils.timezone import make_aware
+from datetime import datetime, time
 
 from .serializers import (
     UserSerializer, ClienteSerializer, FornecedorSerializer, VendedorSerializer,
@@ -32,7 +38,7 @@ from .serializers import (
     ReceberSerializer, ReceberItensSerializer, PagarSerializer, PagarItemSerializer,
     CompraSerializer, CompraItemSerializer, PedidoCompraSerializer, PedidoCompraItemSerializer, LojaSerializer, GrupoSerializer,
     UnidadeSerializer, MaterialSerializer, FamiliaSerializer, ColecaoSerializer, GradeSerializer, NcmSerializer, SubGrupoSerializer,
-    GrupoDetalheSerializer, CodigosSerializer, TabelaPrecoItemSerializer, ImpostoSerializer
+    GrupoDetalheSerializer, CodigosSerializer, TabelaPrecoItemSerializer, ImpostoSerializer, DespesaSerializer, CaixaSerializer
 )
 
 from .models import (
@@ -41,7 +47,7 @@ from .models import (
     Venda, VendaItem, MovimentacaoFinanceira, MovimentacaoProdutos, Inventario,
     InventarioItem, Receber, ReceberItens, Pagar, PagarItem, Compra, CompraItem, Grade,
     PedidoCompra, PedidoCompraItem, Grupo, Unidade, Material, Familia, Colecao, Ncm, Subgrupo, 
-    GrupoDetalhe, Codigos, TabelaPrecoItem, Imposto
+    GrupoDetalhe, Codigos, TabelaPrecoItem, Imposto, Despesa, Caixa
 )
 
 import logging
@@ -287,6 +293,91 @@ class CodigosViewSet(viewsets.ModelViewSet):
     serializer_class = CodigosSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+class CaixaViewSet(viewsets.ModelViewSet):
+    queryset = Caixa.objects.all()
+    serializer_class = CaixaSerializer
+
+    def create(self, request, *args, **kwargs):
+        idloja = request.data.get('idloja')
+        data_caixa_str = request.data.get('data', timezone.now().date())
+        
+        # Converter a string data_caixa_str em um objeto datetime.date
+        data_caixa = datetime.strptime(data_caixa_str, '%Y-%m-%d').date()
+
+        # Obter a instância de Loja correspondente ao Idloja
+        loja = Loja.objects.get(Idloja=idloja)
+
+        # Verificar se já existe um registro de caixa para este dia
+        caixa_existente = Caixa.objects.filter(idloja=loja, data=data_caixa).first()
+        if caixa_existente:
+            # Se o caixa já existir, simplesmente retornamos o registro existente
+            serializer = self.get_serializer(caixa_existente)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        # Caso o caixa não exista, criar o novo registro
+        saldo_anterior = self.calcular_saldo_anterior(loja, data_caixa)
+        pix = self.calcular_total_vendas(loja, data_caixa, 'PIX')
+        debito = self.calcular_total_vendas(loja, data_caixa, 'DEBITO')
+        credito = self.calcular_total_vendas(loja, data_caixa, 'CREDITO_A_VISTA')
+        parcelado = self.calcular_total_vendas(loja, data_caixa, 'CREDITO_PARCELADO')
+        dinheiro = self.calcular_total_vendas(loja, data_caixa, 'DINHEIRO')
+        despesas = self.calcular_total_despesas(loja, data_caixa)
+        saldo_final = saldo_anterior + pix + debito + credito + parcelado + dinheiro - despesas
+
+        caixa = Caixa.objects.create(
+            idloja=loja,
+            data=data_caixa,
+            saldoanterior=saldo_anterior,
+            saldofinal=saldo_final,
+            despesas=despesas,
+            pix=pix,
+            debito=debito,
+            credito=credito,
+            parcelado=parcelado,
+            dinheiro=dinheiro,
+            usuario=request.user.username
+        )
+
+        serializer = self.get_serializer(caixa)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def calcular_saldo_anterior(self, loja, data_caixa):
+        dia_anterior = data_caixa - timedelta(days=1)
+        while True:
+            caixa_anterior = Caixa.objects.filter(idloja=loja, data=dia_anterior).first()
+            if caixa_anterior:
+                return caixa_anterior.saldofinal
+            elif dia_anterior < data_caixa - timedelta(days=30):  # Limitar a busca a um mês
+                break
+            dia_anterior -= timedelta(days=1)
+        return 0
+
+    # Certifique-se de que as outras funções também estão definidas
+    def calcular_total_vendas(self, loja, data_caixa, forma_pagamento):
+        total_vendas = Venda.objects.filter(
+            Idloja=loja,
+            Data__date=data_caixa,
+            tipopag=forma_pagamento
+        ).aggregate(total=models.Sum('Valor'))['total']
+        return total_vendas or 0
+
+    def calcular_total_despesas(self, loja, data_caixa):
+        total_despesas = Despesa.objects.filter(
+            idloja=loja,
+            data=data_caixa
+        ).aggregate(total=models.Sum('valor'))['total']
+        return total_despesas or 0
+
+    # Funções calcular_saldo_anterior, calcular_total_vendas e calcular_total_despesas permanecem as mesmas...
+
+
+class DespesaListCreateView(generics.ListCreateAPIView):
+    queryset = Despesa.objects.all()
+    serializer_class = DespesaSerializer
+
+class DespesaRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Despesa.objects.all()
+    serializer_class = DespesaSerializer
 class ImpostoViewSet(viewsets.ModelViewSet):
     queryset = Imposto.objects.all()
     serializer_class = ImpostoSerializer
@@ -369,7 +460,10 @@ def create_user(request):
     data = request.data
     username = data.get('username')
     password = data.get('password')
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
     email = data.get('email')
+    user_type = data.get('type', 'Regular')  # Define 'Regular' como valor padrão se não for fornecido
 
     if not username or not password or not email:
         return JsonResponse({'error': 'Missing fields'}, status=status.HTTP_400_BAD_REQUEST)
@@ -377,14 +471,22 @@ def create_user(request):
     if User.objects.filter(username=username).exists():
         return JsonResponse({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
+    # Criando o usuário com os dados fornecidos
     user = User(
         username=username,
         email=email,
-        password=make_password(password)  # Hashing the password
+        first_name=first_name,
+        last_name=last_name,
+        password=make_password(password),  # Hashing the password
+        type=user_type
     )
     user.save()
 
-    return JsonResponse({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
+    # Opcional: Use o serializer para retornar os dados do usuário criado
+    serializer = UserSerializer(user)
+    
+    return JsonResponse({'message': 'User created successfully', 'user': serializer.data}, status=status.HTTP_201_CREATED)
+
 
 def get_preco_por_codigo_barra(request, codigo_barra):
     tabela_preco_item = get_object_or_404(TabelaPrecoItem, codigodebarra=codigo_barra)
@@ -730,3 +832,71 @@ def listar_colecoes(request):
         return JsonResponse(list(colecoes), safe=False)
     except Colecao.DoesNotExist:
         return JsonResponse({'error': 'Nenhuma coleção encontrada'}, status=404)
+
+
+def vendas_por_vendedor(request):
+    loja_id = request.GET.get('loja_id')
+    data_inicio = request.GET.get('data_inicio')
+    data_fim = request.GET.get('data_fim')
+
+    # Obter o nome da loja
+    try:
+        loja = Loja.objects.get(pk=loja_id)
+        nome_loja = loja.nome_loja
+    except Loja.DoesNotExist:
+        return JsonResponse({'error': 'Loja não encontrada'}, status=404)
+
+    # Converter as datas para objetos datetime
+    data_inicio = datetime.strptime(data_inicio, '%Y-%m-%d')
+    
+    if data_fim:
+        data_fim = datetime.combine(datetime.strptime(data_fim, '%Y-%m-%d'), time.max)
+        data_fim = make_aware(data_fim)
+    else:
+        data_fim = make_aware(datetime.combine(data_inicio, time.max))
+    
+    # Filtrar vendedores ativos da loja selecionada
+    vendedores = Funcionarios.objects.filter(
+        categoria='vendedor',
+        fim__isnull=True,
+        idloja_id=loja_id
+    )
+
+    resultado_vendas = []
+
+    for vendedor in vendedores:
+        # Total de vendas por vendedor no período
+        total_vendas = Venda.objects.filter(
+            Idfuncionario=vendedor,
+            Data__range=[data_inicio, data_fim]
+        ).aggregate(Sum('Valor'))['Valor__sum'] or 0
+
+        # Número de vendas por vendedor no período
+        num_vendas = Venda.objects.filter(
+            Idfuncionario=vendedor,
+            Data__range=[data_inicio, data_fim]
+        ).count()
+
+        # Número de peças vendidas
+        documentos = Venda.objects.filter(
+            Idfuncionario=vendedor,
+            Data__range=[data_inicio, data_fim]
+        ).values_list('Documento', flat=True)
+
+        num_pecas = VendaItem.objects.filter(
+            Documento__in=documentos
+        ).aggregate(Sum('Qtd'))['Qtd__sum'] or 0
+
+        # Adiciona o campo `meta` ao resultado
+        resultado_vendas.append({
+            'vendedor': vendedor.nomefuncionario,
+            'total_vendas': total_vendas,
+            'num_vendas': num_vendas,
+            'num_pecas': num_pecas,
+            'meta': vendedor.meta  # Incluindo o campo meta
+        })
+
+    return JsonResponse({
+        'nome_loja': nome_loja,  # Incluindo o nome da loja
+        'resultado_vendas': resultado_vendas
+    })
